@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+/**
+ * Design tokens for BrandQuest Kids.
+ * Palette: blue (trust), yellow (curiosity), orange (energy), white (clarity).
+ */
+@theme {
+  --color-detective-blue-50: #eff8ff;
+  --color-detective-blue-100: #d9edff;
+  --color-detective-blue-200: #bce0ff;
+  --color-detective-blue-400: #40a3ff;
+  --color-detective-blue-500: #1a86f0;
+  --color-detective-blue-600: #0b68cc;
+  --color-detective-blue-700: #0a52a1;
+  --color-detective-blue-900: #0b2f5c;
+
+  --color-detective-yellow-100: #fff6d6;
+  --color-detective-yellow-300: #ffd84d;
+  --color-detective-yellow-400: #ffc820;
+  --color-detective-yellow-500: #f5b500;
+
+  --color-detective-orange-100: #ffeadb;
+  --color-detective-orange-400: #ff8f3c;
+  --color-detective-orange-500: #f97316;
+  --color-detective-orange-600: #e05a05;
+
+  --font-display: var(--font-fredoka), "Trebuchet MS", system-ui, sans-serif;
+  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-white text-detective-blue-900 antialiased;
+}
+
+/* Consistent, highly visible focus ring for keyboard users. */
+:focus-visible {
+  outline: 3px solid var(--color-detective-blue-600);
+  outline-offset: 3px;
+  border-radius: 0.5rem;
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,11 @@
+export { AnimatedNumber } from "./AnimatedNumber";
+export { BadgeCase } from "./BadgeCase";
+export { Certificate } from "./Certificate";
+export { CoinCounter } from "./CoinCounter";
+export { Fireworks } from "./Fireworks";
+export { LevelBadge } from "./LevelBadge";
+export { PlayerHud } from "./PlayerHud";
+export { RewardToaster } from "./RewardToaster";
+export { StreakFlame } from "./StreakFlame";
+export { XpBar } from "./XpBar";
+export { GameProvider, useGame } from "@/lib/gamification/GameProvider";
