@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
-import { Menu, Search, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { AdventureButton } from "@/components/auth/AdventureButton";
 import { Container } from "@/components/ui/Container";
 import { UserNavCluster } from "@/components/layout/UserNavCluster";
 import { BRAND } from "@/lib/brand";
+import brandQuestLogo from "@/Brand Quest Logo.png";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -24,27 +26,16 @@ export function SiteHeader() {
       <Container className="flex h-16 items-center justify-between sm:h-20">
         <Link
           href="/"
-          className="flex min-w-0 items-center gap-2 font-display font-bold text-detective-blue-900"
+          aria-label={`${BRAND.name} home`}
+          className="flex min-w-0 items-center"
         >
-          <span
-            aria-hidden="true"
-            className="grid h-10 w-10 place-items-center rounded-full bg-detective-blue-600 text-white"
-          >
-            <Search className="h-5 w-5" />
-          </span>
-          <span className="min-w-0 leading-none">
-            <span className="block text-sm font-extrabold sm:text-base">
-              {BRAND.wordmarkPrimary}
-            </span>
-            {BRAND.wordmarkSecondary ? (
-              <span className="block text-sm text-detective-orange-500 sm:text-base">
-                {BRAND.wordmarkSecondary}
-              </span>
-            ) : null}
-            <span className="mt-1 block text-[9px] font-semibold text-detective-blue-600 sm:text-[10px]">
-              {BRAND.tagline}
-            </span>
-          </span>
+          <Image
+            src={brandQuestLogo}
+            alt={`${BRAND.name} — ${BRAND.tagline}`}
+            priority
+            sizes="(min-width: 640px) 90px, 66px"
+            className="h-[44px] w-auto object-contain sm:h-[60px]"
+          />
         </Link>
 
         <nav aria-label="Main" className="hidden items-center gap-8 lg:flex">

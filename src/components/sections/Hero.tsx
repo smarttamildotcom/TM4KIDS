@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { AdventureButton } from "@/components/auth/AdventureButton";
-import { DetectiveHeroIllustration } from "@/components/illustrations/DetectiveHeroIllustration";
+import { QuestyHeroIllustration } from "@/components/illustrations/QuestyHeroIllustration";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { BRAND } from "@/lib/brand";
@@ -70,7 +70,7 @@ export function Hero() {
           </motion.div>
         </motion.div>
 
-        <DetectiveHeroIllustration />
+        <QuestyHeroIllustration />
       </Container>
     </section>
   );
