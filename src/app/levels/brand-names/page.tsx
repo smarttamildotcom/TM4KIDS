@@ -19,7 +19,7 @@ import {
 } from "@/lib/lesson-two";
 
 export const metadata: Metadata = {
-  title: "Lesson 2: Brand Names | BrandQuest Kids",
+  title: "Lesson 2: Brand Names | Brand Quest",
   description:
     "Follow Tom's fruit juice stand, invent a memorable name, and earn the Brand Name Explorer badge.",
 };

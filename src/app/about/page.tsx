@@ -17,7 +17,7 @@ import {
 } from "@/lib/about-content";
 
 export const metadata: Metadata = {
-  title: "About Us | BrandQuest Kids",
+  title: "About Us | Brand Quest",
   description:
     "Inspiring the next generation of Little Brand Detectives through fun, interactive trademark education.",
 };
@@ -52,7 +52,7 @@ export default function AboutPage() {
               </p>
 
               <h1 className="mt-6 font-display text-4xl font-bold leading-tight text-detective-blue-900 sm:text-5xl lg:text-6xl">
-                About BrandQuest Kids
+                About Brand Quest
               </h1>
 
               <p className="mx-auto mt-6 max-w-xl text-lg text-detective-blue-700/85 sm:text-xl lg:mx-0">
@@ -77,7 +77,7 @@ export default function AboutPage() {
             <SectionHeading
               eyebrow="Our mission"
               title="Helping children understand the world of brands"
-              subtitle="BrandQuest Kids helps children understand:"
+              subtitle="Brand Quest helps children understand:"
             />
             <div className="mt-12">
               <InfoCardGrid items={missionPoints} />

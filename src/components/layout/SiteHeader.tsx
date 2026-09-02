@@ -33,12 +33,14 @@ export function SiteHeader() {
             <Search className="h-5 w-5" />
           </span>
           <span className="min-w-0 leading-none">
-            <span className="block text-sm sm:text-base">
+            <span className="block text-sm font-extrabold sm:text-base">
               {BRAND.wordmarkPrimary}
             </span>
-            <span className="block text-sm text-detective-orange-500 sm:text-base">
-              {BRAND.wordmarkSecondary}
-            </span>
+            {BRAND.wordmarkSecondary ? (
+              <span className="block text-sm text-detective-orange-500 sm:text-base">
+                {BRAND.wordmarkSecondary}
+              </span>
+            ) : null}
             <span className="mt-1 block text-[9px] font-semibold text-detective-blue-600 sm:text-[10px]">
               {BRAND.tagline}
             </span>

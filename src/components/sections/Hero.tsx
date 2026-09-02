@@ -37,7 +37,7 @@ export function Hero() {
             className="inline-flex items-center gap-2 rounded-full bg-detective-yellow-100 px-4 py-2 font-display text-sm font-semibold text-detective-orange-600"
           >
             <Sparkles className="h-4 w-4" aria-hidden="true" />
-            For super-sleuths aged 8–12
+            Designed for young detectives aged 7–12
           </motion.p>
 
           <motion.h1
@@ -52,8 +52,8 @@ export function Hero() {
             variants={fadeUp}
             className="mx-auto mt-6 max-w-xl text-lg text-detective-blue-700/85 sm:text-xl lg:mx-0"
           >
-            Join {BRAND.name} and discover how brands, logos and trademarks tell
-            amazing stories around the world.
+            Solve fun mysteries while learning how famous brands protect their
+            names, logos and ideas.
           </motion.p>
 
           <motion.div

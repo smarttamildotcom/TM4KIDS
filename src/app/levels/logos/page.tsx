@@ -19,7 +19,7 @@ import {
 } from "@/lib/lesson-three";
 
 export const metadata: Metadata = {
-  title: "Lesson 3: Logos | BrandQuest Kids",
+  title: "Lesson 3: Logos | Brand Quest",
   description:
     "Visit the mixed-up Brand Museum, learn what a logo is, play Logo Match, and become a Logo Expert.",
 };

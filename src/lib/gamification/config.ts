@@ -133,7 +133,7 @@ export const badges: BadgeDefinition[] = [
     id: "gold-detective-badge",
     name: "BrandQuest Champion",
     emoji: "🏅",
-    description: "Complete every level in BrandQuest Kids.",
+    description: "Complete every level in Brand Quest.",
     isEarned: (state) =>
       state.completedLessonIds.includes("trademark-master"),
   },
@@ -149,8 +149,8 @@ export const certificates: CertificateDefinition[] = [
   },
   {
     id: "trademark-master",
-    title: "BrandQuest Kids Certificate",
-    subtitle: "For completing the BrandQuest Kids programme",
+    title: "Brand Quest Certificate",
+    subtitle: "For completing the Brand Quest programme",
     emoji: "🏆",
     isEarned: (state) =>
       state.completedLessonIds.includes("trademark-master"),

@@ -45,9 +45,11 @@ export function AuthLayout({
             </span>
             <span className="leading-none">
               <span className="block">{BRAND.wordmarkPrimary}</span>
-              <span className="block text-detective-yellow-300">
-                {BRAND.wordmarkSecondary}
-              </span>
+              {BRAND.wordmarkSecondary ? (
+                <span className="block text-detective-yellow-300">
+                  {BRAND.wordmarkSecondary}
+                </span>
+              ) : null}
               <span className="mt-1 block text-[10px] font-semibold text-detective-blue-100">
                 {BRAND.tagline}
               </span>

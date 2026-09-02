@@ -6,7 +6,7 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { certificates } from "@/lib/gamification/config";
 
 export const metadata: Metadata = {
-  title: "My Certificate | BrandQuest Kids",
+  title: "My Certificate | Brand Quest",
 };
 
 export function generateStaticParams() {

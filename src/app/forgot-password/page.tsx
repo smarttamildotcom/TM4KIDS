@@ -3,9 +3,9 @@ import { AuthLayout } from "@/components/auth/AuthLayout";
 import { ForgotPasswordForm } from "@/components/auth/ForgotPasswordForm";
 
 export const metadata: Metadata = {
-  title: "Forgot Password | BrandQuest Kids",
+  title: "Forgot Password | Brand Quest",
   description:
-    "Reset your BrandQuest Kids password and get back to your adventures.",
+    "Reset your Brand Quest password and get back to your adventures.",
 };
 
 export default function ForgotPasswordPage() {

@@ -20,7 +20,7 @@ import {
 } from "@/lib/lesson-four";
 
 export const metadata: Metadata = {
-  title: "Lesson 4: Mascots | BrandQuest Kids",
+  title: "Lesson 4: Mascots | Brand Quest",
   description:
     "Meet the brand heroes, design your own mascot, and earn the Mascot Hero badge.",
 };

@@ -5,9 +5,9 @@ import { DashboardView } from "@/components/dashboard/DashboardView";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 export const metadata: Metadata = {
-  title: "My BrandQuest Dashboard | BrandQuest Kids",
+  title: "My Brand Quest Dashboard",
   description:
-    "Track your BrandQuest rank, XP, completed lessons and badges.",
+    "Track your Brand Quest rank, XP, completed lessons and badges.",
 };
 
 export default function DashboardPage() {

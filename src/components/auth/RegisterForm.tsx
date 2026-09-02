@@ -128,7 +128,7 @@ export function RegisterForm() {
         Create your account
       </h2>
       <p className="mt-1 text-detective-blue-700/85">
-        Join BrandQuest Kids and start solving cases today.
+        Join Brand Quest and start solving cases today.
       </p>
 
       <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-5">

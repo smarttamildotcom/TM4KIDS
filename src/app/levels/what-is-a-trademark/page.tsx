@@ -13,7 +13,7 @@ import { LessonQuiz } from "@/components/lesson/LessonQuiz";
 import { copycatQuestion, examples, storyScenes } from "@/lib/lesson-one";
 
 export const metadata: Metadata = {
-  title: "Lesson 1: What is a Trademark? | BrandQuest Kids",
+  title: "Lesson 1: What is a Trademark? | Brand Quest",
   description:
     "Follow Tom's Crunch Cookies to discover what a trademark is, then earn your first BrandQuest badge.",
 };

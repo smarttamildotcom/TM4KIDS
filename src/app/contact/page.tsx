@@ -12,9 +12,9 @@ import { CallToAction } from "@/components/sections/CallToAction";
 import { contactCards, faqItems, socialLinks } from "@/lib/contact-content";
 
 export const metadata: Metadata = {
-  title: "Contact Us | BrandQuest Kids",
+  title: "Contact Us | Brand Quest",
   description:
-    "Get in touch with BrandQuest Kids for general enquiries, school partnerships or technical support.",
+    "Get in touch with Brand Quest for general enquiries, school partnerships or technical support.",
 };
 
 export default function ContactPage() {

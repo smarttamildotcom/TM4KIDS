@@ -12,7 +12,7 @@ export function MapPlaceholder() {
       viewport={{ once: true }}
       transition={{ duration: 0.4 }}
       role="img"
-      aria-label="Map placeholder showing the BrandQuest Kids location"
+      aria-label="Map placeholder showing the Brand Quest location"
       className="grid aspect-[16/9] w-full place-items-center rounded-3xl border-4 border-dashed border-detective-blue-200 bg-detective-blue-50/60"
     >
       <div className="text-center">

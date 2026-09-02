@@ -11,7 +11,7 @@ import { FinalChallenge } from "@/components/lesson/FinalChallenge";
 import { storyScenes } from "@/lib/lesson-five";
 
 export const metadata: Metadata = {
-  title: "Level 5: Become a BrandQuest Champion | BrandQuest Kids",
+  title: "Level 5: Become a BrandQuest Champion | Brand Quest",
   description:
     "Solve five cases across every skill you've learned, then earn the BrandQuest Champion badge and Certificate of Achievement.",
 };

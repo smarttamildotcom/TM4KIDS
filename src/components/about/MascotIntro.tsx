@@ -21,7 +21,7 @@ export function MascotIntro() {
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         >
           <ImagePlaceholder
-            label="Detective TM, the BrandQuest Kids mascot"
+            label="Detective TM, the Brand Quest mascot"
             emoji="🕵️"
             className="aspect-square w-full"
           />

@@ -13,7 +13,7 @@ export const contactCards: ContactCard[] = [
   {
     id: "general",
     title: "General Enquiries",
-    description: "Questions about BrandQuest Kids, lessons or anything else.",
+    description: "Questions about Brand Quest, lessons or anything else.",
     email: "hello@brandquestkids.example",
     icon: "mail",
     surface: "bg-detective-blue-50 border-detective-blue-200",
@@ -22,7 +22,7 @@ export const contactCards: ContactCard[] = [
   {
     id: "schools",
     title: "School Partnerships",
-    description: "Bring BrandQuest Kids into your classroom or school library.",
+    description: "Bring Brand Quest into your classroom or school library.",
     email: "schools@brandquestkids.example",
     icon: "building",
     surface: "bg-detective-yellow-100 border-detective-yellow-300",
@@ -56,13 +56,13 @@ export const faqItems: FaqItem[] = [
     id: "free",
     question: "Is the website free?",
     answer:
-      "Yes! Every lesson, game and quiz in BrandQuest Kids is completely free to use.",
+      "Yes! Every lesson, game and quiz in Brand Quest is completely free to use.",
   },
   {
     id: "schools",
     question: "Can schools use this?",
     answer:
-      "Absolutely. Teachers can use BrandQuest Kids as a classroom activity or homework resource — reach out through School Partnerships and we'll help you get started.",
+      "Absolutely. Teachers can use Brand Quest as a classroom activity or homework resource — reach out through School Partnerships and we'll help you get started.",
   },
   {
     id: "certificates",
