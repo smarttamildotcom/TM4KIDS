@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { fadeUp, inViewOnce, staggerContainer } from "@/lib/motion";
-import { features } from "@/lib/site-content";
+import { whyKidsLoveFeatures } from "@/lib/home-content";
 
 /** Four colourful capability cards that lift and tilt on hover/focus. */
 export function FeatureCards() {
@@ -12,9 +12,9 @@ export function FeatureCards() {
     <section id="features" className="py-16 sm:py-24">
       <Container>
         <SectionHeading
-          eyebrow="Your Adventure Kit"
-          title="Everything you need to crack the case"
-          subtitle="Four ways to explore the world of trademarks — learn, play, earn and test yourself."
+          eyebrow="Why kids love it"
+          title="Why Kids Love Brand Quest"
+          subtitle="Four reasons every mission feels like play, not homework."
         />
 
         <motion.ul
@@ -22,7 +22,7 @@ export function FeatureCards() {
           {...inViewOnce}
           className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {features.map((feature) => {
+          {whyKidsLoveFeatures.map((feature) => {
             const Icon = feature.icon;
 
             return (

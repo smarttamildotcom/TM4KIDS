@@ -1,9 +1,14 @@
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Hero } from "@/components/sections/Hero";
+import { MeetQuesty } from "@/components/sections/MeetQuesty";
+import { AdventureMap } from "@/components/sections/AdventureMap";
 import { FeatureCards } from "@/components/sections/FeatureCards";
-import { LearningJourney } from "@/components/sections/LearningJourney";
-import { CallToAction } from "@/components/sections/CallToAction";
+import { ParentSection } from "@/components/sections/ParentSection";
+import { TeacherSection } from "@/components/sections/TeacherSection";
+import { Testimonials } from "@/components/sections/Testimonials";
+import { Pricing } from "@/components/sections/Pricing";
+import { FAQ } from "@/components/sections/FAQ";
 
 export default function HomePage() {
   return (
@@ -19,9 +24,14 @@ export default function HomePage() {
 
       <main id="main">
         <Hero />
+        <MeetQuesty />
+        <AdventureMap />
         <FeatureCards />
-        <LearningJourney />
-        <CallToAction />
+        <ParentSection />
+        <TeacherSection />
+        <Testimonials />
+        <Pricing />
+        <FAQ />
       </main>
 
       <SiteFooter />
