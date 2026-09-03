@@ -35,6 +35,15 @@ type GameContextValue = {
   awardXp: (amount: number, reason?: string) => void;
   awardCoins: (amount: number, reason?: string) => void;
   completeLesson: (lessonId: string, reward: LessonReward) => void;
+  /** Records a finished world: XP, stars, coins and quiz accuracy in one write. */
+  completeWorld: (input: {
+    worldId: number;
+    xp: number;
+    stars: number;
+    correct: number;
+    total: number;
+    badgeLabel: string;
+  }) => void;
   setProfile: (profile: { name?: string; avatarEmoji?: string }) => void;
   resetProgress: () => void;
 };
@@ -179,13 +188,54 @@ export function GameProvider({ children }: { children: ReactNode }) {
     [pushToast],
   );
 
+  const completeWorld = useCallback(
+    ({
+      worldId,
+      xp,
+      stars,
+      correct,
+      total,
+      badgeLabel,
+    }: {
+      worldId: number;
+      xp: number;
+      stars: number;
+      correct: number;
+      total: number;
+      badgeLabel: string;
+    }) => {
+      const coins = stars * COINS_PER_STAR;
+
+      setPlayer((current) => {
+        if (current.completedWorldIds.includes(worldId)) return current;
+
+        return {
+          ...current,
+          xp: current.xp + xp,
+          coins: current.coins + coins,
+          completedWorldIds: [...current.completedWorldIds, worldId],
+          quizScores: { ...current.quizScores, [`world-${worldId}`]: { correct, total } },
+          stats: {
+            quizzesTaken: current.stats.quizzesTaken + 1,
+            perfectQuizzes:
+              current.stats.perfectQuizzes + (total > 0 && correct === total ? 1 : 0),
+            starsEarned: current.stats.starsEarned + stars,
+          },
+        };
+      });
+
+      pushToast("xp", `+${xp} XP`);
+      pushToast("badge", `${badgeLabel} earned!`);
+    },
+    [pushToast],
+  );
+
   const setProfile = useCallback(
     (profile: { name?: string; avatarEmoji?: string }) => {
       setPlayer((current) => ({ ...current, ...profile }));
     },
     [],
   );
-
   const resetProgress = useCallback(() => {
     clearPlayerState();
     setPlayer(initialPlayerState);
@@ -201,6 +251,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       awardXp,
       awardCoins,
       completeLesson,
+      completeWorld,
       setProfile,
       resetProgress,
     }),
@@ -212,6 +263,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       awardXp,
       awardCoins,
       completeLesson,
+      completeWorld,
       setProfile,
       resetProgress,
     ],

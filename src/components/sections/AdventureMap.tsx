@@ -1,15 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import detectiveQuesty from "@/6. Detective Questy.png";
 import { Container } from "@/components/ui/Container";
 import { WorldCard, type WorldStatus } from "@/components/sections/WorldCard";
 import { CelebrationModal } from "@/components/auth/CelebrationModal";
+import { PremiumGateModal } from "@/components/auth/PremiumGateModal";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { useGame } from "@/lib/gamification/GameProvider";
-import { isWorldUnlocked, LAST_FREE_WORLD_ID, useWorldProgress } from "@/lib/progress";
+import {
+  canAccessWorld,
+  clearPendingWorld,
+  consumeGateFlag,
+  LAST_FREE_WORLD_ID,
+  readPendingWorld,
+  rememberPendingWorld,
+} from "@/lib/access";
 import { totalJourneyXp, worlds } from "@/lib/worlds";
 
 /** Treasure-map scenery floating behind the path. Decorative only. */
@@ -34,44 +42,93 @@ function zigzagClass(index: number) {
 
 /** The 15-world detective journey — the centrepiece of the homepage. */
 export function AdventureMap() {
-  const { awardXp } = useGame();
-  const { user } = useAuth();
-  const { progress, isLoaded, completeWorld, markCelebrationSeen } = useWorldProgress();
+  const { player, isLoaded, completeWorld } = useGame();
+  const { user, isLoaded: isAuthLoaded } = useAuth();
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [showGate, setShowGate] = useState(false);
+  const hasResumed = useRef(false);
 
   const isSignedIn = Boolean(user);
 
+  const openWorld = useCallback((worldId: number) => {
+    setExpandedId(worldId);
+    requestAnimationFrame(() => {
+      document.getElementById(`world-${worldId}`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    });
+  }, []);
+
+  // A blocked route redirects here; pick the gate or the remembered world back up.
+  useEffect(() => {
+    if (!isAuthLoaded || hasResumed.current) return;
+    hasResumed.current = true;
+
+    const blocked = consumeGateFlag();
+    const pending = readPendingWorld();
+
+    if (pending && canAccessWorld(pending, isSignedIn)) {
+      clearPendingWorld();
+      openWorld(pending);
+      return;
+    }
+
+    if (blocked) setShowGate(true);
+  }, [isAuthLoaded, isSignedIn, openWorld]);
+
   const statuses: WorldStatus[] = worlds.map((world) => {
-    if (progress.completedWorldIds.includes(world.id)) return "completed";
+    if (player.completedWorldIds.includes(world.id)) return "completed";
     // Before hydration everything reads as unlocked so the markup matches the server.
-    if (isLoaded && !isWorldUnlocked(world.id, isSignedIn)) return "locked";
+    if (isLoaded && isAuthLoaded && !canAccessWorld(world.id, isSignedIn)) return "locked";
     return "unlocked";
   });
 
-  const completedCount = progress.completedWorldIds.length;
+  const completedCount = player.completedWorldIds.length;
   const activeIndex = statuses.indexOf("unlocked");
   const percentComplete = Math.round((completedCount / worlds.length) * 100);
 
-  function handleComplete(worldId: number) {
+  function handleToggle(worldId: number) {
+    if (!canAccessWorld(worldId, isSignedIn)) {
+      rememberPendingWorld(worldId);
+      setShowGate(true);
+      return;
+    }
+
+    setExpandedId(expandedId === worldId ? null : worldId);
+  }
+
+  /** Same gate as every other entry point, then scroll the next world into view. */
+  function handleNextWorld(worldId: number) {
+    if (!canAccessWorld(worldId, isSignedIn)) {
+      rememberPendingWorld(worldId);
+      setShowGate(true);
+      return;
+    }
+
+    openWorld(worldId);
+  }
+
+  function handleComplete(worldId: number, correct: number, total: number) {
     const world = worlds.find((item) => item.id === worldId);
-    if (!world || progress.completedWorldIds.includes(worldId)) return;
+    if (!world || player.completedWorldIds.includes(worldId)) return;
 
-    completeWorld(world.id, world.xp, world.reward.label);
-    awardXp(world.xp, `${world.reward.badge} ${world.reward.label} earned!`);
+    const stars = total > 0 ? Math.max(1, Math.round((correct / total) * 3)) : 1;
 
-    const finishedFreeTrial =
-      worldId === LAST_FREE_WORLD_ID && !isSignedIn && !progress.celebrationSeen;
+    completeWorld({
+      worldId,
+      xp: world.xp,
+      stars,
+      correct,
+      total,
+      badgeLabel: `${world.reward.badge} ${world.reward.label}`,
+    });
 
-    if (finishedFreeTrial) {
+    if (worldId === LAST_FREE_WORLD_ID && !isSignedIn) {
       setExpandedId(null);
       setShowCelebration(true);
     }
-  }
-
-  function handleCloseCelebration() {
-    markCelebrationSeen();
-    setShowCelebration(false);
   }
 
   return (
@@ -169,8 +226,13 @@ export function AdventureMap() {
                 status={statuses[index]}
                 isActive={index === activeIndex}
                 isExpanded={expandedId === world.id}
-                onToggle={() => setExpandedId(expandedId === world.id ? null : world.id)}
-                onComplete={() => handleComplete(world.id)}
+                onToggle={() => handleToggle(world.id)}
+                onRequestUnlock={() => {
+                  rememberPendingWorld(world.id);
+                  setShowGate(true);
+                }}
+                onComplete={(correct, total) => handleComplete(world.id, correct, total)}
+                onNextWorld={handleNextWorld}
               />
             </motion.li>
           ))}
@@ -178,12 +240,20 @@ export function AdventureMap() {
       </Container>
 
       <AnimatePresence>
+        {showGate && (
+          <PremiumGateModal
+            onClose={() => {
+              clearPendingWorld();
+              setShowGate(false);
+            }}
+          />
+        )}
         {showCelebration && (
           <CelebrationModal
-            xpEarned={progress.xpEarned}
-            badgesEarned={progress.earnedBadges.length}
-            worldsCompleted={progress.completedWorldIds.length}
-            onClose={handleCloseCelebration}
+            xpEarned={player.xp}
+            badgesEarned={player.badgeIds.length}
+            worldsCompleted={player.completedWorldIds.length}
+            onClose={() => setShowCelebration(false)}
           />
         )}
       </AnimatePresence>

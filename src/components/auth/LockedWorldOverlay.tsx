@@ -1,40 +1,42 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
 
 /**
- * Dimming veil and lock badge shown over Worlds 3–15 until the child has a
- * Detective Account. The world stays visible on purpose — seeing what is
- * ahead is part of the motivation.
+ * Dimming veil and bouncing lock shown over Worlds 3–15 until the child has a
+ * Detective Account. The world stays visible on purpose — seeing what is ahead
+ * is part of the motivation. Clicking anywhere opens the sign-up gate.
  */
-export function LockedWorldOverlay({ worldName }: { worldName: string }) {
+export function LockedWorldOverlay({
+  worldName,
+  onRequestUnlock,
+}: {
+  worldName: string;
+  onRequestUnlock: () => void;
+}) {
   return (
-    <div className="group/lock absolute inset-0 z-20 rounded-[24px]">
-      <div className="absolute inset-0 rounded-[24px] bg-white/35" />
-
-      <span className="absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-detective-blue-900/85 text-white shadow-lg">
-        <Lock className="h-5 w-5" aria-hidden="true" />
-      </span>
-
-      <Link
-        href="/login?redirect=%2F%23journey"
-        aria-label={`${worldName} is locked. Sign in to unlock this world.`}
-        className="absolute inset-0 rounded-[24px] focus-visible:outline-none"
-      />
-
+    <button
+      type="button"
+      onClick={onRequestUnlock}
+      aria-label={`${worldName} is locked. Create a free account to unlock it.`}
+      className="group/lock absolute inset-0 z-20 w-full cursor-pointer rounded-[24px] bg-white/35"
+    >
       <motion.span
         aria-hidden="true"
-        initial={{ opacity: 0, y: 6 }}
-        whileHover={{ opacity: 1, y: 0 }}
-        className="pointer-events-none absolute inset-x-4 bottom-4 rounded-2xl bg-detective-blue-900 px-4 py-3 text-center font-display text-sm font-semibold text-white opacity-0 shadow-xl transition-opacity duration-200 group-hover/lock:opacity-100"
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute right-3 top-3 grid h-11 w-11 place-items-center rounded-full bg-detective-blue-900/90 text-white shadow-lg"
       >
-        🔒 Login to continue your detective adventure.
-        <span className="mt-1 block text-xs font-normal text-detective-blue-100">
-          Complete your Detective Account to unlock.
-        </span>
+        <Lock className="h-5 w-5" />
       </motion.span>
-    </div>
+
+      <span className="absolute inset-x-4 bottom-4 rounded-2xl bg-detective-blue-900 px-4 py-3 text-center font-display text-sm font-semibold text-white opacity-0 shadow-xl transition-opacity duration-200 group-hover/lock:opacity-100 group-focus-visible/lock:opacity-100">
+        🔒 Login Required
+        <span className="mt-1 block text-xs font-normal text-detective-blue-100">
+          Create your free account to unlock this world.
+        </span>
+      </span>
+    </button>
   );
 }

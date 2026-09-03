@@ -60,23 +60,3 @@ export const lessons: LessonSummary[] = [
     icon: Trophy,
   },
 ];
-
-export type LessonStatus = "completed" | "current" | "locked";
-
-/** Marks lessons done, unlocks the next one and locks the rest. */
-export function getLessonStatuses(
-  completedIds: string[],
-): { lesson: LessonSummary; status: LessonStatus }[] {
-  let currentAssigned = false;
-
-  return lessons.map((lesson) => {
-    if (completedIds.includes(lesson.id)) {
-      return { lesson, status: "completed" as const };
-    }
-    if (!currentAssigned) {
-      currentAssigned = true;
-      return { lesson, status: "current" as const };
-    }
-    return { lesson, status: "locked" as const };
-  });
-}

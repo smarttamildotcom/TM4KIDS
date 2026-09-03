@@ -32,6 +32,10 @@ export type PlayerState = {
   certificateIds: string[];
   certificateAwards: Record<string, CertificateAward>;
   completedLessonIds: string[];
+  /** Worlds finished on the 15-world journey. */
+  completedWorldIds: number[];
+  /** Per-world quiz results, used for the accuracy stat. */
+  quizScores: Record<string, { correct: number; total: number }>;
   streak: PlayerStreak;
   stats: PlayerStats;
 };

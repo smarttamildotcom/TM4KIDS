@@ -8,6 +8,7 @@ import type { AuthUser, LoginInput, RegisterInput, AuthResult } from "./types";
 
 const ACCOUNTS_KEY = "tda:accounts";
 const SESSION_KEY = "tda:session";
+const SESSION_COOKIE = "bq_session";
 
 type StoredAccount = AuthUser & { password: string };
 
@@ -134,6 +135,18 @@ export function readSession(): AuthUser | null {
   }
 }
 
+/**
+ * Mirrors the session into a flag cookie so middleware can gate world routes
+ * before rendering. It carries no credentials and must never be treated as
+ * proof of identity — replace it with a signed session cookie alongside real auth.
+ */
+function writeSessionCookie(isSignedIn: boolean): void {
+  if (typeof document === "undefined") return;
+  document.cookie = isSignedIn
+    ? `${SESSION_COOKIE}=1; path=/; max-age=2592000; samesite=lax`
+    : `${SESSION_COOKIE}=; path=/; max-age=0; samesite=lax`;
+}
+
 /** `remember` decides whether the session survives closing the tab. */
 export function writeSession(user: AuthUser, remember: boolean): void {
   if (typeof window === "undefined") return;
@@ -141,6 +154,7 @@ export function writeSession(user: AuthUser, remember: boolean): void {
   try {
     const store = remember ? window.localStorage : window.sessionStorage;
     store.setItem(SESSION_KEY, JSON.stringify(user));
+    writeSessionCookie(true);
   } catch {
     // Non-critical for the demo.
   }
@@ -150,4 +164,5 @@ export function clearSession(): void {
   if (typeof window === "undefined") return;
   window.localStorage.removeItem(SESSION_KEY);
   window.sessionStorage.removeItem(SESSION_KEY);
+  writeSessionCookie(false);
 }

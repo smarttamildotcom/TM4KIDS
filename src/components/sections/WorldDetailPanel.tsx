@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Check, CheckCircle2, Sparkles, Target } from "lucide-react";
 import { QuizQuestionCard } from "@/components/quiz";
@@ -28,14 +28,21 @@ export function WorldDetailPanel({
   world,
   isCompleted,
   onComplete,
+  onNextWorld,
 }: {
   world: World;
   isCompleted: boolean;
-  onComplete: () => void;
+  onComplete: (correct: number, total: number) => void;
+  onNextWorld: (worldId: number) => void;
 }) {
   const theme = worldTheme[world.color];
   const questions = toQuizQuestions(world);
   const nextWorldId = world.id < 15 ? world.id + 1 : null;
+  const [answers, setAnswers] = useState<Record<string, boolean>>({});
+
+  const answeredCount = Object.keys(answers).length;
+  const correctCount = Object.values(answers).filter(Boolean).length;
+  const allAnswered = answeredCount === questions.length;
 
   return (
     <motion.div
@@ -114,6 +121,13 @@ export function WorldDetailPanel({
                 question={question}
                 counter={`Question ${index + 1} of ${questions.length}`}
                 allowRetry
+                onAnswer={(result) =>
+                  setAnswers((current) =>
+                    question.id in current
+                      ? current
+                      : { ...current, [question.id]: result.isCorrect },
+                  )
+                }
               />
             ))}
           </div>
@@ -179,22 +193,26 @@ export function WorldDetailPanel({
               ) : (
                 <button
                   type="button"
-                  onClick={onComplete}
-                  className="inline-flex items-center gap-2 rounded-full bg-detective-orange-500 px-8 py-4 font-display text-lg font-semibold text-white shadow-lg transition-colors hover:bg-detective-orange-600"
+                  onClick={() => onComplete(correctCount, questions.length)}
+                  disabled={!allAnswered}
+                  className="inline-flex items-center gap-2 rounded-full bg-detective-orange-500 px-8 py-4 font-display text-lg font-semibold text-white shadow-lg transition-colors hover:bg-detective-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
-                  Claim my badge
+                  {allAnswered
+                    ? "Claim my badge"
+                    : `Answer all ${questions.length} questions (${answeredCount}/${questions.length})`}
                 </button>
               )}
 
               {nextWorldId && isCompleted && (
-                <Link
-                  href={`#world-${nextWorldId}`}
+                <button
+                  type="button"
+                  onClick={() => onNextWorld(nextWorldId)}
                   className="inline-flex items-center gap-2 rounded-full border-2 border-detective-blue-200 bg-white px-8 py-4 font-display text-lg font-semibold text-detective-blue-700 transition-colors hover:bg-detective-blue-50"
                 >
                   Next: World {nextWorldId}
                   <ArrowRight className="h-5 w-5" aria-hidden="true" />
-                </Link>
+                </button>
               )}
             </div>
           </div>

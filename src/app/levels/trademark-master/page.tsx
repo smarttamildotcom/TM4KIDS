@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, Clock, Sparkles } from "lucide-react";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { WorldRouteGuard } from "@/components/auth/WorldRouteGuard";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { StoryPlayer } from "@/components/lesson/StoryPlayer";
@@ -29,7 +29,7 @@ export default function TrademarkMasterPage() {
       <SiteHeader />
 
       <main id="main">
-        <ProtectedRoute>
+        <WorldRouteGuard worldId={15}>
         {/* Lesson intro */}
         <section className="bg-gradient-to-b from-detective-blue-50 to-white py-12 sm:py-16">
           <Container>
@@ -89,7 +89,7 @@ export default function TrademarkMasterPage() {
             </div>
           </Container>
         </section>
-        </ProtectedRoute>
+        </WorldRouteGuard>
       </main>
 
       <SiteFooter />

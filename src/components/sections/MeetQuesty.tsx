@@ -9,7 +9,6 @@ import { Container } from "@/components/ui/Container";
 import { QuestyIcon } from "@/components/illustrations/QuestyIcon";
 import { fadeUp, inViewOnce, staggerContainer } from "@/lib/motion";
 import { questyTraits } from "@/lib/home-content";
-import { lessons } from "@/lib/lessons";
 
 /** "Meet Questy" — introduces the mascot and invites visitors into their first mission. */
 export function MeetQuesty() {
@@ -116,7 +115,7 @@ export function MeetQuesty() {
             </motion.ul>
 
             <motion.div variants={fadeUp} className="mt-8">
-              <Button href={lessons[0].href} size="lg">
+              <Button href="/#journey" size="lg">
                 Start Your First Mission
                 <ArrowRight className="h-5 w-5" aria-hidden="true" />
               </Button>

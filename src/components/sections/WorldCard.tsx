@@ -16,7 +16,9 @@ type WorldCardProps = {
   isActive: boolean;
   isExpanded: boolean;
   onToggle: () => void;
-  onComplete: () => void;
+  onRequestUnlock: () => void;
+  onComplete: (correct: number, total: number) => void;
+  onNextWorld: (worldId: number) => void;
 };
 
 /** Circular progress indicator drawn around the world number. */
@@ -57,7 +59,9 @@ export function WorldCard({
   isActive,
   isExpanded,
   onToggle,
+  onRequestUnlock,
   onComplete,
+  onNextWorld,
 }: WorldCardProps) {
   const theme = worldTheme[world.color];
   const isLocked = status === "locked";
@@ -76,7 +80,9 @@ export function WorldCard({
         isLocked ? "opacity-60 grayscale" : `hover:shadow-2xl ${theme.glow}`
       } ${isActive ? "ring-4 ring-detective-yellow-300" : ""}`}
     >
-      {isLocked && <LockedWorldOverlay worldName={world.name} />}
+      {isLocked && (
+        <LockedWorldOverlay worldName={world.name} onRequestUnlock={onRequestUnlock} />
+      )}
       <span
         aria-hidden="true"
         className="pointer-events-none absolute -right-2 -top-3 text-xl opacity-70"
@@ -163,10 +169,9 @@ export function WorldCard({
           <button
             type="button"
             onClick={onToggle}
-            disabled={isLocked}
             aria-expanded={isExpanded}
             aria-controls={panelId}
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-detective-orange-500 px-5 py-2.5 font-display text-sm font-semibold text-white shadow-md transition-colors hover:bg-detective-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-detective-orange-500 px-5 py-2.5 font-display text-sm font-semibold text-white shadow-md transition-colors hover:bg-detective-orange-600"
           >
             <Play className="h-4 w-4" aria-hidden="true" />
             {isExpanded ? "Close lesson" : "Start"}
@@ -175,10 +180,9 @@ export function WorldCard({
           <button
             type="button"
             onClick={onToggle}
-            disabled={isLocked}
             aria-expanded={isExpanded}
             aria-controls={panelId}
-            className="inline-flex items-center justify-center gap-1 rounded-full border-2 border-detective-blue-200 px-4 py-2.5 font-display text-sm font-semibold text-detective-blue-700 transition-colors hover:bg-detective-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-1 rounded-full border-2 border-detective-blue-200 px-4 py-2.5 font-display text-sm font-semibold text-detective-blue-700 transition-colors hover:bg-detective-blue-50"
           >
             {isExpanded ? "Close" : "Details"}
             <ChevronDown
@@ -195,6 +199,7 @@ export function WorldCard({
                 world={world}
                 isCompleted={isCompleted}
                 onComplete={onComplete}
+                onNextWorld={onNextWorld}
               />
             )}
           </AnimatePresence>

@@ -5,24 +5,23 @@ import { Award, BookOpen, Coins, Zap } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { ProfileCard } from "@/components/dashboard/ProfileCard";
 import { StatCard } from "@/components/dashboard/StatCard";
-import { LessonPath } from "@/components/dashboard/LessonPath";
 import { NextLessonCard } from "@/components/dashboard/NextLessonCard";
 import { ProgressBar } from "@/components/dashboard/ProgressBar";
 import { CertificateShelf } from "@/components/dashboard/CertificateShelf";
 import { BadgeCase, useGame } from "@/components/gamification";
-import { badges } from "@/lib/gamification/config";
-import { getLessonStatuses, lessons } from "@/lib/lessons";
+import { QuestyProfilePanel } from "@/components/gamification/QuestyProfilePanel";
+import { badges, TOTAL_WORLDS } from "@/lib/gamification/config";
+import { worlds } from "@/lib/worlds";
 import { inViewOnce, staggerContainer } from "@/lib/motion";
 
 /** Dashboard body, driven entirely by the persisted player state. */
 export function DashboardView() {
   const { player, level } = useGame();
 
-  const statuses = getLessonStatuses(player.completedLessonIds);
-  const completedCount = player.completedLessonIds.length;
-  const nextEntry =
-    statuses.find((entry) => entry.status === "current") ?? statuses[0];
-  const coursePercent = Math.round((completedCount / lessons.length) * 100);
+  const completedCount = player.completedWorldIds.length;
+  const nextWorld =
+    worlds.find((world) => !player.completedWorldIds.includes(world.id)) ?? worlds[0];
+  const coursePercent = Math.round((completedCount / TOTAL_WORLDS) * 100);
 
   return (
     <Container className="space-y-8 sm:space-y-10">
@@ -63,9 +62,9 @@ export function DashboardView() {
         />
         <StatCard
           icon={BookOpen}
-          label="Lessons completed"
+          label="Worlds completed"
           value={completedCount}
-          suffix={`/ ${lessons.length}`}
+          suffix={`/ ${TOTAL_WORLDS}`}
           hint="Keep going, detective!"
           surface="bg-detective-blue-50 border-detective-blue-200"
           badge="bg-detective-blue-500 text-white"
@@ -104,8 +103,8 @@ export function DashboardView() {
         />
 
         <p className="mt-3 text-detective-blue-700/85">
-          {completedCount} of {lessons.length} levels solved. Only{" "}
-          {lessons.length - completedCount} cases left to crack!
+          {completedCount} of {TOTAL_WORLDS} worlds solved. Only{" "}
+          {TOTAL_WORLDS - completedCount} cases left to crack!
         </p>
       </section>
 
@@ -115,16 +114,18 @@ export function DashboardView() {
             id="lessons-heading"
             className="mb-4 font-display text-xl font-bold text-detective-blue-900 sm:text-2xl"
           >
-            Your case files
+            Your detective file
           </h2>
-          <LessonPath completedIds={player.completedLessonIds} />
+          <div className="overflow-hidden rounded-[2rem] border-2 border-detective-blue-100 bg-white shadow-md">
+            <QuestyProfilePanel />
+          </div>
         </section>
 
         <section aria-labelledby="next-heading" className="lg:sticky lg:top-24">
           <h2 id="next-heading" className="sr-only">
-            Next lesson
+            Next world
           </h2>
-          <NextLessonCard lesson={nextEntry.lesson} />
+          <NextLessonCard world={nextWorld} />
         </section>
       </div>
 
