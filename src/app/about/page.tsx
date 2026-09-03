@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
+import { questyArt } from "@/lib/questy-art";
 import { InfoCardGrid } from "@/components/about/InfoCardGrid";
 import { LearningTimeline } from "@/components/about/LearningTimeline";
 import { MascotIntro } from "@/components/about/MascotIntro";
@@ -61,11 +62,13 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="mx-auto w-full max-w-md">
-              <ImagePlaceholder
-                label="Illustration of young detectives exploring the academy"
-                emoji="🏫"
-                className="aspect-square w-full"
+            <div className="mx-auto flex w-full max-w-md justify-center">
+              <Image
+                src={questyArt.reading}
+                alt="Questy reading a book of brand clues"
+                priority
+                sizes="(min-width: 640px) 360px, 260px"
+                className="h-[260px] w-auto object-contain drop-shadow-2xl sm:h-[360px]"
               />
             </div>
           </Container>

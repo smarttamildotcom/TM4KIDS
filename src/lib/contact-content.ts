@@ -50,7 +50,7 @@ export const faqItems: FaqItem[] = [
     id: "register",
     question: "How do I register?",
     answer:
-      "Just visit the homepage and tap “Start Adventure”. Your detective profile is created automatically, and your progress is saved right in your browser.",
+      "Just visit the homepage and tap “Start Adventure”. It takes you straight to the 15-world Journey map, and your progress is saved right in your browser.",
   },
   {
     id: "free",

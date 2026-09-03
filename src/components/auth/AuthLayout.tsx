@@ -1,17 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import type { ReactNode } from "react";
-import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
+import brandQuestLogo from "@/Brand Quest Logo.png";
+import detectiveQuesty from "@/6. Detective Questy.png";
 import { BRAND } from "@/lib/brand";
 
 type AuthLayoutProps = {
   headline: string;
   subtitle: string;
   illustrationLabel: string;
-  illustrationEmoji: string;
   children: ReactNode;
 };
 
@@ -20,7 +21,6 @@ export function AuthLayout({
   headline,
   subtitle,
   illustrationLabel,
-  illustrationEmoji,
   children,
 }: AuthLayoutProps) {
   return (
@@ -35,25 +35,16 @@ export function AuthLayout({
         <div className="relative mx-auto flex h-full max-w-lg flex-col">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 font-display text-lg font-bold text-white"
+            aria-label={`${BRAND.name} home`}
+            className="inline-flex w-fit items-center"
           >
-            <span
-              aria-hidden="true"
-              className="grid h-10 w-10 place-items-center rounded-full bg-detective-yellow-400 text-detective-blue-900"
-            >
-              <Search className="h-5 w-5" />
-            </span>
-            <span className="leading-none">
-              <span className="block">{BRAND.wordmarkPrimary}</span>
-              {BRAND.wordmarkSecondary ? (
-                <span className="block text-detective-yellow-300">
-                  {BRAND.wordmarkSecondary}
-                </span>
-              ) : null}
-              <span className="mt-1 block text-[10px] font-semibold text-detective-blue-100">
-                {BRAND.tagline}
-              </span>
-            </span>
+            <Image
+              src={brandQuestLogo}
+              alt={`${BRAND.name} — ${BRAND.tagline}`}
+              priority
+              sizes="120px"
+              className="h-[56px] w-auto rounded-2xl bg-white/95 object-contain p-2 shadow-lg"
+            />
           </Link>
 
           <motion.div
@@ -74,11 +65,18 @@ export function AuthLayout({
             transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
             className="relative mx-auto mt-10 w-full max-w-sm"
           >
-            <ImagePlaceholder
-              label={illustrationLabel}
-              emoji={illustrationEmoji}
-              className="aspect-square w-full border-white/40 bg-white/10 text-white"
-            />
+            <motion.div
+              animate={{ y: [0, -14, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="mx-auto w-fit"
+            >
+              <Image
+                src={detectiveQuesty}
+                alt={illustrationLabel}
+                sizes="(min-width: 640px) 280px, 200px"
+                className="h-[200px] w-auto object-contain drop-shadow-2xl sm:h-[280px]"
+              />
+            </motion.div>
 
             <motion.span
               aria-hidden="true"

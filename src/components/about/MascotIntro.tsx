@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
+import { questyArt } from "@/lib/questy-art";
 import { fadeUp, inViewOnce, staggerContainer } from "@/lib/motion";
 
 /** "Meet Detective TM" mascot introduction. */
@@ -19,11 +20,13 @@ export function MascotIntro() {
         <motion.div
           animate={{ y: [0, -14, 0] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="flex justify-center"
         >
-          <ImagePlaceholder
-            label="Detective TM, the Brand Quest mascot"
-            emoji="🕵️"
-            className="aspect-square w-full"
+          <Image
+            src={questyArt.detective}
+            alt="Questy, the Brand Quest detective mascot"
+            sizes="(min-width: 640px) 320px, 240px"
+            className="h-[240px] w-auto object-contain drop-shadow-2xl sm:h-[320px]"
           />
         </motion.div>
 

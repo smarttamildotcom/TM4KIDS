@@ -3,13 +3,13 @@
 import { motion } from "framer-motion";
 
 type SocialAuthButtonsProps = {
-  onSelect: (provider: "google" | "microsoft") => void;
+  onSelect: (provider: "google" | "apple") => void;
   disabled?: boolean;
 };
 
 const providers = [
   { id: "google", label: "Continue with Google", mark: "G", markClass: "text-[#ea4335]" },
-  { id: "microsoft", label: "Continue with Microsoft", mark: "⊞", markClass: "text-[#00a4ef]" },
+  { id: "apple", label: "Continue with Apple", mark: "⌘", markClass: "text-detective-blue-900" },
 ] as const;
 
 /** Placeholder OAuth buttons — wired to the mock auth flow, not a real provider. */

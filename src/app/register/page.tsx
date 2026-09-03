@@ -15,7 +15,6 @@ export default function RegisterPage() {
       headline="Join Brand Quest!"
       subtitle="Create your detective badge and start solving brand mysteries."
       illustrationLabel="A new detective receiving their first badge"
-      illustrationEmoji="🎓"
     >
       <Suspense fallback={null}>
         <RegisterForm />

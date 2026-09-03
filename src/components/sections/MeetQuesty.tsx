@@ -3,9 +3,10 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import questyImage from "@/Questy Image.png";
+import questyImage from "@/5. Reading Questy.png";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { QuestyIcon } from "@/components/illustrations/QuestyIcon";
 import { fadeUp, inViewOnce, staggerContainer } from "@/lib/motion";
 import { questyTraits } from "@/lib/home-content";
 import { lessons } from "@/lib/lessons";
@@ -49,7 +50,8 @@ export function MeetQuesty() {
             >
               <Image
                 src={questyImage}
-                alt="Questy the detective mascot waving hello"
+                alt="Questy the detective mascot reading a book of brand clues"
+                sizes="(min-width: 640px) 340px, 280px"
                 className="h-full w-auto object-contain drop-shadow-2xl"
               />
             </motion.div>
@@ -105,9 +107,7 @@ export function MeetQuesty() {
                   variants={fadeUp}
                   className="flex items-center gap-2 rounded-full border-2 border-detective-blue-100 bg-white px-4 py-2 shadow-sm"
                 >
-                  <span aria-hidden="true" className="text-lg">
-                    {trait.emoji}
-                  </span>
+                  <QuestyIcon name={trait.icon} size={24} />
                   <span className="font-display text-sm font-semibold text-detective-blue-900">
                     {trait.label}
                   </span>

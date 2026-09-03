@@ -27,7 +27,7 @@ type AuthContextValue = {
   isLoaded: boolean;
   login: (input: LoginInput) => Promise<AuthResult>;
   register: (input: RegisterInput) => Promise<AuthResult>;
-  loginWith: (provider: "google" | "microsoft") => Promise<AuthResult>;
+  loginWith: (provider: "google" | "apple") => Promise<AuthResult>;
   resetPassword: (email: string) => Promise<AuthResult>;
   logout: () => void;
 };
@@ -73,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const loginWith = useCallback(
-    async (provider: "google" | "microsoft") =>
+    async (provider: "google" | "apple") =>
       applyResult(await loginWithProvider(provider), true),
     [applyResult],
   );

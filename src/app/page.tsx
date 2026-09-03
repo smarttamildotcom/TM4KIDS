@@ -4,10 +4,6 @@ import { Hero } from "@/components/sections/Hero";
 import { MeetQuesty } from "@/components/sections/MeetQuesty";
 import { AdventureMap } from "@/components/sections/AdventureMap";
 import { FeatureCards } from "@/components/sections/FeatureCards";
-import { ParentSection } from "@/components/sections/ParentSection";
-import { TeacherSection } from "@/components/sections/TeacherSection";
-import { Testimonials } from "@/components/sections/Testimonials";
-import { Pricing } from "@/components/sections/Pricing";
 import { FAQ } from "@/components/sections/FAQ";
 
 export default function HomePage() {
@@ -27,10 +23,6 @@ export default function HomePage() {
         <MeetQuesty />
         <AdventureMap />
         <FeatureCards />
-        <ParentSection />
-        <TeacherSection />
-        <Testimonials />
-        <Pricing />
         <FAQ />
       </main>
 

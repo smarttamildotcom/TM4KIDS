@@ -81,11 +81,11 @@ export async function loginWithPassword(input: LoginInput): Promise<AuthResult> 
 
 /** Stand-in for a real OAuth flow. */
 export async function loginWithProvider(
-  provider: "google" | "microsoft",
+  provider: "google" | "apple",
 ): Promise<AuthResult> {
   await delay();
 
-  const label = provider === "google" ? "Google" : "Microsoft";
+  const label = provider === "google" ? "Google" : "Apple";
   return {
     ok: true,
     user: {

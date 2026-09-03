@@ -14,7 +14,6 @@ export default function ForgotPasswordPage() {
       headline="Lost your secret code?"
       subtitle="Every detective forgets a clue now and then — let's get you back in."
       illustrationLabel="A detective searching for a lost key with a magnifying glass"
-      illustrationEmoji="🔑"
     >
       <ForgotPasswordForm />
     </AuthLayout>

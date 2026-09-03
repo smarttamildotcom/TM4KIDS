@@ -31,7 +31,7 @@ const rules = {
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/dashboard";
+  const redirectTo = searchParams.get("redirect") || "/#journey";
   const { login, loginWith } = useAuth();
 
   const [values, setValues] = useState<Values>({
@@ -68,7 +68,7 @@ export function LoginForm() {
     }
   }
 
-  async function handleProvider(provider: "google" | "microsoft") {
+  async function handleProvider(provider: "google" | "apple") {
     setIsLoading(true);
     const result = await loginWith(provider);
     setIsLoading(false);
@@ -80,10 +80,10 @@ export function LoginForm() {
   return (
     <>
       <h2 className="font-display text-2xl font-bold text-detective-blue-900 sm:text-3xl">
-        Log in
+        Create your Detective Account
       </h2>
       <p className="mt-1 text-detective-blue-700/85">
-        Pick up your case file right where you left off.
+        Unlock Worlds 3–15 and keep every badge you earn.
       </p>
 
       <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-5">
@@ -141,7 +141,7 @@ export function LoginForm() {
 
         <SubmitButton isLoading={isLoading} loadingLabel="Opening case file…">
           <LogIn className="h-5 w-5" aria-hidden="true" />
-          Log in
+          Continue
         </SubmitButton>
       </form>
 

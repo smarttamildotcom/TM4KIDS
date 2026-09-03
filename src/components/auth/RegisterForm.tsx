@@ -61,7 +61,7 @@ const countries = [
 export function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/dashboard";
+  const redirectTo = searchParams.get("redirect") || "/#journey";
   const { register } = useAuth();
 
   const [values, setValues] = useState<Values>(initialValues);

@@ -12,10 +12,9 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <AuthLayout
-      headline="Welcome Back, Detective!"
-      subtitle="Continue your trademark adventure."
-      illustrationLabel="A young detective waving hello with a magnifying glass"
-      illustrationEmoji="🕵️"
+      headline="Continue Your Detective Adventure"
+      subtitle="Create your free Detective Account to unlock all remaining worlds, save your progress and earn every badge."
+      illustrationLabel="Questy the detective mascot holding a magnifying glass"
     >
       <Suspense
         fallback={
