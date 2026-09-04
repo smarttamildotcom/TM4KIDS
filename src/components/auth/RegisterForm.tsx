@@ -12,6 +12,7 @@ import {
   TextField,
 } from "@/components/form";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { notifyNewMember } from "@/lib/email/notify-member-client";
 import {
   email,
   matches,
@@ -116,6 +117,17 @@ export function RegisterForm() {
     setIsLoading(false);
 
     if (result.ok) {
+      // Notify the site owner of the new member. Fire-and-forget: email issues
+      // must never block or fail the registration.
+      void notifyNewMember({
+        name: result.user.studentName,
+        email: result.user.email,
+        country: result.user.country,
+        registrationDate: new Date().toISOString(),
+        membershipType: "Free Registration",
+        paymentStatus: "Not applicable (free registration)",
+      });
+
       router.push(redirectTo);
     } else {
       setFormError(result.error);

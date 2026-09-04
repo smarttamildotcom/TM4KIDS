@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Fredoka, Nunito } from "next/font/google";
 import { GameProvider, RewardToaster } from "@/components/gamification";
+import { AppToaster } from "@/components/notifications/AppToaster";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
+import { NotificationProvider } from "@/lib/notifications/NotificationProvider";
 import { BRAND } from "@/lib/brand";
 import "./globals.css";
 
@@ -28,10 +30,13 @@ export default function RootLayout({
     <html lang="en" className={`${fredoka.variable} ${nunito.variable}`}>
       <body className="font-sans">
         <GameProvider>
-          <AuthProvider>
-            {children}
-            <RewardToaster />
-          </AuthProvider>
+          <NotificationProvider>
+            <AuthProvider>
+              {children}
+              <RewardToaster />
+              <AppToaster />
+            </AuthProvider>
+          </NotificationProvider>
         </GameProvider>
       </body>
     </html>

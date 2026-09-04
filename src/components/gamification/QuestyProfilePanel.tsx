@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { Check, Lock } from "lucide-react";
+import { Check, Lock, LogOut, UserRound } from "lucide-react";
 import { QuestyExpression } from "@/components/illustrations/QuestyExpression";
 import { QuestyIcon } from "@/components/illustrations/QuestyIcon";
 import { useGame } from "@/lib/gamification/GameProvider";
+import { useLogout } from "@/lib/auth/useLogout";
 import { badges, getQuizAccuracy, TOTAL_WORLDS } from "@/lib/gamification/config";
 import { getRemainingWorldIds } from "@/lib/progress";
 import { worlds } from "@/lib/worlds";
@@ -12,6 +14,7 @@ import { worlds } from "@/lib/worlds";
 /** Detective profile, progress, stats and achievements — all derived from live state. */
 export function QuestyProfilePanel({ onNavigate }: { onNavigate?: () => void }) {
   const { player, level } = useGame();
+  const logout = useLogout();
 
   const completed = worlds.filter((world) => player.completedWorldIds.includes(world.id));
   const remainingIds = getRemainingWorldIds(player);
@@ -167,6 +170,29 @@ export function QuestyProfilePanel({ onNavigate }: { onNavigate?: () => void }) 
       >
         Back to the Journey
       </a>
+
+      {/* Account actions: view the full profile or sign out. */}
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <Link
+          href="/profile"
+          onClick={onNavigate}
+          className="flex items-center justify-center gap-2 rounded-full border-2 border-detective-blue-200 px-4 py-2.5 font-display text-sm font-semibold text-detective-blue-700 transition-colors hover:bg-detective-blue-50"
+        >
+          <UserRound className="h-4 w-4" aria-hidden="true" />
+          Profile
+        </Link>
+        <button
+          type="button"
+          onClick={() => {
+            onNavigate?.();
+            logout();
+          }}
+          className="flex items-center justify-center gap-2 rounded-full border-2 border-detective-orange-300 px-4 py-2.5 font-display text-sm font-semibold text-detective-orange-600 transition-colors hover:bg-detective-orange-50"
+        >
+          <LogOut className="h-4 w-4" aria-hidden="true" />
+          Logout
+        </button>
+      </div>
     </div>
   );
 }

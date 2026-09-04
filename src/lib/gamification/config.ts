@@ -136,12 +136,19 @@ export const certificates: CertificateDefinition[] = [
   },
   {
     id: "trademark-master",
-    title: "Brand Quest Certificate",
-    subtitle: "For completing all 15 detective worlds",
+    title: "Brand Quest Master Detective Certificate",
+    subtitle: "Complete all 15 worlds to unlock your certificate",
     emoji: "🏆",
     isEarned: (state) => state.completedWorldIds.length >= TOTAL_WORLDS,
   },
 ];
+
+/**
+ * The final certificate, awarded only after all 15 worlds are finished.
+ * Referenced by the profile page and the certificate view so the id is defined
+ * once here rather than hard-coded across the app.
+ */
+export const MASTER_CERTIFICATE_ID = "trademark-master";
 
 /** Current rank, the next one, and progress between them. */
 export function getLevelProgress(xp: number) {

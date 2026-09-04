@@ -3,10 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { LogOut, Menu, UserRound, X } from "lucide-react";
 import { AdventureButton } from "@/components/auth/AdventureButton";
 import { Container } from "@/components/ui/Container";
 import { UserNavCluster } from "@/components/layout/UserNavCluster";
+import { useAuth } from "@/lib/auth/AuthProvider";
+import { useLogout } from "@/lib/auth/useLogout";
 import { BRAND } from "@/lib/brand";
 import brandQuestLogo from "@/Brand Quest Logo.png";
 
@@ -21,6 +23,8 @@ const navLinks = [
 /** Sticky site header with a mobile disclosure menu. Nav links change once signed in. */
 export function SiteHeader() {
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useAuth();
+  const logout = useLogout();
 
   return (
     <header className="sticky top-0 z-50 border-b border-detective-blue-100 bg-white/90 backdrop-blur">
@@ -81,7 +85,33 @@ export function SiteHeader() {
                 {link.label}
               </Link>
             ))}
-            <AdventureButton className="mt-2 w-full" />
+
+            {/* Signed-in detectives get Profile + Logout instead of the sign-up call to action. */}
+            {user ? (
+              <>
+                <Link
+                  href="/profile"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-2 rounded-xl px-3 py-3 font-display font-semibold text-detective-blue-700 hover:bg-detective-blue-50"
+                >
+                  <UserRound className="h-5 w-5" aria-hidden="true" />
+                  Profile
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    logout();
+                  }}
+                  className="flex items-center gap-2 rounded-xl px-3 py-3 text-left font-display font-semibold text-detective-orange-600 hover:bg-detective-orange-50"
+                >
+                  <LogOut className="h-5 w-5" aria-hidden="true" />
+                  Logout
+                </button>
+              </>
+            ) : (
+              <AdventureButton className="mt-2 w-full" />
+            )}
           </Container>
         </div>
       )}

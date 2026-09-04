@@ -5,8 +5,9 @@ import { useParams } from "next/navigation";
 import { ArrowLeft, Lock } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Certificate, useGame } from "@/components/gamification";
+import { MasterCertificate } from "@/components/gamification/MasterCertificate";
 import { formatCertificateDate } from "@/lib/gamification/certificate";
-import { certificates } from "@/lib/gamification/config";
+import { certificates, MASTER_CERTIFICATE_ID } from "@/lib/gamification/config";
 
 /** Renders one earned certificate, or a friendly locked message. */
 export function CertificateView() {
@@ -16,6 +17,8 @@ export function CertificateView() {
   const certificate = certificates.find(
     (item) => item.id === params.certificateId,
   );
+
+  const isMaster = certificate?.id === MASTER_CERTIFICATE_ID;
 
   if (!certificate) {
     return <LockedMessage message="We couldn't find that certificate." />;
@@ -28,7 +31,11 @@ export function CertificateView() {
   if (!player.certificateIds.includes(certificate.id)) {
     return (
       <LockedMessage
-        message={`This certificate is still locked. ${certificate.subtitle} to unlock it.`}
+        message={
+          isMaster
+            ? "🔒 Complete all 15 worlds to unlock your certificate."
+            : `This certificate is still locked. ${certificate.subtitle} to unlock it.`
+        }
       />
     );
   }
@@ -54,14 +61,22 @@ export function CertificateView() {
         Back to my dashboard
       </Link>
 
-      <Certificate
-        certificate={certificate}
-        studentName={player.name}
-        levelTitle={level.current.title}
-        xpEarned={player.xp}
-        certificateNumber={award.certificateNumber}
-        awardedOn={formatCertificateDate(award.awardedAt)}
-      />
+      {isMaster ? (
+        <MasterCertificate
+          studentName={player.name}
+          completionDate={formatCertificateDate(award.awardedAt)}
+          certificateId={award.certificateNumber}
+        />
+      ) : (
+        <Certificate
+          certificate={certificate}
+          studentName={player.name}
+          levelTitle={level.current.title}
+          xpEarned={player.xp}
+          certificateNumber={award.certificateNumber}
+          awardedOn={formatCertificateDate(award.awardedAt)}
+        />
+      )}
     </Container>
   );
 }

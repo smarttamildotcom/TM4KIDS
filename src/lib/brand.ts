@@ -8,5 +8,6 @@ export const BRAND = {
   courseName: "Brand Quest programme",
   achievement: "Little Brand Detective",
   signature: "BrandQuest Education Team",
+  founder: "Bala Chandran",
   copyright: "© 2026 Brand Quest. All Rights Reserved.",
 } as const;
