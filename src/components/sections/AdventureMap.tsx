@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import detectiveQuesty from "@/6. Detective Questy.png";
 import { Container } from "@/components/ui/Container";
@@ -44,12 +45,14 @@ function zigzagClass(index: number) {
 export function AdventureMap() {
   const { player, isLoaded, completeWorld } = useGame();
   const { user, isLoaded: isAuthLoaded } = useAuth();
+  const router = useRouter();
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showGate, setShowGate] = useState(false);
   const hasResumed = useRef(false);
 
   const isSignedIn = Boolean(user);
+  const membershipStatus = user?.membershipStatus ?? "FREE";
 
   const openWorld = useCallback((worldId: number) => {
     setExpandedId(worldId);
@@ -61,6 +64,22 @@ export function AdventureMap() {
     });
   }, []);
 
+  /**
+   * Same gate everywhere: guests are nudged to sign up, while signed-in
+   * detectives without an active membership are sent to contribute.
+   */
+  const gateWorld = useCallback(
+    (worldId: number) => {
+      if (!isSignedIn) {
+        rememberPendingWorld(worldId);
+        setShowGate(true);
+      } else {
+        router.push("/membership");
+      }
+    },
+    [isSignedIn, router],
+  );
+
   // A blocked route redirects here; pick the gate or the remembered world back up.
   useEffect(() => {
     if (!isAuthLoaded || hasResumed.current) return;
@@ -69,19 +88,20 @@ export function AdventureMap() {
     const blocked = consumeGateFlag();
     const pending = readPendingWorld();
 
-    if (pending && canAccessWorld(pending, isSignedIn)) {
+    if (pending && canAccessWorld(pending, isSignedIn, membershipStatus)) {
       clearPendingWorld();
       openWorld(pending);
       return;
     }
 
     if (blocked) setShowGate(true);
-  }, [isAuthLoaded, isSignedIn, openWorld]);
+  }, [isAuthLoaded, isSignedIn, membershipStatus, openWorld]);
 
   const statuses: WorldStatus[] = worlds.map((world) => {
     if (player.completedWorldIds.includes(world.id)) return "completed";
     // Before hydration everything reads as unlocked so the markup matches the server.
-    if (isLoaded && isAuthLoaded && !canAccessWorld(world.id, isSignedIn)) return "locked";
+    if (isLoaded && isAuthLoaded && !canAccessWorld(world.id, isSignedIn, membershipStatus))
+      return "locked";
     return "unlocked";
   });
 
@@ -90,9 +110,8 @@ export function AdventureMap() {
   const percentComplete = Math.round((completedCount / worlds.length) * 100);
 
   function handleToggle(worldId: number) {
-    if (!canAccessWorld(worldId, isSignedIn)) {
-      rememberPendingWorld(worldId);
-      setShowGate(true);
+    if (!canAccessWorld(worldId, isSignedIn, membershipStatus)) {
+      gateWorld(worldId);
       return;
     }
 
@@ -101,9 +120,8 @@ export function AdventureMap() {
 
   /** Same gate as every other entry point, then scroll the next world into view. */
   function handleNextWorld(worldId: number) {
-    if (!canAccessWorld(worldId, isSignedIn)) {
-      rememberPendingWorld(worldId);
-      setShowGate(true);
+    if (!canAccessWorld(worldId, isSignedIn, membershipStatus)) {
+      gateWorld(worldId);
       return;
     }
 
@@ -227,10 +245,7 @@ export function AdventureMap() {
                 isActive={index === activeIndex}
                 isExpanded={expandedId === world.id}
                 onToggle={() => handleToggle(world.id)}
-                onRequestUnlock={() => {
-                  rememberPendingWorld(world.id);
-                  setShowGate(true);
-                }}
+                onRequestUnlock={() => gateWorld(world.id)}
                 onComplete={(correct, total) => handleComplete(world.id, correct, total)}
                 onNextWorld={handleNextWorld}
               />

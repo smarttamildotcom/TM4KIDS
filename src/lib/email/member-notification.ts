@@ -13,6 +13,7 @@ export type MemberNotificationPayload = {
   membershipType: string;
   paymentStatus?: string;
   transactionId?: string;
+  message?: string;
 };
 
 export type MemberEmailContent = {
@@ -41,6 +42,7 @@ export function buildMemberEmail(
     ["Membership Type", payload.membershipType],
     ["Payment Status", payload.paymentStatus || "—"],
     ["Transaction ID", payload.transactionId || "—"],
+    ["Message", payload.message || "—"],
   ];
 
   const text = [

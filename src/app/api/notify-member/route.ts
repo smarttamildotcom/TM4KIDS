@@ -9,14 +9,16 @@ import {
 export const runtime = "nodejs";
 
 /**
- * Notifies the site owner when a new member registers or buys membership.
+ * Notifies the site owner when a new member registers or submits a membership
+ * contribution.
  *
- * TODO:
- * Replace ADMIN_NOTIFICATION_EMAIL with the production email later.
+ * The recipient comes from NEXT_PUBLIC_MEMBERSHIP_EMAIL (falling back to
+ * ADMIN_NOTIFICATION_EMAIL). Never hard-code the address anywhere else.
  */
 export async function POST(request: NextRequest) {
   // Configurable admin recipient — never hard-code the address elsewhere.
-  const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL;
+  const adminEmail =
+    process.env.NEXT_PUBLIC_MEMBERSHIP_EMAIL || process.env.ADMIN_NOTIFICATION_EMAIL;
 
   let payload: MemberNotificationPayload;
   try {
@@ -31,7 +33,7 @@ export async function POST(request: NextRequest) {
 
   if (!adminEmail) {
     console.warn(
-      "[notify-member] ADMIN_NOTIFICATION_EMAIL is not set; skipping member notification.",
+      "[notify-member] NEXT_PUBLIC_MEMBERSHIP_EMAIL/ADMIN_NOTIFICATION_EMAIL is not set; skipping member notification.",
     );
     // Registration must still succeed, so report success to the caller.
     return NextResponse.json({ ok: true, delivered: false });

@@ -1,4 +1,10 @@
-import type { AuthUser, LoginInput, RegisterInput, AuthResult } from "./types";
+import type {
+  AuthUser,
+  LoginInput,
+  MembershipStatus,
+  RegisterInput,
+  AuthResult,
+} from "./types";
 
 /**
  * Mock account store. Passwords are kept in plain text in localStorage purely
@@ -9,6 +15,7 @@ import type { AuthUser, LoginInput, RegisterInput, AuthResult } from "./types";
 const ACCOUNTS_KEY = "tda:accounts";
 const SESSION_KEY = "tda:session";
 const SESSION_COOKIE = "bq_session";
+const MEMBERSHIP_COOKIE = "bq_membership";
 
 type StoredAccount = AuthUser & { password: string };
 
@@ -56,6 +63,8 @@ export async function registerAccount(input: RegisterInput): Promise<AuthResult>
     ...input,
     email: input.email.trim(),
     id: `user-${Date.now()}`,
+    // Every new detective starts on the free tier.
+    membershipStatus: "FREE",
   };
 
   writeAccounts([...accounts, account]);
@@ -95,6 +104,7 @@ export async function loginWithProvider(
       age: 10,
       country: "Demo Land",
       email: `demo@${provider}.example`,
+      membershipStatus: "FREE",
     },
   };
 }
@@ -117,8 +127,7 @@ export async function requestPasswordReset(email: string): Promise<AuthResult> {
           studentName: "Detective",
           age: 0,
           country: "",
-          email: email.trim(),
-        },
+          email: email.trim(),          membershipStatus: "FREE",        },
       };
 }
 
@@ -129,7 +138,10 @@ export function readSession(): AuthUser | null {
     const raw =
       window.localStorage.getItem(SESSION_KEY) ??
       window.sessionStorage.getItem(SESSION_KEY);
-    return raw ? (JSON.parse(raw) as AuthUser) : null;
+    if (!raw) return null;
+    const user = JSON.parse(raw) as AuthUser;
+    // Normalise sessions saved before membership tiers existed.
+    return { ...user, membershipStatus: user.membershipStatus ?? "FREE" };
   } catch {
     return null;
   }
@@ -147,6 +159,16 @@ function writeSessionCookie(isSignedIn: boolean): void {
     : `${SESSION_COOKIE}=; path=/; max-age=0; samesite=lax`;
 }
 
+/**
+ * Mirrors the membership tier into a flag cookie so middleware can gate premium
+ * world routes before rendering. Like the session cookie it is only a hint and
+ * must be re-verified server-side once real auth and payments are wired up.
+ */
+export function writeMembershipCookie(status: MembershipStatus): void {
+  if (typeof document === "undefined") return;
+  document.cookie = `${MEMBERSHIP_COOKIE}=${status}; path=/; max-age=2592000; samesite=lax`;
+}
+
 /** `remember` decides whether the session survives closing the tab. */
 export function writeSession(user: AuthUser, remember: boolean): void {
   if (typeof window === "undefined") return;
@@ -155,6 +177,7 @@ export function writeSession(user: AuthUser, remember: boolean): void {
     const store = remember ? window.localStorage : window.sessionStorage;
     store.setItem(SESSION_KEY, JSON.stringify(user));
     writeSessionCookie(true);
+    writeMembershipCookie(user.membershipStatus);
   } catch {
     // Non-critical for the demo.
   }
@@ -165,4 +188,38 @@ export function clearSession(): void {
   window.localStorage.removeItem(SESSION_KEY);
   window.sessionStorage.removeItem(SESSION_KEY);
   writeSessionCookie(false);
+  if (typeof document !== "undefined") {
+    document.cookie = `${MEMBERSHIP_COOKIE}=; path=/; max-age=0; samesite=lax`;
+  }
+}
+
+/**
+ * Updates the signed-in detective's membership tier across the account store,
+ * the active session and the middleware cookie, returning the updated user.
+ */
+export function persistMembershipStatus(
+  status: MembershipStatus,
+): AuthUser | null {
+  const current = readSession();
+  if (!current) return null;
+
+  const updated: AuthUser = { ...current, membershipStatus: status };
+
+  const accounts = readAccounts().map((account) =>
+    account.id === updated.id ? { ...account, membershipStatus: status } : account,
+  );
+  writeAccounts(accounts);
+
+  try {
+    if (window.localStorage.getItem(SESSION_KEY)) {
+      window.localStorage.setItem(SESSION_KEY, JSON.stringify(updated));
+    } else {
+      window.sessionStorage.setItem(SESSION_KEY, JSON.stringify(updated));
+    }
+  } catch {
+    // Non-critical for the demo.
+  }
+
+  writeMembershipCookie(status);
+  return updated;
 }

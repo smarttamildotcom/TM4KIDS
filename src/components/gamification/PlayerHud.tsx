@@ -5,13 +5,16 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Award, Star } from "lucide-react";
 import { QuestyExpression } from "@/components/illustrations/QuestyExpression";
 import { QuestyProfilePanel } from "@/components/gamification/QuestyProfilePanel";
+import { MembershipBadge } from "@/components/membership/MembershipBadge";
 import { LevelBadge } from "./LevelBadge";
 import { AnimatedNumber } from "./AnimatedNumber";
 import { useGame } from "@/lib/gamification/GameProvider";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 /** Questy avatar in the header. Opens the live detective profile popup. */
 export function PlayerHud() {
   const { player, level, isLoaded } = useGame();
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -49,6 +52,10 @@ export function PlayerHud() {
         <span className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full bg-detective-yellow-400">
           <QuestyExpression mood="happy" size={30} />
         </span>
+
+        {user && (
+          <MembershipBadge status={user.membershipStatus} className="hidden md:inline-flex" />
+        )}
 
         <LevelBadge level={level.current} size="sm" />
 

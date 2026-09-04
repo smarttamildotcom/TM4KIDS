@@ -9,7 +9,6 @@ import {
   CharityCards,
   DonationUpdateCards,
   MissionPoints,
-  RemembranceCard,
 } from "@/components/csr/CsrSections";
 import { questyArt } from "@/lib/questy-art";
 
@@ -91,16 +90,6 @@ export default function CsrPage() {
             />
             <div className="mx-auto mt-12 max-w-4xl">
               <CharityCards />
-            </div>
-          </Container>
-        </section>
-
-        {/* Why this matters */}
-        <section className="py-16 sm:py-24">
-          <Container>
-            <SectionHeading eyebrow="Why this matters" title="The reason behind the mission" />
-            <div className="mt-12">
-              <RemembranceCard />
             </div>
           </Container>
         </section>

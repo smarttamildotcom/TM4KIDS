@@ -40,15 +40,23 @@ export function WorldRouteGuard({
 }) {
   const { user, isLoaded } = useAuth();
   const router = useRouter();
-  const allowed = canAccessWorld(worldId, Boolean(user));
+  const membershipStatus = user?.membershipStatus ?? "FREE";
+  const allowed = canAccessWorld(worldId, Boolean(user), membershipStatus);
 
   useEffect(() => {
     if (!isLoaded || allowed) return;
 
+    // Signed-in detectives without an active membership go to contribute;
+    // guests are returned to the Journey so they can sign up first.
+    if (user) {
+      router.replace("/membership");
+      return;
+    }
+
     rememberPendingWorld(worldId);
     flagGateOnReturn();
     router.replace("/#journey");
-  }, [isLoaded, allowed, worldId, router]);
+  }, [isLoaded, allowed, worldId, user, router]);
 
   if (!isLoaded) return <Checking label="Checking your BrandQuest badge…" />;
   if (!allowed) return <Checking label="This world is locked — taking you back…" />;

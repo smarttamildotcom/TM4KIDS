@@ -6,7 +6,9 @@
  * anywhere else.
  */
 
-/** Worlds playable without an account. */
+import type { MembershipStatus } from "@/lib/auth/types";
+
+/** Worlds playable without an account or membership. */
 export const FREE_WORLD_IDS = [1, 2] as const;
 
 /** Finishing this world triggers the sign-up celebration. */
@@ -14,14 +16,24 @@ export const LAST_FREE_WORLD_ID = 2;
 
 export const TOTAL_WORLDS = 15;
 
-/**
- * Worlds 1–2 are always open. Everything else needs a Detective Account.
- * Swapping the mock session in `src/lib/auth/mock-auth.ts` for Firebase or
- * Supabase is enough to make this production-ready — this rule does not change.
- */
-export function canAccessWorld(worldNumber: number, isLoggedIn: boolean): boolean {
-  if (isLoggedIn) return true;
+export function isFreeWorld(worldNumber: number): boolean {
   return (FREE_WORLD_IDS as readonly number[]).includes(worldNumber);
+}
+
+/**
+ * Worlds 1–2 are always open. Worlds 3–15 require a signed-in detective whose
+ * membership has been verified (`ACTIVE`). A logged-in but FREE/PENDING account
+ * cannot open premium worlds. Swapping the mock session in
+ * `src/lib/auth/mock-auth.ts` for Firebase or Supabase is enough to make this
+ * production-ready — this rule does not change.
+ */
+export function canAccessWorld(
+  worldNumber: number,
+  isLoggedIn: boolean,
+  membershipStatus: MembershipStatus = "FREE",
+): boolean {
+  if (isFreeWorld(worldNumber)) return true;
+  return isLoggedIn && membershipStatus === "ACTIVE";
 }
 
 /** Standalone lesson routes that belong to a world, for route-level guarding. */

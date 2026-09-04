@@ -4,9 +4,9 @@ import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
 
 /**
- * Dimming veil and bouncing lock shown over Worlds 3–15 until the child has a
- * Detective Account. The world stays visible on purpose — seeing what is ahead
- * is part of the motivation. Clicking anywhere opens the sign-up gate.
+ * Dimming veil and bouncing lock shown over Worlds 3–15 until the child has an
+ * active Brand Quest membership. The world stays visible on purpose — seeing
+ * what is ahead is part of the motivation. Clicking anywhere opens the gate.
  */
 export function LockedWorldOverlay({
   worldName,
@@ -19,7 +19,7 @@ export function LockedWorldOverlay({
     <button
       type="button"
       onClick={onRequestUnlock}
-      aria-label={`${worldName} is locked. Create a free account to unlock it.`}
+      aria-label={`${worldName} is locked. Become a member to unlock it.`}
       className="group/lock absolute inset-0 z-20 w-full cursor-pointer rounded-[24px] bg-white/35"
     >
       <motion.span
@@ -32,9 +32,9 @@ export function LockedWorldOverlay({
       </motion.span>
 
       <span className="absolute inset-x-4 bottom-4 rounded-2xl bg-detective-blue-900 px-4 py-3 text-center font-display text-sm font-semibold text-white opacity-0 shadow-xl transition-opacity duration-200 group-hover/lock:opacity-100 group-focus-visible/lock:opacity-100">
-        🔒 Login Required
+        🔒 Membership Required
         <span className="mt-1 block text-xs font-normal text-detective-blue-100">
-          Create your free account to unlock this world.
+          Become a Brand Quest member to unlock this world.
         </span>
       </span>
     </button>

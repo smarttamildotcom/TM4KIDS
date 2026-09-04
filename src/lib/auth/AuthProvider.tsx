@@ -14,12 +14,20 @@ import {
   clearSession,
   loginWithPassword,
   loginWithProvider,
+  persistMembershipStatus,
   readSession,
   registerAccount,
   requestPasswordReset,
+  writeMembershipCookie,
   writeSession,
 } from "./mock-auth";
-import type { AuthResult, AuthUser, LoginInput, RegisterInput } from "./types";
+import type {
+  AuthResult,
+  AuthUser,
+  LoginInput,
+  MembershipStatus,
+  RegisterInput,
+} from "./types";
 
 type AuthContextValue = {
   user: AuthUser | null;
@@ -29,6 +37,7 @@ type AuthContextValue = {
   register: (input: RegisterInput) => Promise<AuthResult>;
   loginWith: (provider: "google" | "apple") => Promise<AuthResult>;
   resetPassword: (email: string) => Promise<AuthResult>;
+  setMembershipStatus: (status: MembershipStatus) => void;
   logout: () => void;
 };
 
@@ -41,7 +50,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { setProfile } = useGame();
 
   useEffect(() => {
-    setUser(readSession());
+    const session = readSession();
+    setUser(session);
+    // Keep the middleware cookie in step with a restored session.
+    if (session) writeMembershipCookie(session.membershipStatus);
     setIsLoaded(true);
   }, []);
 
@@ -83,14 +95,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  const setMembershipStatus = useCallback((status: MembershipStatus) => {
+    const updated = persistMembershipStatus(status);
+    if (updated) setUser(updated);
+  }, []);
+
   const logout = useCallback(() => {
     clearSession();
     setUser(null);
   }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, isLoaded, login, register, loginWith, resetPassword, logout }),
-    [user, isLoaded, login, register, loginWith, resetPassword, logout],
+    () => ({
+      user,
+      isLoaded,
+      login,
+      register,
+      loginWith,
+      resetPassword,
+      setMembershipStatus,
+      logout,
+    }),
+    [
+      user,
+      isLoaded,
+      login,
+      register,
+      loginWith,
+      resetPassword,
+      setMembershipStatus,
+      logout,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -50,7 +50,7 @@ export const missionPoints: MissionPoint[] = [
   {
     emoji: "🤝",
     title: "Given in person",
-    body: "Donations are made periodically by the founder under his own name, supporting children's charities in Singapore.",
+    body: "Donations are made periodically by the founder, supporting children's charities in Singapore.",
   },
 ];
 

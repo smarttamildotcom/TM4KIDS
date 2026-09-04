@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Clock, Heart } from "lucide-react";
+import { Clock } from "lucide-react";
 import { fadeUp, inViewOnce, staggerContainer } from "@/lib/motion";
 import { charityPartners, donationUpdates, missionPoints } from "@/lib/csr-content";
 
@@ -74,35 +74,6 @@ export function CharityCards() {
         );
       })}
     </motion.ul>
-  );
-}
-
-/** Dedication card. Deliberately quiet styling for a sensitive message. */
-export function RemembranceCard() {
-  return (
-    <motion.blockquote
-      variants={fadeUp}
-      {...inViewOnce}
-      className="mx-auto max-w-3xl rounded-[2rem] border-2 border-detective-yellow-300 bg-detective-yellow-100/60 p-8 text-center shadow-sm sm:p-12"
-    >
-      <motion.span
-        aria-hidden="true"
-        animate={{ scale: [1, 1.08, 1] }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-        className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-white shadow-md"
-      >
-        <Heart className="h-8 w-8 text-detective-orange-500" />
-      </motion.span>
-
-      <p className="mt-6 font-display text-lg leading-relaxed text-detective-blue-900 sm:text-xl">
-        In loving memory of my mother (2019) and my elder brother (2024), whose courage
-        continues to inspire this mission.
-      </p>
-      <p className="mt-4 text-base leading-relaxed text-detective-blue-700/85 sm:text-lg">
-        Brand Quest is built not only to educate children, but also to give hope and support to
-        families facing cancer.
-      </p>
-    </motion.blockquote>
   );
 }
 

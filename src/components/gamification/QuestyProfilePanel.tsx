@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Check, Lock, LogOut, UserRound } from "lucide-react";
+import { Check, Heart, Lock, LogOut, Star, UserRound } from "lucide-react";
 import { QuestyExpression } from "@/components/illustrations/QuestyExpression";
 import { QuestyIcon } from "@/components/illustrations/QuestyIcon";
+import { MembershipBadge } from "@/components/membership/MembershipBadge";
 import { useGame } from "@/lib/gamification/GameProvider";
+import { useAuth } from "@/lib/auth/AuthProvider";
 import { useLogout } from "@/lib/auth/useLogout";
 import { badges, getQuizAccuracy, TOTAL_WORLDS } from "@/lib/gamification/config";
 import { getRemainingWorldIds } from "@/lib/progress";
@@ -14,6 +16,7 @@ import { worlds } from "@/lib/worlds";
 /** Detective profile, progress, stats and achievements — all derived from live state. */
 export function QuestyProfilePanel({ onNavigate }: { onNavigate?: () => void }) {
   const { player, level } = useGame();
+  const { user } = useAuth();
   const logout = useLogout();
 
   const completed = worlds.filter((world) => player.completedWorldIds.includes(world.id));
@@ -43,6 +46,9 @@ export function QuestyProfilePanel({ onNavigate }: { onNavigate?: () => void }) 
           <p className="font-display text-sm font-semibold text-detective-orange-500">
             {level.current.title}
           </p>
+          {user && (
+            <MembershipBadge status={user.membershipStatus} className="mt-1.5" />
+          )}
         </div>
       </div>
 
@@ -171,7 +177,7 @@ export function QuestyProfilePanel({ onNavigate }: { onNavigate?: () => void }) 
         Back to the Journey
       </a>
 
-      {/* Account actions: view the full profile or sign out. */}
+      {/* Account menu: Profile, Membership, CSR and sign out. */}
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Link
           href="/profile"
@@ -180,6 +186,22 @@ export function QuestyProfilePanel({ onNavigate }: { onNavigate?: () => void }) 
         >
           <UserRound className="h-4 w-4" aria-hidden="true" />
           Profile
+        </Link>
+        <Link
+          href="/membership"
+          onClick={onNavigate}
+          className="flex items-center justify-center gap-2 rounded-full border-2 border-detective-yellow-300 px-4 py-2.5 font-display text-sm font-semibold text-detective-blue-700 transition-colors hover:bg-detective-yellow-50"
+        >
+          <Star className="h-4 w-4" aria-hidden="true" />
+          Membership
+        </Link>
+        <Link
+          href="/csr"
+          onClick={onNavigate}
+          className="flex items-center justify-center gap-2 rounded-full border-2 border-detective-blue-200 px-4 py-2.5 font-display text-sm font-semibold text-detective-blue-700 transition-colors hover:bg-detective-blue-50"
+        >
+          <Heart className="h-4 w-4" aria-hidden="true" />
+          CSR
         </Link>
         <button
           type="button"

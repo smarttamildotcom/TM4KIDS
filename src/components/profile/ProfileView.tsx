@@ -8,6 +8,7 @@ import { useGame } from "@/components/gamification";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { useLogout } from "@/lib/auth/useLogout";
 import { badges, MASTER_CERTIFICATE_ID, TOTAL_WORLDS } from "@/lib/gamification/config";
+import { membershipBadge } from "@/lib/membership";
 import { fadeUp, inViewOnce, staggerContainer } from "@/lib/motion";
 
 const avatarOptions = ["🕵️", "🕵️‍♀️", "🦸", "🦸‍♀️", "🐯", "🦉", "🤖", "🐉"];
@@ -25,7 +26,7 @@ export function ProfileView() {
 
   // Snapshot stats shown at the top of the profile.
   const summary: { icon: typeof Zap; label: string; value: string }[] = [
-    { icon: Sparkles, label: "Membership", value: "Brand Quest Member" },
+    { icon: Sparkles, label: "Membership", value: membershipBadge[user.membershipStatus].label },
     { icon: BookOpen, label: "Worlds completed", value: `${completedCount} / ${TOTAL_WORLDS}` },
     { icon: Zap, label: "XP earned", value: player.xp.toLocaleString() },
     { icon: Award, label: "Badges earned", value: `${player.badgeIds.length} / ${badges.length}` },
