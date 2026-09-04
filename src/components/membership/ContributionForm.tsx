@@ -11,14 +11,17 @@ import {
 } from "@/components/form";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { notifyNewMember } from "@/lib/email/notify-member-client";
+import { submitMembershipRequest } from "@/services/admin/store";
 import { MEMBERSHIP_PRICE } from "@/lib/membership";
 import { email as emailRule, required, validateForm } from "@/lib/forms/validation";
+import type { PaymentMethod } from "@/services/admin/types";
 
 type Values = {
   firstName: string;
   lastName: string;
   email: string;
   country: string;
+  paymentMethod: PaymentMethod;
   reference: string;
   message: string;
   confirmed: boolean;
@@ -29,10 +32,16 @@ const initialValues: Values = {
   lastName: "",
   email: "",
   country: "",
+  paymentMethod: "PayNow",
   reference: "",
   message: "",
   confirmed: false,
 };
+
+const paymentMethods = [
+  { value: "PayNow", label: "PayNow" },
+  { value: "Bank Transfer", label: "Bank Transfer" },
+];
 
 const countries = [
   "Australia",
@@ -91,6 +100,16 @@ export function ContributionForm({ onSubmitted }: { onSubmitted: () => void }) {
     setIsLoading(true);
 
     const fullName = `${values.firstName.trim()} ${values.lastName.trim()}`.trim();
+
+    // Record the contribution so it appears in the admin dashboard for approval.
+    submitMembershipRequest({
+      name: fullName,
+      email: values.email.trim(),
+      country: values.country,
+      paymentMethod: values.paymentMethod,
+      transactionReference: values.reference.trim(),
+      contributionAmount: 10,
+    });
 
     // Notify the site owner. Fire-and-forget: email issues must never block the
     // contributor's journey.
@@ -159,15 +178,25 @@ export function ContributionForm({ onSubmitted }: { onSubmitted: () => void }) {
         />
       </div>
 
-      <TextField
-        id="contribution-reference"
-        label="Transaction Reference"
-        optional
-        placeholder="Bank or PayNow reference"
-        value={values.reference}
-        error={errors.reference}
-        onChange={(value) => update("reference", value)}
-      />
+      <div className="grid gap-5 sm:grid-cols-2">
+        <SelectField
+          id="contribution-method"
+          label="Payment Method"
+          options={paymentMethods}
+          value={values.paymentMethod}
+          error={errors.paymentMethod}
+          onChange={(value) => update("paymentMethod", value as PaymentMethod)}
+        />
+        <TextField
+          id="contribution-reference"
+          label="Transaction Reference"
+          optional
+          placeholder="Bank or PayNow reference"
+          value={values.reference}
+          error={errors.reference}
+          onChange={(value) => update("reference", value)}
+        />
+      </div>
 
       <TextField
         id="contribution-message"

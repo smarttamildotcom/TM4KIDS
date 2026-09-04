@@ -1,7 +1,7 @@
 /** Mock authentication model. No database — accounts live in localStorage only. */
 
 /** Membership tiers. Only ACTIVE accounts may open Worlds 3–15. */
-export type MembershipStatus = "FREE" | "PENDING" | "ACTIVE";
+export type MembershipStatus = "FREE" | "PENDING" | "ACTIVE" | "REJECTED";
 
 export type AuthUser = {
   id: string;
@@ -12,6 +12,10 @@ export type AuthUser = {
   country: string;
   email: string;
   membershipStatus: MembershipStatus;
+  /** ISO timestamp of when the account was created. */
+  createdAt?: string;
+  /** ISO timestamp of the most recent successful login. */
+  lastLogin?: string;
 };
 
 export type RegisterInput = Omit<AuthUser, "id" | "membershipStatus"> & {

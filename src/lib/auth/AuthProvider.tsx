@@ -57,6 +57,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoaded(true);
   }, []);
 
+  // Re-read the session when it changes elsewhere (e.g. an admin approval),
+  // so membership upgrades unlock premium worlds without a hard refresh.
+  useEffect(() => {
+    function refresh() {
+      const session = readSession();
+      setUser(session);
+      if (session) writeMembershipCookie(session.membershipStatus);
+    }
+    window.addEventListener("bq:session-changed", refresh);
+    window.addEventListener("storage", refresh);
+    window.addEventListener("focus", refresh);
+    return () => {
+      window.removeEventListener("bq:session-changed", refresh);
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener("focus", refresh);
+    };
+  }, []);
+
   // Keep the detective profile name in sync with the signed-in account.
   useEffect(() => {
     if (user) setProfile({ name: user.studentName });

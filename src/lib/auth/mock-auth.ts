@@ -41,7 +41,8 @@ function writeAccounts(accounts: StoredAccount[]): void {
 }
 
 function toPublicUser({ password: _password, ...user }: StoredAccount): AuthUser {
-  return user;
+  // Normalise accounts saved before membership tiers existed.
+  return { ...user, membershipStatus: user.membershipStatus ?? "FREE" };
 }
 
 /** Simulates network latency so loading states are visible. */
@@ -59,12 +60,15 @@ export async function registerAccount(input: RegisterInput): Promise<AuthResult>
     return { ok: false, error: "An account with that email already exists." };
   }
 
+  const now = new Date().toISOString();
   const account: StoredAccount = {
     ...input,
     email: input.email.trim(),
     id: `user-${Date.now()}`,
     // Every new detective starts on the free tier.
     membershipStatus: "FREE",
+    createdAt: now,
+    lastLogin: now,
   };
 
   writeAccounts([...accounts, account]);
@@ -86,7 +90,13 @@ export async function loginWithPassword(input: LoginInput): Promise<AuthResult> 
     return { ok: false, error: "We couldn't find a detective with those details." };
   }
 
-  return { ok: true, user: toPublicUser(account) };
+  // Record the login time on the stored account.
+  const stamped: StoredAccount = { ...account, lastLogin: new Date().toISOString() };
+  writeAccounts(
+    readAccounts().map((item) => (item.id === stamped.id ? stamped : item)),
+  );
+
+  return { ok: true, user: toPublicUser(stamped) };
 }
 
 /** Stand-in for a real OAuth flow. */
@@ -222,4 +232,103 @@ export function persistMembershipStatus(
 
   writeMembershipCookie(status);
   return updated;
+}
+
+/** Notifies mounted providers (e.g. AuthProvider) that the session changed. */
+function dispatchSessionChanged(): void {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event("bq:session-changed"));
+}
+
+/** Writes an updated session object back to whichever store currently holds it. */
+function persistSessionObject(user: AuthUser): void {
+  try {
+    if (window.localStorage.getItem(SESSION_KEY)) {
+      window.localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+    } else if (window.sessionStorage.getItem(SESSION_KEY)) {
+      window.sessionStorage.setItem(SESSION_KEY, JSON.stringify(user));
+    }
+  } catch {
+    // Non-critical for the demo.
+  }
+}
+
+/** Every registered account as a public user — used by the admin dashboard. */
+export function readAllAccounts(): AuthUser[] {
+  return readAccounts().map(toPublicUser);
+}
+
+/**
+ * Admin action: sets a member's membership tier by email. Also updates the
+ * active session and middleware cookie when the change targets the signed-in
+ * user, so premium worlds unlock immediately.
+ */
+export function setMembershipForEmail(
+  email: string,
+  status: MembershipStatus,
+): AuthUser | null {
+  const key = email.trim().toLowerCase();
+  let updated: StoredAccount | null = null;
+
+  const accounts = readAccounts().map((account) => {
+    if (account.email.toLowerCase() === key) {
+      updated = { ...account, membershipStatus: status };
+      return updated;
+    }
+    return account;
+  });
+
+  if (!updated) return null;
+  writeAccounts(accounts);
+
+  const session = readSession();
+  if (session && session.email.toLowerCase() === key) {
+    persistSessionObject({ ...session, membershipStatus: status });
+    writeMembershipCookie(status);
+  }
+
+  dispatchSessionChanged();
+  return toPublicUser(updated);
+}
+
+/** Admin action: updates editable fields on an account by id. */
+export function updateAccountById(
+  id: string,
+  patch: Partial<Pick<AuthUser, "studentName" | "email" | "country" | "membershipStatus">>,
+): AuthUser | null {
+  let updated: StoredAccount | null = null;
+
+  const accounts = readAccounts().map((account) => {
+    if (account.id === id) {
+      updated = { ...account, ...patch };
+      return updated;
+    }
+    return account;
+  });
+
+  if (!updated) return null;
+  writeAccounts(accounts);
+
+  const session = readSession();
+  if (session && session.id === id) {
+    persistSessionObject({ ...session, ...patch });
+    if (patch.membershipStatus) writeMembershipCookie(patch.membershipStatus);
+  }
+
+  dispatchSessionChanged();
+  return toPublicUser(updated);
+}
+
+/** Admin action: permanently removes an account by id. */
+export function deleteAccountById(id: string): void {
+  const accounts = readAccounts();
+  const target = accounts.find((account) => account.id === id);
+  writeAccounts(accounts.filter((account) => account.id !== id));
+
+  const session = readSession();
+  if (target && session && session.id === id) {
+    clearSession();
+  }
+
+  dispatchSessionChanged();
 }

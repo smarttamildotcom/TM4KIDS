@@ -43,6 +43,11 @@ body {
   border-radius: 0.5rem;
 }
 
+/* Shared input styling for admin forms. */
+.admin-input {
+  @apply w-full rounded-xl border border-detective-blue-100 bg-white px-3 py-2.5 text-sm text-detective-blue-900 shadow-sm outline-none transition-colors focus:border-detective-blue-400;
+}
+
 /* Respect users who prefer reduced motion. */
 @media (prefers-reduced-motion: reduce) {
   html {

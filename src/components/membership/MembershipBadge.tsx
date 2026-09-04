@@ -11,7 +11,7 @@ export function MembershipBadge({
   status: MembershipStatus;
   className?: string;
 }) {
-  const badge = membershipBadge[status];
+  const badge = membershipBadge[status] ?? membershipBadge.FREE;
 
   return (
     <span

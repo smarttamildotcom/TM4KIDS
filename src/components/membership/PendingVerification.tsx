@@ -32,24 +32,24 @@ export function PendingVerification() {
       </motion.div>
 
       <h2 className="mt-6 font-display text-3xl font-bold text-detective-blue-900 sm:text-4xl">
-        Contribution Received!
+        Membership Pending Verification
       </h2>
 
       <p className="mt-4 text-lg font-semibold text-detective-orange-500">
-        Thank you for supporting Brand Quest.
+        Thank you for your contribution.
       </p>
 
       <div className="mx-auto mt-4 max-w-lg space-y-2 text-base text-detective-blue-700/85">
-        <p>Your membership will be activated after verification.</p>
+        <p>Your membership is awaiting approval.</p>
+        <p>You will receive access once your contribution has been verified.</p>
         <p>This normally takes less than 24 hours.</p>
-        <p>You&apos;ll receive an email once your membership becomes active.</p>
       </div>
 
       <Link
         href="/#journey"
         className="mt-8 inline-flex items-center justify-center rounded-full bg-detective-orange-500 px-8 py-4 font-display text-lg font-semibold text-white shadow-lg transition-colors hover:bg-detective-orange-600"
       >
-        Back to the Journey
+        Return to the Journey
       </Link>
     </motion.div>
   );

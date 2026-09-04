@@ -25,6 +25,10 @@ export const membershipBadge: Record<MembershipStatus, MembershipBadgeInfo> = {
     label: "Pending Verification",
     className: "bg-detective-orange-100 text-detective-orange-700",
   },
+  REJECTED: {
+    label: "Verification Failed",
+    className: "bg-red-100 text-red-700",
+  },
   FREE: {
     label: "Free Explorer",
     className: "bg-detective-blue-100 text-detective-blue-700",

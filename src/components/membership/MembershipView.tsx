@@ -11,12 +11,14 @@ import { PayNowCard } from "@/components/payment/PayNowCard";
 import { BankTransferCard } from "@/components/payment/BankTransferCard";
 import { ContributionForm } from "@/components/membership/ContributionForm";
 import { PendingVerification } from "@/components/membership/PendingVerification";
+import { MembershipRejected } from "@/components/membership/MembershipRejected";
 import { useAuth } from "@/lib/auth/AuthProvider";
 
 /** Client orchestrator for the membership page — renders the right state per tier. */
 export function MembershipView() {
   const { user, isLoaded } = useAuth();
   const [justSubmitted, setJustSubmitted] = useState(false);
+  const [resubmitting, setResubmitting] = useState(false);
 
   const status = user?.membershipStatus ?? "FREE";
 
@@ -51,6 +53,16 @@ export function MembershipView() {
       <section className="py-16 sm:py-24">
         <Container>
           <PendingVerification />
+        </Container>
+      </section>
+    );
+  }
+
+  if (isLoaded && status === "REJECTED" && !resubmitting) {
+    return (
+      <section className="py-16 sm:py-24">
+        <Container>
+          <MembershipRejected onResubmit={() => setResubmitting(true)} />
         </Container>
       </section>
     );
