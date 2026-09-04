@@ -6,21 +6,25 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 import { useGame } from "@/lib/gamification/GameProvider";
+import { supabase } from "@/lib/supabase";
+import type { ProgressRow } from "@/lib/supabase/types";
 import {
-  clearSession,
+  clearAuthCookies,
+  loadCurrentUser,
+  loadProgress,
   loginWithPassword,
   loginWithProvider,
-  persistMembershipStatus,
-  readSession,
   registerAccount,
   requestPasswordReset,
+  signOut,
   writeMembershipCookie,
-  writeSession,
-} from "./mock-auth";
+  writeSessionCookie,
+} from "./supabase-auth";
 import type {
   AuthResult,
   AuthUser,
@@ -31,6 +35,8 @@ import type {
 
 type AuthContextValue = {
   user: AuthUser | null;
+  /** The signed-in detective's world progress from Supabase. */
+  progress: ProgressRow[];
   /** False during the first client render, before the session is read. */
   isLoaded: boolean;
   login: (input: LoginInput) => Promise<AuthResult>;
@@ -38,74 +44,97 @@ type AuthContextValue = {
   loginWith: (provider: "google" | "apple") => Promise<AuthResult>;
   resetPassword: (email: string) => Promise<AuthResult>;
   setMembershipStatus: (status: MembershipStatus) => void;
-  logout: () => void;
+  /** Re-reads the profile, membership and progress from Supabase. */
+  refresh: () => Promise<void>;
+  logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-/** Mock auth session provider. Swap the mock-auth calls for a real API later. */
+/** Supabase-backed auth session provider. */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [progress, setProgress] = useState<ProgressRow[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const { setProfile } = useGame();
+  const isRefreshing = useRef(false);
 
-  useEffect(() => {
-    const session = readSession();
-    setUser(session);
-    // Keep the middleware cookie in step with a restored session.
-    if (session) writeMembershipCookie(session.membershipStatus);
-    setIsLoaded(true);
-  }, []);
+  const syncFromSupabase = useCallback(async () => {
+    if (isRefreshing.current) return;
+    isRefreshing.current = true;
+    try {
+      const nextUser = await loadCurrentUser();
+      setUser(nextUser);
 
-  // Re-read the session when it changes elsewhere (e.g. an admin approval),
-  // so membership upgrades unlock premium worlds without a hard refresh.
-  useEffect(() => {
-    function refresh() {
-      const session = readSession();
-      setUser(session);
-      if (session) writeMembershipCookie(session.membershipStatus);
+      if (nextUser) {
+        writeSessionCookie(true);
+        writeMembershipCookie(nextUser.membershipStatus);
+        setProgress(await loadProgress(nextUser.id));
+      } else {
+        clearAuthCookies();
+        setProgress([]);
+      }
+    } finally {
+      isRefreshing.current = false;
+      setIsLoaded(true);
     }
-    window.addEventListener("bq:session-changed", refresh);
-    window.addEventListener("storage", refresh);
-    window.addEventListener("focus", refresh);
-    return () => {
-      window.removeEventListener("bq:session-changed", refresh);
-      window.removeEventListener("storage", refresh);
-      window.removeEventListener("focus", refresh);
-    };
   }, []);
+
+  // Initial load plus reaction to Supabase auth changes (sign in/out, refresh).
+  useEffect(() => {
+    void syncFromSupabase();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      void syncFromSupabase();
+    });
+    return () => subscription.unsubscribe();
+  }, [syncFromSupabase]);
+
+  // Re-check membership when the tab regains focus, so an admin approval
+  // unlocks premium worlds without a hard refresh.
+  useEffect(() => {
+    function onFocus() {
+      void syncFromSupabase();
+    }
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onFocus);
+    };
+  }, [syncFromSupabase]);
 
   // Keep the detective profile name in sync with the signed-in account.
   useEffect(() => {
     if (user) setProfile({ name: user.studentName });
   }, [user, setProfile]);
 
-  const applyResult = useCallback(
-    (result: AuthResult, remember: boolean): AuthResult => {
-      if (result.ok) {
-        writeSession(result.user, remember);
-        setUser(result.user);
-      }
-      return result;
-    },
-    [],
-  );
+  const login = useCallback(async (input: LoginInput) => {
+    const result = await loginWithPassword(input);
+    if (result.ok) {
+      setUser(result.user);
+      writeSessionCookie(true);
+      writeMembershipCookie(result.user.membershipStatus);
+      void loadProgress(result.user.id).then(setProgress);
+    }
+    return result;
+  }, []);
 
-  const login = useCallback(
-    async (input: LoginInput) =>
-      applyResult(await loginWithPassword(input), input.rememberMe),
-    [applyResult],
-  );
-
-  const register = useCallback(
-    async (input: RegisterInput) => applyResult(await registerAccount(input), true),
-    [applyResult],
-  );
+  const register = useCallback(async (input: RegisterInput) => {
+    const result = await registerAccount(input);
+    if (result.ok) {
+      setUser(result.user);
+      writeSessionCookie(true);
+      writeMembershipCookie(result.user.membershipStatus);
+      void loadProgress(result.user.id).then(setProgress);
+    }
+    return result;
+  }, []);
 
   const loginWith = useCallback(
-    async (provider: "google" | "apple") =>
-      applyResult(await loginWithProvider(provider), true),
-    [applyResult],
+    (provider: "google" | "apple") => loginWithProvider(provider),
+    [],
   );
 
   const resetPassword = useCallback(
@@ -113,35 +142,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  // Optimistic local update used by the contribution flow; the server holds
+  // the source of truth and refresh() reconciles it.
   const setMembershipStatus = useCallback((status: MembershipStatus) => {
-    const updated = persistMembershipStatus(status);
-    if (updated) setUser(updated);
+    setUser((current) => (current ? { ...current, membershipStatus: status } : current));
+    writeMembershipCookie(status);
   }, []);
 
-  const logout = useCallback(() => {
-    clearSession();
+  const refresh = useCallback(() => syncFromSupabase(), [syncFromSupabase]);
+
+  const logout = useCallback(async () => {
+    await signOut();
     setUser(null);
+    setProgress([]);
   }, []);
 
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
+      progress,
       isLoaded,
       login,
       register,
       loginWith,
       resetPassword,
       setMembershipStatus,
+      refresh,
       logout,
     }),
     [
       user,
+      progress,
       isLoaded,
       login,
       register,
       loginWith,
       resetPassword,
       setMembershipStatus,
+      refresh,
       logout,
     ],
   );

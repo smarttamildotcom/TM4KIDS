@@ -10,8 +10,8 @@ import {
   TextField,
 } from "@/components/form";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { submitContribution } from "@/lib/auth/supabase-auth";
 import { notifyNewMember } from "@/lib/email/notify-member-client";
-import { submitMembershipRequest } from "@/services/admin/store";
 import { MEMBERSHIP_PRICE } from "@/lib/membership";
 import { email as emailRule, required, validateForm } from "@/lib/forms/validation";
 import type { PaymentMethod } from "@/services/admin/types";
@@ -101,14 +101,13 @@ export function ContributionForm({ onSubmitted }: { onSubmitted: () => void }) {
 
     const fullName = `${values.firstName.trim()} ${values.lastName.trim()}`.trim();
 
-    // Record the contribution so it appears in the admin dashboard for approval.
-    submitMembershipRequest({
-      name: fullName,
-      email: values.email.trim(),
-      country: values.country,
+    // Record the contribution payment details on the member's Supabase record
+    // so it appears in the admin dashboard for approval.
+    await submitContribution({
       paymentMethod: values.paymentMethod,
-      transactionReference: values.reference.trim(),
-      contributionAmount: 10,
+      paymentReference: values.reference.trim(),
+      amount: 10,
+      membershipType: `Membership Contribution (${MEMBERSHIP_PRICE})`,
     });
 
     // Notify the site owner. Fire-and-forget: email issues must never block the

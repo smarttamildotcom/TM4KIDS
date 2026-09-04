@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { LogOut, Shield, Sparkles } from "lucide-react";
 import { adminFutureModules, adminNavItems } from "@/lib/admin/nav";
 import { useAdminAuth } from "@/hooks/admin/useAdminAuth";
+import { useMembershipRequests } from "@/hooks/admin/useMembershipRequests";
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/admin") return pathname === "/admin";
@@ -15,6 +16,8 @@ function isActive(pathname: string, href: string): boolean {
 export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const { logout, isLoggingOut } = useAdminAuth();
+  const requests = useMembershipRequests();
+  const pendingCount = requests?.pendingCount ?? 0;
 
   return (
     <div className="flex h-full flex-col bg-gradient-to-b from-detective-blue-900 via-detective-blue-900 to-detective-blue-700 text-white">
@@ -31,6 +34,7 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4">
         {adminNavItems.map((item) => {
           const active = isActive(pathname, item.href);
+          const showBadge = item.href === "/admin/requests" && pendingCount > 0;
           return (
             <Link
               key={item.href}
@@ -43,8 +47,16 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
               }`}
             >
               <item.icon className="h-5 w-5 shrink-0" aria-hidden="true" />
-              <span className="truncate">{item.label}</span>
-              {active && (
+              <span className="truncate">
+                {item.label}
+                {showBadge ? ` (${pendingCount})` : ""}
+              </span>
+              {showBadge && (
+                <span className="ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-red-500 px-1.5 text-xs font-bold text-white">
+                  {pendingCount}
+                </span>
+              )}
+              {active && !showBadge && (
                 <span className="ml-auto h-2 w-2 rounded-full bg-detective-orange-400" />
               )}
             </Link>

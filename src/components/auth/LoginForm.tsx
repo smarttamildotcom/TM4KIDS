@@ -22,7 +22,6 @@ type Values = {
 };
 
 const rules = {
-  studentName: [required("Please enter the student's name.")],
   email: [required("Please enter your email address."), email()],
   password: [required("Please enter your password.")],
 };
