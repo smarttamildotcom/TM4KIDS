@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { QuestyExpression } from "@/components/illustrations/QuestyExpression";
 import { fadeUp, inViewOnce, staggerContainer } from "@/lib/motion";
 import { whyKidsLoveFeatures } from "@/lib/home-content";
 
@@ -32,15 +31,7 @@ export function FeatureCards() {
                 tabIndex={0}
                 className={`h-full rounded-3xl border-2 p-6 shadow-sm transition-shadow hover:shadow-xl ${feature.surface}`}
               >
-                <motion.span
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  className="grid h-20 w-20 place-items-center overflow-hidden rounded-2xl bg-white shadow-md"
-                >
-                  <QuestyExpression mood={feature.mood} size={76} />
-                </motion.span>
-
-                <h3 className="mt-5 font-display text-xl font-bold text-detective-blue-900">
+                <h3 className="font-display text-xl font-bold text-detective-blue-900">
                   <span aria-hidden="true" className="mr-2">
                     {feature.emoji}
                   </span>

@@ -3,41 +3,21 @@ export type ContactCard = {
   title: string;
   description: string;
   email: string;
-  icon: "mail" | "building" | "support";
   surface: string;
   badge: string;
 };
 
-/** The four contact cards shown on the Contact page. */
-export const contactCards: ContactCard[] = [
-  {
-    id: "general",
-    title: "General Enquiries",
-    description: "Questions about Brand Quest, lessons or anything else.",
-    email: "hello@brandquestkids.example",
-    icon: "mail",
-    surface: "bg-detective-blue-50 border-detective-blue-200",
-    badge: "bg-detective-blue-500 text-white",
-  },
-  {
-    id: "schools",
-    title: "School Partnerships",
-    description: "Bring Brand Quest into your classroom or school library.",
-    email: "schools@brandquestkids.example",
-    icon: "building",
-    surface: "bg-detective-yellow-100 border-detective-yellow-300",
-    badge: "bg-detective-yellow-400 text-detective-blue-900",
-  },
-  {
-    id: "support",
-    title: "Technical Support",
-    description: "Trouble with the site, your dashboard or your progress.",
-    email: "support@brandquestkids.example",
-    icon: "support",
-    surface: "bg-detective-orange-100 border-detective-orange-400",
-    badge: "bg-detective-orange-500 text-white",
-  },
-];
+/** The single "General Enquiries" contact card shown on the Contact page. */
+// TODO: Replace this placeholder email with the production contact address later.
+export const contactCard: ContactCard = {
+  id: "general",
+  title: "General Enquiries",
+  description:
+    "Have a question about Brand Quest, memberships, schools, partnerships or anything else? We'd love to hear from you.",
+  email: "advocatebala.2010@gmail.com",
+  surface: "bg-detective-blue-50 border-detective-blue-200",
+  badge: "bg-detective-blue-500 text-white",
+};
 
 export type FaqItem = {
   id: string;
@@ -70,19 +50,4 @@ export const faqItems: FaqItem[] = [
     answer:
       "Complete lessons and quizzes to earn XP and badges. Finishing your first lesson and completing every level unlocks printable certificates on your dashboard.",
   },
-];
-
-export type SocialLink = {
-  id: string;
-  label: string;
-  /** Placeholder href until real social profiles are ready. */
-  href: string;
-  icon: "facebook" | "instagram" | "youtube" | "linkedin";
-};
-
-export const socialLinks: SocialLink[] = [
-  { id: "facebook", label: "Facebook", href: "#", icon: "facebook" },
-  { id: "instagram", label: "Instagram", href: "#", icon: "instagram" },
-  { id: "youtube", label: "YouTube", href: "#", icon: "youtube" },
-  { id: "linkedin", label: "LinkedIn", href: "#", icon: "linkedin" },
 ];

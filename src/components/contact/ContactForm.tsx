@@ -61,6 +61,8 @@ export function ContactForm() {
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length === 0) {
+      // TODO: Send this payload to the backend email service once it is ready.
+      console.log("Contact form submission:", values);
       setSubmitted(true);
       setValues(initialValues);
     }
@@ -77,10 +79,10 @@ export function ContactForm() {
       >
         <CheckCircle2 className="mx-auto h-12 w-12 text-green-600" aria-hidden="true" />
         <p className="mt-4 font-display text-xl font-bold text-detective-blue-900">
-          Message sent!
+          Thank you! Your message has been received.
         </p>
         <p className="mt-2 text-detective-blue-700/85">
-          Thanks for reaching out — our team will get back to you soon.
+          Our team will get back to you soon.
         </p>
         <button
           type="button"
