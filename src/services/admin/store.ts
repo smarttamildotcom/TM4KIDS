@@ -185,6 +185,28 @@ export function saveAdminData(data: AdminData): void {
   savePersisted(persisted);
 }
 
+/** Loads only the parts still kept client-side: CSR donations and settings. */
+export function loadLocalExtras(): {
+  donations: AdminData["donations"];
+  settings: AdminSettings;
+} {
+  const persisted = readPersisted();
+  return { donations: persisted.donations, settings: persisted.settings };
+}
+
+/** Persists only the client-side parts: CSR donations and settings. */
+export function saveLocalExtras(extras: {
+  donations: AdminData["donations"];
+  settings: AdminSettings;
+}): void {
+  const persisted = readPersisted();
+  savePersisted({
+    ...persisted,
+    donations: extras.donations,
+    settings: extras.settings,
+  });
+}
+
 export type ContributionSubmission = {
   name: string;
   email: string;

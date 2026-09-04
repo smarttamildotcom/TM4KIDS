@@ -9,26 +9,19 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import {
-  deleteAccountById,
-  setMembershipForEmail,
-  updateAccountById,
-} from "@/lib/auth/mock-auth";
-import type { MembershipStatus } from "@/lib/auth/types";
-import { loadAdminData, saveAdminData } from "@/services/admin/store";
+import { loadLocalExtras, saveLocalExtras } from "@/services/admin/store";
 import type {
   AdminData,
   AdminMember,
-  AdminMemberStatus,
   AdminSettings,
+  Certificate,
   CsrDonation,
+  MembershipRequest,
+  Payment,
 } from "@/services/admin/types";
 
 type AdminDataContextValue = {
   data: AdminData;
-  approveRequest: (requestId: string) => void;
-  rejectRequest: (requestId: string) => void;
-  requestMoreInfo: (requestId: string) => void;
   deleteMember: (memberId: string) => void;
   updateMember: (member: AdminMember) => void;
   reissueCertificate: (certificateId: string) => void;
@@ -38,174 +31,142 @@ type AdminDataContextValue = {
 
 const AdminDataContext = createContext<AdminDataContextValue | null>(null);
 
-const STATUS_TO_MEMBERSHIP: Record<AdminMemberStatus, MembershipStatus> = {
-  Active: "ACTIVE",
-  Pending: "PENDING",
-  Rejected: "REJECTED",
-  Free: "FREE",
+type Overview = {
+  members: AdminMember[];
+  payments: Payment[];
+  certificates: Certificate[];
+  requests: MembershipRequest[];
 };
 
-/** Fire-and-forget approval emails; delivery must never block the UI. */
-function sendApprovalEmail(name: string, email: string): void {
-  void fetch("/api/admin/notify-approval", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email }),
-  }).catch(() => {
-    // Email issues are logged server-side; never surface them here.
-  });
-}
+const EMPTY_OVERVIEW: Overview = {
+  members: [],
+  payments: [],
+  certificates: [],
+  requests: [],
+};
 
 export function AdminDataProvider({ children }: { children: ReactNode }) {
-  const [data, setData] = useState<AdminData | null>(null);
+  const [overview, setOverview] = useState<Overview | null>(null);
+  const [extras, setExtras] = useState<{
+    donations: CsrDonation[];
+    settings: AdminSettings;
+  } | null>(null);
 
-  const reload = useCallback(() => {
-    setData(loadAdminData());
+  const refresh = useCallback(async () => {
+    setExtras(loadLocalExtras());
+    try {
+      const response = await fetch("/api/admin/overview", { cache: "no-store" });
+      const payload = (await response.json().catch(() => ({}))) as Partial<Overview> & {
+        ok?: boolean;
+      };
+      if (response.ok && payload.ok) {
+        setOverview({
+          members: payload.members ?? [],
+          payments: payload.payments ?? [],
+          certificates: payload.certificates ?? [],
+          requests: payload.requests ?? [],
+        });
+      } else {
+        setOverview(EMPTY_OVERVIEW);
+      }
+    } catch {
+      setOverview(EMPTY_OVERVIEW);
+    }
   }, []);
 
   useEffect(() => {
-    reload();
-  }, [reload]);
+    void refresh();
+  }, [refresh]);
 
-  const approveRequest = useCallback(
-    (requestId: string) => {
-      setData((current) => {
-        if (!current) return current;
-        const request = current.requests.find((item) => item.id === requestId);
-        if (!request) return current;
-
-        // Activate the real account so premium worlds unlock immediately.
-        setMembershipForEmail(request.email, "ACTIVE");
-        sendApprovalEmail(request.name, request.email);
-
-        const next: AdminData = {
-          ...current,
-          requests: current.requests.map((item) =>
-            item.id === requestId ? { ...item, status: "Approved" } : item,
-          ),
-          payments: current.payments.map((payment) =>
-            payment.reference === request.transactionReference
-              ? { ...payment, status: "Paid" }
-              : payment,
-          ),
-        };
-        saveAdminData(next);
-        // Re-derive members from the now-updated account store.
-        return loadAdminData();
-      });
+  const persistExtras = useCallback(
+    (next: { donations: CsrDonation[]; settings: AdminSettings }) => {
+      setExtras(next);
+      saveLocalExtras(next);
     },
     [],
   );
-
-  const rejectRequest = useCallback(
-    (requestId: string) => {
-      setData((current) => {
-        if (!current) return current;
-        const request = current.requests.find((item) => item.id === requestId);
-        if (!request) return current;
-
-        setMembershipForEmail(request.email, "REJECTED");
-
-        const next: AdminData = {
-          ...current,
-          requests: current.requests.map((item) =>
-            item.id === requestId ? { ...item, status: "Rejected" } : item,
-          ),
-          payments: current.payments.map((payment) =>
-            payment.reference === request.transactionReference
-              ? { ...payment, status: "Rejected" }
-              : payment,
-          ),
-        };
-        saveAdminData(next);
-        return loadAdminData();
-      });
-    },
-    [],
-  );
-
-  const requestMoreInfo = useCallback((requestId: string) => {
-    setData((current) => {
-      if (!current) return current;
-      const next: AdminData = {
-        ...current,
-        requests: current.requests.map((item) =>
-          item.id === requestId ? { ...item, status: "More Info" } : item,
-        ),
-      };
-      saveAdminData(next);
-      return next;
-    });
-  }, []);
 
   const deleteMember = useCallback(
     (memberId: string) => {
-      deleteAccountById(memberId);
-      reload();
+      void fetch("/api/admin/members/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: memberId }),
+      }).then(() => refresh());
     },
-    [reload],
+    [refresh],
   );
 
   const updateMember = useCallback(
     (member: AdminMember) => {
-      updateAccountById(member.id, {
-        studentName: member.name,
-        email: member.email,
-        country: member.country,
-        membershipStatus: STATUS_TO_MEMBERSHIP[member.status],
-      });
-      reload();
+      void fetch("/api/admin/members/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: member.id,
+          name: member.name,
+          email: member.email,
+          country: member.country,
+          status: member.status,
+        }),
+      }).then(() => refresh());
     },
-    [reload],
+    [refresh],
   );
 
-  const reissueCertificate = useCallback((certificateId: string) => {
-    setData((current) => {
-      if (!current) return current;
-      const next: AdminData = {
-        ...current,
-        certificates: current.certificates.map((certificate) =>
-          certificate.id === certificateId
-            ? { ...certificate, completionDate: new Date().toISOString() }
-            : certificate,
-        ),
-      };
-      saveAdminData(next);
-      return next;
-    });
-  }, []);
+  const reissueCertificate = useCallback(
+    (certificateId: string) => {
+      void fetch("/api/admin/certificates/reissue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: certificateId }),
+      }).then(() => refresh());
+    },
+    [refresh],
+  );
 
-  const addDonation = useCallback((donation: Omit<CsrDonation, "id">) => {
-    setData((current) => {
-      if (!current) return current;
-      const next: AdminData = {
-        ...current,
-        donations: [{ ...donation, id: `don-${Date.now()}` }, ...current.donations],
-      };
-      saveAdminData(next);
-      return next;
-    });
-  }, []);
+  const addDonation = useCallback(
+    (donation: Omit<CsrDonation, "id">) => {
+      setExtras((current) => {
+        if (!current) return current;
+        const next = {
+          ...current,
+          donations: [
+            { ...donation, id: `don-${Date.now()}` },
+            ...current.donations,
+          ],
+        };
+        saveLocalExtras(next);
+        return next;
+      });
+    },
+    [],
+  );
 
-  const updateSettings = useCallback((settings: Partial<AdminSettings>) => {
-    setData((current) => {
-      if (!current) return current;
-      const next: AdminData = {
-        ...current,
-        settings: { ...current.settings, ...settings },
-      };
-      saveAdminData(next);
-      return next;
-    });
-  }, []);
+  const updateSettings = useCallback(
+    (settings: Partial<AdminSettings>) => {
+      setExtras((current) => {
+        if (!current) return current;
+        const next = { ...current, settings: { ...current.settings, ...settings } };
+        saveLocalExtras(next);
+        return next;
+      });
+    },
+    [],
+  );
 
   const value = useMemo<AdminDataContextValue | null>(() => {
-    if (!data) return null;
+    if (!overview || !extras) return null;
+    const data: AdminData = {
+      members: overview.members,
+      requests: overview.requests,
+      payments: overview.payments,
+      certificates: overview.certificates,
+      donations: extras.donations,
+      settings: extras.settings,
+    };
     return {
       data,
-      approveRequest,
-      rejectRequest,
-      requestMoreInfo,
       deleteMember,
       updateMember,
       reissueCertificate,
@@ -213,10 +174,8 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
       updateSettings,
     };
   }, [
-    data,
-    approveRequest,
-    rejectRequest,
-    requestMoreInfo,
+    overview,
+    extras,
     deleteMember,
     updateMember,
     reissueCertificate,
