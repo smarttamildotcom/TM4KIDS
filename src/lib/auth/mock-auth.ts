@@ -151,7 +151,28 @@ export function readSession(): AuthUser | null {
     if (!raw) return null;
     const user = JSON.parse(raw) as AuthUser;
     // Normalise sessions saved before membership tiers existed.
-    return { ...user, membershipStatus: user.membershipStatus ?? "FREE" };
+    const normalised: AuthUser = {
+      ...user,
+      membershipStatus: user.membershipStatus ?? "FREE",
+    };
+
+    // The account store is the source of truth. Reconcile the session's
+    // membership tier with it so an admin approval unlocks premium worlds on the
+    // next read, even if the session snapshot is stale.
+    const account = readAccounts().find(
+      (item) =>
+        item.id === normalised.id ||
+        item.email.toLowerCase() === normalised.email.toLowerCase(),
+    );
+    if (account) {
+      return {
+        ...normalised,
+        membershipStatus: account.membershipStatus ?? normalised.membershipStatus,
+        lastLogin: account.lastLogin ?? normalised.lastLogin,
+      };
+    }
+
+    return normalised;
   } catch {
     return null;
   }
