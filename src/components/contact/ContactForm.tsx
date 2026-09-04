@@ -62,7 +62,6 @@ export function ContactForm() {
 
     if (Object.keys(nextErrors).length === 0) {
       // TODO: Send this payload to the backend email service once it is ready.
-      console.log("Contact form submission:", values);
       setSubmitted(true);
       setValues(initialValues);
     }
