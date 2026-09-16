@@ -12,7 +12,6 @@ import {
   TextField,
 } from "@/components/form";
 import { useAuth } from "@/lib/auth/AuthProvider";
-import { notifyNewMember } from "@/lib/email/notify-member-client";
 import {
   email,
   matches,
@@ -117,20 +116,6 @@ export function RegisterForm() {
     setIsLoading(false);
 
     if (result.ok) {
-      // Notify the site owner of the new member. Fire-and-forget: email issues
-      // must never block or fail the registration.
-      void notifyNewMember({
-        name: result.user.studentName,
-        email: result.user.email,
-        country: result.user.country,
-        parentName: result.user.parentName,
-        age: result.user.age,
-        school: result.user.school,
-        registrationDate: new Date().toISOString(),
-        membershipType: "Free Registration",
-        paymentStatus: "Not applicable (free registration)",
-      });
-
       if (result.verificationRequired) {
         setFormError("Check your email and confirm your address before signing in.");
       } else {
