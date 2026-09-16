@@ -112,7 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (input: LoginInput) => {
     const result = await loginWithPassword(input);
-    if (result.ok) {
+    if (result.ok && !result.verificationRequired) {
       setUser(result.user);
       writeSessionCookie(true);
       writeMembershipCookie(result.user.membershipStatus);
