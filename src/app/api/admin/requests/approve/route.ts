@@ -1,21 +1,46 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getServiceClient } from "@/lib/supabase/server";
 import { isAdminRequest } from "@/lib/admin/guard";
+import { sendEmail } from "@/lib/email/mailer";
+import {
+  buildAdminApprovalEmail,
+  buildMemberApprovalEmail,
+} from "@/lib/email/membership-approval";
 
 export const runtime = "nodejs";
 
 type Body = { id?: string; action?: "approve" | "reject" };
 
-/** Fire-and-forget approval email; delivery must never block the response. */
-function sendApprovalEmail(request: NextRequest, name: string, email: string): void {
-  const url = new URL("/api/admin/notify-approval", request.nextUrl.origin);
-  void fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email }),
-  }).catch(() => {
-    // Email issues are handled server-side; never surface them here.
+/** Sends both approval messages before the serverless request can finish. */
+async function sendApprovalEmails(name: string, email: string): Promise<void> {
+  const memberEmail = buildMemberApprovalEmail({ name, email });
+  const memberDelivery = await sendEmail({
+    to: email,
+    subject: memberEmail.subject,
+    text: memberEmail.text,
+    html: memberEmail.html,
   });
+  if (!memberDelivery.ok) {
+    console.error("[membership/approve] Member approval email was not delivered.", memberDelivery);
+  }
+
+  const adminEmail =
+    process.env.ADMIN_NOTIFICATION_EMAIL || process.env.NEXT_PUBLIC_MEMBERSHIP_EMAIL;
+  if (!adminEmail) {
+    console.warn("[membership/approve] No administrator email is configured.");
+    return;
+  }
+
+  const adminNotice = buildAdminApprovalEmail({ name, email });
+  const adminDelivery = await sendEmail({
+    to: adminEmail,
+    subject: adminNotice.subject,
+    text: adminNotice.text,
+    html: adminNotice.html,
+  });
+  if (!adminDelivery.ok) {
+    console.error("[membership/approve] Administrator approval email was not delivered.", adminDelivery);
+  }
 }
 
 /**
@@ -72,7 +97,7 @@ export async function POST(request: NextRequest) {
       users: { full_name: string; email: string } | { full_name: string; email: string }[] | null;
     };
     const member = Array.isArray(joined.users) ? joined.users[0] : joined.users;
-    if (member?.email) sendApprovalEmail(request, member.full_name, member.email);
+    if (member?.email) await sendApprovalEmails(member.full_name, member.email);
   }
 
   return NextResponse.json({ ok: true });
