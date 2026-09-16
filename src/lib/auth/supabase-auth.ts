@@ -142,19 +142,28 @@ export async function registerAccount(input: RegisterInput): Promise<AuthResult>
   const payload = (await response.json().catch(() => ({}))) as {
     ok?: boolean;
     error?: string;
+    verificationRequired?: boolean;
   };
 
   if (!response.ok || !payload.ok) {
     return { ok: false, error: friendlyError(payload.error) };
   }
 
-  // Establish the session immediately so the detective is signed in on return.
-  return loginWithPassword({
-    studentName: input.studentName,
-    email: input.email,
-    password: input.password,
-    rememberMe: true,
-  });
+  // Email verification is required before a session can be created.
+  return {
+    ok: true,
+    verificationRequired: payload.verificationRequired ?? false,
+    user: {
+      id: "pending-verification",
+      studentName: input.studentName,
+      parentName: input.parentName,
+      age: input.age,
+      school: input.school,
+      country: input.country,
+      email: input.email,
+      membershipStatus: "PENDING",
+    },
+  };
 }
 
 /** Social sign-in placeholder — no OAuth providers are configured yet. */
