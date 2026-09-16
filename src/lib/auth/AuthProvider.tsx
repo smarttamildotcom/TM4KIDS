@@ -105,18 +105,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [syncFromSupabase]);
 
-  // A member can be approved in another browser while they remain on this page.
-  // Poll only pending memberships, then update the local access state and cookie
-  // as soon as the administrator's approval reaches Supabase.
+  // Membership can be approved in another browser while this page remains open.
+  // Refresh every signed-in member so the journey cannot stay stuck with a stale
+  // access cookie; the interval stops immediately after logout.
   useEffect(() => {
-    if (!user || user.membershipStatus !== "PENDING") return;
+    if (!user) return;
 
     const interval = window.setInterval(() => {
       void syncFromSupabase();
-    }, 10_000);
+    }, 5_000);
 
     return () => window.clearInterval(interval);
-  }, [user?.id, user?.membershipStatus, syncFromSupabase]);
+  }, [user?.id, syncFromSupabase]);
 
   // Keep the detective profile name in sync with the signed-in account.
   useEffect(() => {
