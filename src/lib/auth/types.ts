@@ -30,5 +30,5 @@ export type LoginInput = {
 };
 
 export type AuthResult =
-  | { ok: true; user: AuthUser }
+  | { ok: true; user: AuthUser; verificationRequired?: boolean }
   | { ok: false; error: string };
