@@ -8,6 +8,9 @@ export type MemberNotificationPayload = {
   name: string;
   email: string;
   country?: string;
+  parentName?: string;
+  age?: number;
+  school?: string;
   /** ISO date; defaults to now when omitted. */
   registrationDate?: string;
   membershipType: string;
@@ -38,6 +41,9 @@ export function buildMemberEmail(
     ["Name", payload.name],
     ["Email", payload.email],
     ["Country", payload.country || "—"],
+    ["Parent / Guardian", payload.parentName || "—"],
+    ["Age", payload.age?.toString() || "—"],
+    ["School", payload.school || "—"],
     ["Registration Date", formatDate(payload.registrationDate)],
     ["Membership Type", payload.membershipType],
     ["Payment Status", payload.paymentStatus || "—"],
