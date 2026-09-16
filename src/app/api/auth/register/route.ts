@@ -49,7 +49,8 @@ export async function POST(request: NextRequest) {
   const { data: created, error: createError } = await supabase.auth.admin.createUser({
     email,
     password,
-    email_confirm: true,
+    // The customer must click Supabase's confirmation link before first sign-in.
+    email_confirm: false,
     user_metadata: {
       full_name: fullName,
       parent_name: body.parentName ?? null,
@@ -101,5 +102,20 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  return NextResponse.json({ ok: true });
+  const { error: confirmationError } = await supabase.auth.resend({
+    type: "signup",
+    email,
+    options: {
+      emailRedirectTo: new URL("/login", request.nextUrl.origin).toString(),
+    },
+  });
+
+  if (confirmationError) {
+    return NextResponse.json(
+      { ok: false, error: "Could not send the verification email. Please contact us." },
+      { status: 500 },
+    );
+  }
+
+  return NextResponse.json({ ok: true, verificationRequired: true });
 }
