@@ -11,6 +11,7 @@ import { CelebrationModal } from "@/components/auth/CelebrationModal";
 import { PremiumGateModal } from "@/components/auth/PremiumGateModal";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { useGame } from "@/lib/gamification/GameProvider";
+import { MASTER_CERTIFICATE_ID, TOTAL_WORLDS } from "@/lib/gamification/config";
 import {
   canAccessWorld,
   clearPendingWorld,
@@ -50,16 +51,22 @@ export function AdventureMap() {
   const [showCelebration, setShowCelebration] = useState(false);
   const [showGate, setShowGate] = useState(false);
   const hasResumed = useRef(false);
+  const shouldPresentMasterCertificate = useRef(false);
 
   const isSignedIn = Boolean(user);
   const membershipStatus = user?.membershipStatus ?? "FREE";
 
   const openWorld = useCallback((worldId: number) => {
     setExpandedId(worldId);
+    // Wait for the expanded card to lay out, then place its heading immediately
+    // below the sticky header instead of centring the player near its bottom.
     requestAnimationFrame(() => {
-      document.getElementById(`world-${worldId}`)?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
+      requestAnimationFrame(() => {
+        const target = document.getElementById(`world-${worldId}`);
+        if (!target) return;
+        const headerOffset = 96;
+        const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
       });
     });
   }, []);
@@ -96,6 +103,19 @@ export function AdventureMap() {
 
     if (blocked) setShowGate(true);
   }, [isAuthLoaded, isSignedIn, membershipStatus, openWorld]);
+
+  // Immediately reveal the downloadable award after the player completes the
+  // final world. The GameProvider creates the certificate award in the same
+  // state update, so this waits until it is ready to display.
+  useEffect(() => {
+    if (
+      shouldPresentMasterCertificate.current &&
+      player.certificateAwards[MASTER_CERTIFICATE_ID]
+    ) {
+      shouldPresentMasterCertificate.current = false;
+      router.push(`/certificates/${MASTER_CERTIFICATE_ID}`);
+    }
+  }, [player.certificateAwards, router]);
 
   const statuses: WorldStatus[] = worlds.map((world) => {
     if (player.completedWorldIds.includes(world.id)) return "completed";
@@ -142,6 +162,10 @@ export function AdventureMap() {
       total,
       badgeLabel: `${world.reward.badge} ${world.reward.label}`,
     });
+
+    if (worldId === TOTAL_WORLDS) {
+      shouldPresentMasterCertificate.current = true;
+    }
 
     if (worldId === LAST_FREE_WORLD_ID && !isSignedIn) {
       setExpandedId(null);
