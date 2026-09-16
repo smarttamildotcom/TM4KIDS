@@ -123,12 +123,19 @@ export function RegisterForm() {
         name: result.user.studentName,
         email: result.user.email,
         country: result.user.country,
+        parentName: result.user.parentName,
+        age: result.user.age,
+        school: result.user.school,
         registrationDate: new Date().toISOString(),
         membershipType: "Free Registration",
         paymentStatus: "Not applicable (free registration)",
       });
 
-      router.push(redirectTo);
+      if (result.verificationRequired) {
+        setFormError("Check your email and confirm your address before signing in.");
+      } else {
+        router.push(redirectTo);
+      }
     } else {
       setFormError(result.error);
     }
