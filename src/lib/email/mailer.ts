@@ -61,8 +61,12 @@ export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult>
   }
 
   try {
+    // Gmail and most SMTP providers require the From address to match the
+    // authenticated sender. SMTP_FROM can provide a display address, otherwise
+    // use the SMTP account rather than accidentally using the recipient.
+    const from = process.env.SMTP_FROM?.trim() || process.env.SMTP_USER?.trim() || input.to;
     await transporter.sendMail({
-      from: process.env.SMTP_FROM || input.to,
+      from,
       to: input.to,
       subject: input.subject,
       text: input.text,
