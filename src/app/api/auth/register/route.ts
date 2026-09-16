@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { getServiceClient } from "@/lib/supabase/server";
+import { sendEmail } from "@/lib/email/mailer";
+import { buildMemberEmail } from "@/lib/email/member-notification";
 
 export const runtime = "nodejs";
 
@@ -131,6 +133,35 @@ export async function POST(request: NextRequest) {
       { ok: false, error: "Could not set up your membership. Please try again." },
       { status: 500 },
     );
+  }
+
+  // Send the site-owner notice from the server after all new-member details are
+  // safely stored. This survives page navigation and never blocks registration.
+  const adminEmail =
+    process.env.ADMIN_NOTIFICATION_EMAIL || process.env.NEXT_PUBLIC_MEMBERSHIP_EMAIL;
+  if (!adminEmail) {
+    console.warn("[auth/register] No admin notification email is configured.");
+  } else {
+    const notice = buildMemberEmail({
+      name: fullName,
+      email,
+      country: body.country,
+      parentName: body.parentName ?? undefined,
+      age: body.age,
+      school: body.school ?? undefined,
+      registrationDate: new Date().toISOString(),
+      membershipType: "Brand Quest Explorer",
+      paymentStatus: "Pending admin approval",
+    });
+    const delivery = await sendEmail({
+      to: adminEmail,
+      subject: notice.subject,
+      text: notice.text,
+      html: notice.html,
+    });
+    if (!delivery.ok) {
+      console.error("[auth/register] New-member notification was not delivered.", delivery);
+    }
   }
 
   return NextResponse.json({ ok: true, verificationRequired: true });
