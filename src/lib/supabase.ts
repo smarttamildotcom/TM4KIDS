@@ -1,12 +1,29 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const configuredUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+const configuredAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    "Supabase is not configured: set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.",
-  );
+/**
+ * Keep static generation independent from hosting configuration. Authentication
+ * calls still fail clearly at runtime until both public Supabase variables are
+ * configured with valid values.
+ */
+function isHttpUrl(value: string | undefined): value is string {
+  if (!value) return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.protocol === "http:";
+  } catch {
+    return false;
+  }
 }
+
+export const isSupabaseConfigured =
+  isHttpUrl(configuredUrl) && Boolean(configuredAnonKey);
+
+const supabaseUrl = isHttpUrl(configuredUrl)
+  ? configuredUrl
+  : "https://placeholder.supabase.co";
+const supabaseAnonKey = configuredAnonKey || "placeholder-anon-key";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
