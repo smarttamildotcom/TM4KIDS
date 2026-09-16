@@ -54,9 +54,18 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const auth = createClient(url, anonKey, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
+  let auth;
+  try {
+    auth = createClient(url, anonKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+  } catch {
+    console.error("[auth/register] Supabase client configuration is invalid.");
+    return NextResponse.json(
+      { ok: false, error: "Registration is not configured correctly yet. Please try again later." },
+      { status: 500 },
+    );
+  }
   const metadata = {
     full_name: fullName,
     parent_name: body.parentName ?? null,
@@ -77,6 +86,10 @@ export async function POST(request: NextRequest) {
   });
 
   if (createError || !created.user) {
+    console.error("[auth/register] Supabase signup failed", {
+      message: createError?.message ?? "No user returned",
+      status: createError?.status ?? null,
+    });
     return NextResponse.json(
       { ok: false, error: createError?.message ?? "Could not create the account." },
       { status: 400 },
