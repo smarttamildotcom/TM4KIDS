@@ -1,4 +1,6 @@
 import { BRAND } from "@/lib/brand";
+import brandQuestLogo from "@/Brand Quest Logo.png";
+import questyImage from "@/Questy Image.png";
 
 export type MasterCertificatePdfData = {
   studentName: string;
@@ -58,10 +60,10 @@ function drawStar(
   }
 }
 
-/** Fetches the Brand Quest logo and returns it as a PNG data URL (best effort). */
-async function loadLogoDataUrl(): Promise<string | null> {
+/** Converts a bundled image into a data URL for client-side PDF generation. */
+async function loadImageDataUrl(source: string): Promise<string | null> {
   try {
-    const response = await fetch("/Brand%20Quest%20Logo.png");
+    const response = await fetch(source);
     if (!response.ok) return null;
     const blob = await response.blob();
     return await new Promise((resolve) => {
@@ -103,12 +105,24 @@ export async function downloadMasterCertificatePdf(data: MasterCertificatePdfDat
   drawStar(doc, width - 24, height - 24, 5);
 
   // Brand Quest logo (best effort) with a wordmark fallback.
-  const logo = await loadLogoDataUrl();
+  const [logo, questy] = await Promise.all([
+    loadImageDataUrl(brandQuestLogo.src),
+    loadImageDataUrl(questyImage.src),
+  ]);
   if (logo) {
     try {
       doc.addImage(logo, "PNG", centre - 20, 24, 40, 26, undefined, "FAST");
     } catch {
       // Ignore malformed image data; the wordmark below still identifies the brand.
+    }
+  }
+
+  // Questy, the Brand Quest cat detective, celebrates alongside the award.
+  if (questy) {
+    try {
+      doc.addImage(questy, "PNG", 24, 182, 38, 38, undefined, "FAST");
+    } catch {
+      // The certificate remains usable even if this decorative image cannot load.
     }
   }
 
@@ -159,6 +173,10 @@ export async function downloadMasterCertificatePdf(data: MasterCertificatePdfDat
   doc.setFont("helvetica", "normal");
   doc.setFontSize(12);
   doc.text("Awarded the title", centre, 176, { align: "center" });
+  doc.setFontSize(9);
+  doc.text("Questy proudly celebrates this 15-world achievement!", centre, 171, {
+    align: "center",
+  });
 
   doc.setFont("helvetica", "bold");
   doc.setTextColor(...ORANGE);
