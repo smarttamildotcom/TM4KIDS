@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 import { getServiceClient } from "@/lib/supabase/server";
 
-// Node.js runtime so the service-role key stays server-side.
 export const runtime = "nodejs";
 
 type RegisterBody = {
@@ -15,9 +15,8 @@ type RegisterBody = {
 };
 
 /**
- * Creates a Supabase Auth user, inserts the profile row and a Pending
- * membership record. Runs with the service role so it works regardless of the
- * project's email-confirmation setting.
+ * Creates an unconfirmed Supabase account and sends its confirmation email.
+ * Profile and membership rows are inserted with the service role afterwards.
  */
 export async function POST(request: NextRequest) {
   let body: RegisterBody;
@@ -44,19 +43,34 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const supabase = getServiceClient();
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey) {
+    return NextResponse.json(
+      { ok: false, error: "Registration is not configured yet. Please try again later." },
+      { status: 500 },
+    );
+  }
 
-  const { data: created, error: createError } = await supabase.auth.admin.createUser({
+  const auth = createClient(url, anonKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  const metadata = {
+    full_name: fullName,
+    parent_name: body.parentName ?? null,
+    age: body.age ?? null,
+    school: body.school ?? null,
+    country: body.country ?? null,
+  };
+
+  // signUp is the Supabase flow that sends the confirmation email when
+  // Confirm Email is enabled in the project's Email provider settings.
+  const { data: created, error: createError } = await auth.auth.signUp({
     email,
     password,
-    // The customer must click Supabase's confirmation link before first sign-in.
-    email_confirm: false,
-    user_metadata: {
-      full_name: fullName,
-      parent_name: body.parentName ?? null,
-      age: body.age ?? null,
-      school: body.school ?? null,
-      country: body.country ?? null,
+    options: {
+      data: metadata,
+      emailRedirectTo: new URL("/login", request.nextUrl.origin).toString(),
     },
   });
 
@@ -68,6 +82,7 @@ export async function POST(request: NextRequest) {
   }
 
   const userId = created.user.id;
+  const supabase = getServiceClient();
 
   const { error: profileError } = await supabase.from("users").insert({
     id: userId,
@@ -78,7 +93,7 @@ export async function POST(request: NextRequest) {
   });
 
   if (profileError) {
-    // Roll back the auth user so the email can be reused after a failure.
+    // Roll back an account created during this request so the email can be reused.
     await supabase.auth.admin.deleteUser(userId);
     return NextResponse.json(
       { ok: false, error: "Could not save your profile. Please try again." },
@@ -96,23 +111,9 @@ export async function POST(request: NextRequest) {
   });
 
   if (membershipError) {
+    await supabase.auth.admin.deleteUser(userId);
     return NextResponse.json(
       { ok: false, error: "Could not set up your membership. Please try again." },
-      { status: 500 },
-    );
-  }
-
-  const { error: confirmationError } = await supabase.auth.resend({
-    type: "signup",
-    email,
-    options: {
-      emailRedirectTo: new URL("/login", request.nextUrl.origin).toString(),
-    },
-  });
-
-  if (confirmationError) {
-    return NextResponse.json(
-      { ok: false, error: "Could not send the verification email. Please contact us." },
       { status: 500 },
     );
   }
