@@ -1,7 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
 
 const configuredUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-const configuredAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+// Supabase supports both legacy anonymous keys and the current publishable keys.
+const configuredAnonKey =
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() ??
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
 
 /**
  * Keep static generation independent from hosting configuration. Authentication
