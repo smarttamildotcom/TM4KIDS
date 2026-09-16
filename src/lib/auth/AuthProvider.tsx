@@ -112,7 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (input: LoginInput) => {
     const result = await loginWithPassword(input);
-    if (result.ok && !result.verificationRequired) {
+    if (result.ok) {
       setUser(result.user);
       writeSessionCookie(true);
       writeMembershipCookie(result.user.membershipStatus);
@@ -123,7 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = useCallback(async (input: RegisterInput) => {
     const result = await registerAccount(input);
-    if (result.ok) {
+    if (result.ok && !result.verificationRequired) {
       setUser(result.user);
       writeSessionCookie(true);
       writeMembershipCookie(result.user.membershipStatus);
