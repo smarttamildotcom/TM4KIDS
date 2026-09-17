@@ -57,22 +57,21 @@ export function AdventureMap() {
   const openWorld = useCallback((worldId: number) => {
     setExpandedId(worldId);
 
-    // The previous world's long lesson collapses while the next one expands.
-    // Measure only after that animation finishes; otherwise the moving layout
-    // leaves the reader at the bottom of the next world.
-    const scrollToWorldHeading = (behavior: ScrollBehavior) => {
+    // The Journey scrolls in the document, not inside a panel. Reset it as
+    // soon as React has rendered the new open World, then once after the
+    // expand/collapse layout settles. Both resets are immediate on purpose.
+    const scrollToWorldStart = () => {
       const target = document.getElementById(`world-${worldId}`);
       if (!target) return;
       const headerOffset = 104;
       const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
-      window.scrollTo({ top: Math.max(0, top), behavior });
+      window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
     };
 
-    window.setTimeout(() => {
-      scrollToWorldHeading("smooth");
-      // A final correction accounts for the end of the expand/collapse motion.
-      window.setTimeout(() => scrollToWorldHeading("auto"), 420);
-    }, 360);
+    requestAnimationFrame(() => {
+      scrollToWorldStart();
+      window.setTimeout(scrollToWorldStart, 380);
+    });
   }, []);
 
   /**
@@ -126,7 +125,12 @@ export function AdventureMap() {
       return;
     }
 
-    setExpandedId(expandedId === worldId ? null : worldId);
+    if (expandedId === worldId) {
+      setExpandedId(null);
+      return;
+    }
+
+    openWorld(worldId);
   }
 
   /** Same gate as every other entry point, then scroll the next world into view. */

@@ -37,7 +37,7 @@ export function Hero() {
             className="inline-flex items-center gap-2 rounded-full bg-detective-yellow-100 px-4 py-2 font-display text-sm font-semibold text-detective-orange-600"
           >
             <Sparkles className="h-4 w-4" aria-hidden="true" />
-            Designed for young detectives aged 7–12
+            Designed for young detectives
           </motion.p>
 
           <motion.h1
@@ -52,7 +52,8 @@ export function Hero() {
             variants={fadeUp}
             className="mx-auto mt-6 max-w-xl text-lg text-detective-blue-700/85 sm:text-xl lg:mx-0"
           >
-            Explore brands, inventions, designs and creative works while solving fun mysteries with Questy.\n            15 Worlds. 4 Types of IP. One Big Adventure.
+            <span className="block">Explore brands, inventions, designs and creative works while solving fun mysteries with Questy.</span>
+            <span className="mt-2 block font-display font-semibold text-detective-blue-900">15 Worlds. 4 Types of IP. One Big Adventure.</span>
           </motion.p>
 
           <motion.div

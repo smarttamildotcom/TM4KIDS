@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, LogIn, Sparkles, Star } from "lucide-react";
+import { Heart, LogIn, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { MembershipCard } from "@/components/payment/MembershipCard";
@@ -22,31 +22,8 @@ export function MembershipView() {
 
   const status = user?.membershipStatus ?? "FREE";
 
-  if (isLoaded && status === "ACTIVE") {
-    return (
-      <section className="py-16 sm:py-24">
-        <Container>
-          <div className="mx-auto max-w-2xl rounded-[2rem] border-2 border-detective-yellow-300 bg-detective-yellow-100/60 p-8 text-center shadow-sm sm:p-12">
-            <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-detective-yellow-400 text-detective-blue-900 shadow-md">
-              <Star className="h-8 w-8 fill-detective-blue-900" aria-hidden="true" />
-            </span>
-            <h2 className="mt-6 font-display text-3xl font-bold text-detective-blue-900 sm:text-4xl">
-              You&apos;re a IP2Kids Member!
-            </h2>
-            <p className="mt-4 text-lg text-detective-blue-700/85">
-              All 15 detective worlds are unlocked. Thank you for supporting the mission.
-            </p>
-            <Link
-              href="/#journey"
-              className="mt-8 inline-flex items-center justify-center rounded-full bg-detective-orange-500 px-8 py-4 font-display text-lg font-semibold text-white shadow-lg transition-colors hover:bg-detective-orange-600"
-            >
-              Continue the Journey
-            </Link>
-          </div>
-        </Container>
-      </section>
-    );
-  }
+  // Approved members keep their active status and unlocks; this page intentionally has no confirmation card.
+  if (isLoaded && status === "ACTIVE") return null;
 
   if (isLoaded && (status === "PENDING" || justSubmitted)) {
     return (
