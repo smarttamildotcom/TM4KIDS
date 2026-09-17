@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fredoka, Nunito } from "next/font/google";
 import { GameProvider, RewardToaster } from "@/components/gamification";
+import { MasterCertificateDelivery } from "@/components/gamification/MasterCertificateDelivery";
 import { AppToaster } from "@/components/notifications/AppToaster";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
 import { NotificationProvider } from "@/lib/notifications/NotificationProvider";
@@ -33,6 +34,7 @@ export default function RootLayout({
           <NotificationProvider>
             <AuthProvider>
               {children}
+              <MasterCertificateDelivery />
               <RewardToaster />
               <AppToaster />
             </AuthProvider>
