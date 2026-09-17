@@ -14,10 +14,9 @@ import brandQuestLogo from "@/Brand Quest Logo.png";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Journey", href: "/#journey" },
   { label: "About", href: "/about" },
+  { label: "Journey", href: "/#journey" },
   { label: "Membership", href: "/membership" },
-  { label: "CSR", href: "/csr" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -119,4 +118,3 @@ export function SiteHeader() {
     </header>
   );
 }
-
