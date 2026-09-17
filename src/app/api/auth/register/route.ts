@@ -101,17 +101,26 @@ export async function POST(request: NextRequest) {
   const userId = created.user.id;
   const supabase = getServiceClient();
 
-  const { error: profileError } = await supabase.from("users").insert({
-    id: userId,
-    full_name: fullName,
-    email,
-    school: body.school ?? null,
-    country: body.country ?? null,
-  });
+  // Upsert safely completes a profile left behind by an interrupted prior
+  // registration attempt, rather than treating it as a fatal duplicate.
+  const { error: profileError } = await supabase.from("users").upsert(
+    {
+      id: userId,
+      full_name: fullName,
+      email,
+      school: body.school ?? null,
+      country: body.country ?? null,
+    },
+    { onConflict: "id" },
+  );
 
   if (profileError) {
-    // Roll back an account created during this request so the email can be reused.
-    await supabase.auth.admin.deleteUser(userId);
+    console.error("[auth/register] Profile write failed", {
+      code: profileError.code,
+      message: profileError.message,
+      details: profileError.details,
+      hint: profileError.hint,
+    });
     return NextResponse.json(
       { ok: false, error: "Could not save your profile. Please try again." },
       { status: 500 },
