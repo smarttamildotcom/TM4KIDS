@@ -77,6 +77,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, error: "Invalid certificate." }, { status: 400 });
   }
 
+  // Keep a locally narrowed recipient address for strict TypeScript and safe mail delivery.
+  const recipientEmail = member.user.email;
+  if (!recipientEmail) {
+    return NextResponse.json({ ok: false, error: "Member email is unavailable." }, { status: 400 });
+  }
+
   const supabase = getServiceClient();
   const { data: existing, error: lookupError } = await supabase
     .from("certificates")
@@ -120,7 +126,7 @@ export async function POST(request: NextRequest) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || request.nextUrl.origin;
   const downloadUrl = new URL("/certificates/trademark-master", siteUrl).toString();
   const mail = await sendEmail({
-    to: member.user.email,
+    to: recipientEmail,
     subject: "Your Brand Quest Master Detective Certificate",
     text: [
       "Congratulations! You completed World 15 of the Brand Quest journey.",
