@@ -11,10 +11,7 @@ import { CelebrationModal } from "@/components/auth/CelebrationModal";
 import { PremiumGateModal } from "@/components/auth/PremiumGateModal";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { useGame } from "@/lib/gamification/GameProvider";
-import { downloadMasterCertificatePdf } from "@/lib/gamification/master-certificate-pdf";
-import { formatCertificateDate } from "@/lib/gamification/certificate";
-import { supabase } from "@/lib/supabase";
-import { MASTER_CERTIFICATE_ID, TOTAL_WORLDS } from "@/lib/gamification/config";
+import { TOTAL_WORLDS } from "@/lib/gamification/config";
 import {
   canAccessWorld,
   clearPendingWorld,
@@ -54,7 +51,6 @@ export function AdventureMap() {
   const [showCelebration, setShowCelebration] = useState(false);
   const [showGate, setShowGate] = useState(false);
   const hasResumed = useRef(false);
-  const shouldPresentMasterCertificate = useRef(false);
 
   const isSignedIn = Boolean(user);
   const membershipStatus = user?.membershipStatus ?? "FREE";
@@ -107,44 +103,6 @@ export function AdventureMap() {
     if (blocked) setShowGate(true);
   }, [isAuthLoaded, isSignedIn, membershipStatus, openWorld]);
 
-  // Completing World 15 triggers the first PDF download, stores the award for
-  // later downloads, and sends the signed-in member their certificate link.
-  useEffect(() => {
-    const award = player.certificateAwards[MASTER_CERTIFICATE_ID];
-    if (!shouldPresentMasterCertificate.current || !award) return;
-
-    shouldPresentMasterCertificate.current = false;
-    void (async () => {
-      const studentName = user?.studentName || player.name;
-      try {
-        await downloadMasterCertificatePdf({
-          studentName,
-          completionDate: formatCertificateDate(award.awardedAt),
-          certificateId: award.certificateNumber,
-        });
-
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-
-        if (session?.access_token) {
-          await fetch("/api/certificates/master", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${session.access_token}`,
-            },
-            body: JSON.stringify({ certificateNumber: award.certificateNumber }),
-          });
-        }
-      } catch (error) {
-        console.error("[journey] Certificate delivery failed", error);
-      } finally {
-        router.push(`/certificates/${MASTER_CERTIFICATE_ID}`);
-      }
-    })();
-  }, [player.certificateAwards, player.name, router, user?.studentName]);
-
   const statuses: WorldStatus[] = worlds.map((world) => {
     if (player.completedWorldIds.includes(world.id)) return "completed";
     // Before hydration everything reads as unlocked so the markup matches the server.
@@ -191,9 +149,6 @@ export function AdventureMap() {
       badgeLabel: `${world.reward.badge} ${world.reward.label}`,
     });
 
-    if (worldId === TOTAL_WORLDS) {
-      shouldPresentMasterCertificate.current = true;
-    }
 
     if (worldId === LAST_FREE_WORLD_ID && !isSignedIn) {
       setExpandedId(null);
