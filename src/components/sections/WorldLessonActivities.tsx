@@ -4,6 +4,16 @@ import { useRef, useState } from "react";
 import { Download, Palette, RotateCcw, Sparkles } from "lucide-react";
 
 const PALETTE = ["#ef4444", "#f97316", "#facc15", "#4ade80", "#38bdf8", "#818cf8", "#c084fc", "#f472b6", "#92400e", "#ffffff"];
+
+function Celebration({ title }: { title: string }) {
+  return (
+    <div className="mt-6 overflow-hidden rounded-3xl bg-gradient-to-r from-fuchsia-500 via-detective-orange-500 to-detective-yellow-400 px-6 py-5 text-center text-white shadow-lg">
+      <div className="animate-bounce text-3xl" aria-hidden="true">🎉 ✨ 🥳 ✨ 🎉</div>
+      <p className="mt-2 font-display text-xl font-bold">{title}</p>
+      <p className="mt-1 font-semibold text-white/90">Fantastic detective work!</p>
+    </div>
+  );
+}
 export function ColourQuesty() {
   const [colour, setColour] = useState(PALETTE[0]);
   const [ready, setReady] = useState(false);
