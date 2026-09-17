@@ -55,27 +55,47 @@ export function ColourQuesty() {
   );
 }
 
+const JIGSAW_PIECES = Array.from({ length: 15 }, (_, index) => index);
+const MIXED_PIECES = [8, 1, 13, 4, 10, 0, 12, 6, 14, 3, 9, 5, 11, 2, 7];
+const LOGO_IMAGE = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 300"><rect width="500" height="300" fill="#fff7ed"/><path d="M301 63c18-22 13-42 13-42-21 2-39 15-49 32-9 16-5 35-5 35 16 1 31-7 41-25z" fill="#22c55e"/><path d="M258 82c-38-43-110-32-129 17-14 35-4 76 18 109 25 38 56 78 91 78 18 0 25-11 46-11 20 0 27 11 46 11 35 0 63-38 85-76 20-34 31-76 17-112-20-50-90-58-127-16-12 13-18 13-47 0z" fill="#ef4444"/><path d="M227 112c-48 25-66 83-43 129M363 112c47 26 63 83 39 129" fill="none" stroke="#be123c" stroke-width="8" stroke-linecap="round"/></svg>');
+
+function logoPieceStyle(piece: number) {
+  const column = piece % 5;
+  const row = Math.floor(piece / 5);
+  return { backgroundImage: `url("${LOGO_IMAGE}")`, backgroundSize: "500% 300%", backgroundPosition: `${column * 25}% ${row * 50}%` };
+}
+
 export function FamousLogoJigsaw() {
-  const [placed, setPlaced] = useState<string[]>([]);
-  const complete = placed.length === PIECES.length;
+  const [selected, setSelected] = useState<number | null>(null);
+  const [placed, setPlaced] = useState<number[]>([]);
+  const [message, setMessage] = useState("");
+  const complete = placed.length === JIGSAW_PIECES.length;
+
+  function tryPlace(slot: number) {
+    if (selected === null || placed.includes(slot)) return;
+    if (selected !== slot) {
+      setMessage("That piece does not fit there yet. Try another empty space.");
+      return;
+    }
+    const next = [...placed, slot];
+    setPlaced(next); setSelected(null);
+    setMessage(next.length === JIGSAW_PIECES.length ? "Puzzle solved! You rebuilt the famous Apple logo." : "Great fit! Keep building the logo.");
+  }
+
   return (
     <section className="rounded-[2rem] border-2 border-detective-blue-100 bg-white p-6 shadow-md sm:p-8">
       <p className="font-display text-sm font-semibold uppercase tracking-[0.18em] text-detective-orange-500">Famous logo jigsaw</p>
-      <h3 className="mt-1 font-display text-2xl font-bold text-detective-blue-900">Assemble Questy&apos;s logo case file</h3>
-      <p className="mt-2 text-detective-blue-700/85">Tap each familiar logo piece to place it in the jigsaw.</p>
-      <div className="mt-7 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
-        <div className="grid grid-cols-2 overflow-hidden rounded-3xl border-4 border-detective-blue-300 bg-detective-blue-50 shadow-inner">
-          {PIECES.map((piece) => {
-            const isPlaced = placed.includes(piece.id);
-            return <div key={piece.id} className={"relative grid min-h-36 place-items-center border border-detective-blue-200 p-4 text-center sm:min-h-44 " + (isPlaced ? piece.colour : "bg-white")}>{isPlaced ? <><span className="font-display text-5xl font-bold text-detective-blue-900">{piece.clue}</span><span className="mt-2 font-display text-sm font-bold text-detective-blue-900">{piece.brand}</span></> : <span className="font-display text-4xl text-detective-blue-200">?</span>}</div>;
-          })}
-        </div>
-        <div className="grid grid-cols-2 gap-3 lg:w-64">
-          {PIECES.map((piece) => <button key={piece.id} type="button" disabled={placed.includes(piece.id)} onClick={() => setPlaced((current) => current.includes(piece.id) ? current : [...current, piece.id])} className={"min-h-28 rounded-3xl border-2 p-3 text-center shadow-sm transition-transform hover:-translate-y-1 disabled:cursor-default " + (placed.includes(piece.id) ? "border-green-300 bg-green-50 text-green-800" : "border-detective-orange-200 bg-detective-orange-50 text-detective-blue-900")}><span className="block font-display text-3xl font-bold">{piece.clue}</span><span className="mt-2 block font-display text-sm font-bold">{placed.includes(piece.id) ? "Placed ✓" : piece.brand}</span></button>)}
-          <button type="button" onClick={() => setPlaced([])} className="col-span-2 inline-flex items-center justify-center gap-2 rounded-full border-2 border-detective-blue-300 bg-white px-4 py-2 font-display text-sm font-semibold text-detective-blue-700"><RotateCcw className="h-4 w-4" aria-hidden="true"/>Mix pieces again</button>
-        </div>
+      <h3 className="mt-1 font-display text-2xl font-bold text-detective-blue-900">Rebuild the hidden logo — 15 mixed pieces</h3>
+      <p className="mt-2 text-detective-blue-700/85">Tap a mixed piece, then tap where it belongs. On a computer, you can also drag it.</p>
+      <div className="mt-7 grid gap-7 lg:grid-cols-2">
+        <div><p className="mb-3 font-display font-bold text-detective-blue-900">Puzzle board</p><div className="grid grid-cols-5 overflow-hidden rounded-2xl border-4 border-detective-blue-300 bg-detective-blue-50">
+          {JIGSAW_PIECES.map((slot) => <button key={slot} type="button" aria-label={"Puzzle space " + (slot + 1)} onClick={() => tryPlace(slot)} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); setSelected(Number(event.dataTransfer.getData("piece"))); }} className="aspect-square border border-detective-blue-200 bg-white p-0">{placed.includes(slot) ? <span className="block h-full w-full" style={logoPieceStyle(slot)} /> : <span className="font-display text-xl text-detective-blue-200">?</span>}</button>)}
+        </div></div>
+        <div><p className="mb-3 font-display font-bold text-detective-blue-900">Mixed pieces</p><div className="grid grid-cols-5 gap-2">
+          {MIXED_PIECES.filter((piece) => !placed.includes(piece)).map((piece) => <button key={piece} type="button" draggable onDragStart={(event) => event.dataTransfer.setData("piece", String(piece))} onClick={() => { setSelected(piece); setMessage("Now tap the matching puzzle space."); }} className={"aspect-square overflow-hidden rounded-xl border-2 shadow-sm transition-transform hover:-translate-y-1 " + (selected === piece ? "border-detective-orange-500 ring-4 ring-detective-orange-200" : "border-detective-blue-300")}><span className="block h-full w-full" style={logoPieceStyle(piece)} /></button>)}
+        </div><button type="button" onClick={() => { setSelected(null); setPlaced([]); setMessage(""); }} className="mt-5 inline-flex items-center gap-2 rounded-full border-2 border-detective-blue-300 bg-white px-5 py-2 font-display text-sm font-semibold text-detective-blue-700"><RotateCcw className="h-4 w-4" aria-hidden="true"/>Mix again</button></div>
       </div>
-      {complete && <p className="mt-5 rounded-2xl bg-green-100 px-5 py-4 font-display font-semibold text-green-800"><Sparkles className="mr-2 inline h-5 w-5" aria-hidden="true"/>Brilliant! You assembled the famous-logo case file.</p>}
+      {message && <p className={"mt-5 rounded-2xl px-5 py-4 font-display font-semibold " + (complete ? "bg-green-100 text-green-800" : "bg-detective-yellow-100 text-detective-blue-900")}><Sparkles className="mr-2 inline h-5 w-5" aria-hidden="true"/>{message}</p>}
     </section>
   );
 }
