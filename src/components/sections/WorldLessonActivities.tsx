@@ -3,6 +3,11 @@
 import { useRef, useState } from "react";
 import { Download, Palette, RotateCcw, Sparkles } from "lucide-react";
 
+const PALETTE = [
+  "#ef4444", "#f97316", "#facc15", "#4ade80", "#38bdf8",
+  "#818cf8", "#c084fc", "#f472b6", "#92400e", "#ffffff",
+];
+
 export function ColourQuesty() {
   const [colour, setColour] = useState(PALETTE[0]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
