@@ -15,6 +15,7 @@ import {
   certificates,
   getLevelProgress,
   initialPlayerState,
+  TOTAL_WORLDS,
 } from "./config";
 import { loadPlayerState, savePlayerState, clearPlayerState } from "./storage";
 import { recordStreak } from "./streak";
@@ -87,6 +88,32 @@ export function GameProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (isLoaded) savePlayerState(player);
   }, [player, isLoaded]);
+
+  // Earlier final-challenge completions were stored as a lesson only. Treat
+  // them as World 15 too, without paying a second XP or coin reward.
+  useEffect(() => {
+    if (
+      !isLoaded ||
+      !player.completedLessonIds.includes("trademark-master") ||
+      player.completedWorldIds.includes(TOTAL_WORLDS)
+    ) {
+      return;
+    }
+
+    setPlayer((current) => {
+      if (
+        !current.completedLessonIds.includes("trademark-master") ||
+        current.completedWorldIds.includes(TOTAL_WORLDS)
+      ) {
+        return current;
+      }
+
+      return {
+        ...current,
+        completedWorldIds: [...current.completedWorldIds, TOTAL_WORLDS],
+      };
+    });
+  }, [isLoaded, player.completedLessonIds, player.completedWorldIds]);
 
   // Unlock any badges and certificates the player now qualifies for.
   useEffect(() => {
