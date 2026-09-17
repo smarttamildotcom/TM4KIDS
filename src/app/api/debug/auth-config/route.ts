@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getServiceClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -28,8 +29,16 @@ export async function GET() {
     supabaseUrlValid: isHttpUrl(url),
     publicKeyConfigured: Boolean(key),
     publicKeyKind: publishableKey ? "publishable" : anonKey ? "anon" : "missing",
-    serviceRoleConfigured: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
+    serverKeyConfigured: Boolean(
+      process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY,
+    ),
+    serverKeyKind: process.env.SUPABASE_SECRET_KEY
+      ? "secret"
+      : process.env.SUPABASE_SERVICE_ROLE_KEY
+        ? "service-role"
+        : "missing",
     authApi: "not-checked" as "not-checked" | "reachable" | "rejected" | "unreachable",
+    profileTable: "not-checked" as "not-checked" | "reachable" | "rejected" | "unreachable",
   };
 
   if (isHttpUrl(url) && key) {
@@ -41,6 +50,18 @@ export async function GET() {
       result.authApi = response.ok ? "reachable" : "rejected";
     } catch {
       result.authApi = "unreachable";
+    }
+  }
+
+  if (result.serverKeyConfigured) {
+    try {
+      const { error } = await getServiceClient()
+        .from("users")
+        .select("id", { head: true })
+        .limit(1);
+      result.profileTable = error ? "rejected" : "reachable";
+    } catch {
+      result.profileTable = "unreachable";
     }
   }
 
