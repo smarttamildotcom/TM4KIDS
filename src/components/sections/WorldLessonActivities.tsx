@@ -89,7 +89,17 @@ export function ColourQuesty({ worldId = 1 }: { worldId?: number }) {
 
 const JIGSAW_PIECES = Array.from({ length: 12 }, (_, index) => index);
 const MIXED_PIECES = [7, 1, 10, 4, 0, 8, 3, 11, 5, 9, 2, 6];
-function sliceStyle(piece: number, imageUrl: string) { const column = piece % 4; const row = Math.floor(piece / 4); return { backgroundImage: `url("${imageUrl}")`, backgroundSize: "400% 300%", backgroundPosition: `${column * (100 / 3)}% ${row * 50}%` }; }
+function sliceStyle(piece: number, imageUrl: string) {
+  const column = piece % 4;
+  const row = Math.floor(piece / 4);
+  // The artwork is square. A centred 4:3 crop keeps it undistorted in the 4×3 board
+  // and makes the important part of each picture visible in the mixed pieces.
+  return {
+    backgroundImage: `url("${imageUrl}")`,
+    backgroundSize: "600% auto",
+    backgroundPosition: `${(column + 1) * 20}% ${(row + 1.5) * 20}%`,
+  };
+}
 
 export function FamousLogoJigsaw({ worldId }: { worldId: number }) {
   const puzzleNames: Record<number, string> = { 2: "apple fruit logo", 4: "orange fruit logo", 6: "elephant animal logo", 8: "lion detective logo", 10: "dolphin animal logo", 12: "rainbow toy logo", 14: "fox detective logo" };
@@ -107,7 +117,7 @@ export function FamousLogoJigsaw({ worldId }: { worldId: number }) {
   return <section className="rounded-[2rem] border-2 border-detective-blue-100 bg-white p-6 shadow-md sm:p-8">
     <p className="font-display text-sm font-semibold uppercase tracking-[0.18em] text-detective-orange-500">Famous logo jigsaw</p><h3 className="mt-1 font-display text-2xl font-bold text-detective-blue-900">Rebuild the hidden logo — 12 mixed pieces</h3><p className="mt-2 text-detective-blue-700/85">Tap a mixed piece, then tap where it belongs. On a computer, you can also drag it.</p>
     <div className="mt-7 grid gap-7 lg:grid-cols-2">
-      <div><p className="mb-3 font-display font-bold text-detective-blue-900">Puzzle board</p><div className="grid grid-cols-4 overflow-hidden rounded-2xl border-4 border-detective-blue-300 bg-detective-blue-50">{JIGSAW_PIECES.map((slot) => <button key={slot} type="button" onClick={() => tryPlace(slot)} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); tryPlace(slot, Number(event.dataTransfer.getData("piece"))); }} className="aspect-[3/4] border border-detective-blue-200 bg-white p-0">{placed.includes(slot) ? <span className="block h-full w-full" style={sliceStyle(slot, imageUrl)} /> : <span className="font-display text-xl text-detective-blue-200">?</span>}</button>)}</div>{complete && <Celebration title={"You solved the " + puzzleName + " jigsaw!"} />}</div>
+      <div><p className="mb-3 font-display font-bold text-detective-blue-900">Puzzle board</p><div className="grid grid-cols-4 overflow-hidden rounded-2xl border-4 border-detective-blue-300 bg-detective-blue-50">{JIGSAW_PIECES.map((slot) => <button key={slot} type="button" onClick={() => tryPlace(slot)} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); tryPlace(slot, Number(event.dataTransfer.getData("piece"))); }} className="aspect-square border border-detective-blue-200 bg-white p-0">{placed.includes(slot) ? <span className="block h-full w-full" style={sliceStyle(slot, imageUrl)} /> : <span className="font-display text-xl text-detective-blue-200">?</span>}</button>)}</div>{complete && <Celebration title={"You solved the " + puzzleName + " jigsaw!"} />}</div>
       <div><p className="mb-3 font-display font-bold text-detective-blue-900">Mixed pieces</p><div className="grid grid-cols-4 gap-2">{MIXED_PIECES.filter((piece) => !placed.includes(piece)).map((piece) => <button key={piece} type="button" draggable onDragStart={(event) => event.dataTransfer.setData("piece", String(piece))} onClick={() => { setSelected(piece); setMessage("Now tap the matching puzzle space."); }} className={"aspect-square overflow-hidden rounded-xl border-2 shadow-sm transition-transform hover:-translate-y-1 " + (selected === piece ? "border-detective-orange-500 ring-4 ring-detective-orange-200" : "border-detective-blue-300")}><span className="block h-full w-full" style={sliceStyle(piece, imageUrl)} /></button>)}</div><button type="button" onClick={() => { setSelected(null); setPlaced([]); setMessage(""); }} className="mt-5 inline-flex items-center gap-2 rounded-full border-2 border-detective-blue-300 bg-white px-5 py-2 font-display text-sm font-semibold text-detective-blue-700"><RotateCcw className="h-4 w-4" aria-hidden="true"/>Mix again</button></div>
     </div>
     {!complete && message && <p className="mt-5 rounded-2xl bg-detective-yellow-100 px-5 py-4 font-display font-semibold text-detective-blue-900"><Sparkles className="mr-2 inline h-5 w-5" aria-hidden="true"/>{message}</p>}
