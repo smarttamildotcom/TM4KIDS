@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Check, CheckCircle2, Sparkles, Target } from "lucide-react";
 import { QuizQuestionCard } from "@/components/quiz";
-import { ColourQuesty, FamousLogoJigsaw, WorldMiniVideo } from "@/components/sections/WorldLessonActivities";
+import { ColourQuesty, FamousLogoJigsaw } from "@/components/sections/WorldLessonActivities";
 import { toQuizQuestions, worldTheme, type World } from "@/lib/worlds";
 
 /** Section heading styled to match the eyebrow + title pattern used in Levels 1–5. */
@@ -54,12 +54,6 @@ export function WorldDetailPanel({
       className="overflow-hidden"
     >
       <div className="mt-8 space-y-12 border-t-2 border-dashed border-detective-blue-200 pt-10">
-        {world.id === 1 ? (
-          <WorldMiniVideo worldId={1} />
-        ) : world.id === 2 ? (
-          <WorldMiniVideo worldId={2} />
-        ) : (
-          <>
         {/* 2. Story introduction */}
         <section>
           <LessonHeading eyebrow="The story" title={`Case ${world.id}: ${world.name}`} />
@@ -114,9 +108,6 @@ export function WorldDetailPanel({
             </ul>
           </div>
         </section>
-
-          </>
-        )}
 
         {/* 5 + 6. Three multiple choice, then two true or false */}
         <section>
