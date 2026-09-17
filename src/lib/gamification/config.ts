@@ -137,9 +137,12 @@ export const certificates: CertificateDefinition[] = [
   {
     id: "trademark-master",
     title: "Brand Quest Master Detective Certificate",
-    subtitle: "Complete all 15 worlds to unlock your certificate",
+    subtitle: "Complete World 15 to unlock your certificate",
     emoji: "🏆",
-    isEarned: (state) => state.completedWorldIds.length >= TOTAL_WORLDS,
+    // TEMPORARY TEST MODE: issue the certificate as soon as World 15 is
+    // completed. Restore the all-world rule after certificate approval:
+    // state.completedWorldIds.length >= TOTAL_WORLDS
+    isEarned: (state) => hasWorld(state, TOTAL_WORLDS),
   },
 ];
 
