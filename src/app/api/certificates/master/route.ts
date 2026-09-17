@@ -96,8 +96,10 @@ export async function POST(request: NextRequest) {
 
   // A previous delivery may have saved the certificate but failed while sending
   // mail. Reuse that award and retry the member email instead of stopping early.
-  let certificate = existing;
-  if (!certificate) {
+  let certificate: CertificateRecord;
+  if (existing) {
+    certificate = existing;
+  } else {
     const { data: issuedCertificate, error: insertError } = await supabase
       .from("certificates")
       .insert({ user_id: member.user.id, certificate_number: certificateNumber })
@@ -130,7 +132,7 @@ export async function POST(request: NextRequest) {
     ].join("\n"),
     html: `<div style="font-family:Arial,sans-serif;color:#0b2f5c;line-height:1.6">
       <h2 style="color:#e05a05">Your certificate is ready!</h2>
-      <p>Congratulations on completing all 15 Brand Quest worlds.</p>
+      <p>Congratulations on completing World 15 of the Brand Quest journey.</p>
       <p><a href="${downloadUrl}" style="display:inline-block;background:#0a52a1;color:#fff;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:bold">Download my certificate</a></p>
       <p>Certificate ID: ${certificate.certificate_number ?? certificateNumber}</p>
     </div>`,
