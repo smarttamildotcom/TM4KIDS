@@ -104,7 +104,7 @@ function sliceStyle(piece: number, imageUrl: string) {
 export function FamousLogoJigsaw({ worldId }: { worldId: number }) {
   const puzzleNames: Record<number, string> = { 2: "apple fruit logo", 4: "orange fruit logo", 6: "elephant animal logo", 8: "lion detective logo", 10: "dolphin animal logo", 12: "rainbow toy logo", 14: "fox detective logo" };
   const puzzleName = puzzleNames[worldId] ?? "fruit-and-animal logo";
-  const imageUrl = `/activities/world-${worldId}-jigsaw.png`;
+  const imageUrl = `/api/activities/jigsaw/${worldId}`;
   const [selected, setSelected] = useState<number | null>(null);
   const [placed, setPlaced] = useState<number[]>([]);
   const [message, setMessage] = useState("");
