@@ -76,6 +76,19 @@ export async function POST(request: NextRequest) {
     country: body.country ?? null,
   };
 
+  // Confirmation links must always return to the public site, rather than an
+  // incidental Vercel deployment URL. The environment value permits a later
+  // domain change; the production fallback keeps the configured IP2Kids domain
+  // correct even before that optional value is added.
+  const publicSiteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://www.ip2kids.com";
+  let emailRedirectTo: string;
+  try {
+    emailRedirectTo = new URL("/login", publicSiteUrl).toString();
+  } catch {
+    emailRedirectTo = new URL("/login", request.nextUrl.origin).toString();
+  }
+
   // signUp is the Supabase flow that sends the confirmation email when
   // Confirm Email is enabled in the project's Email provider settings.
   const { data: created, error: createError } = await auth.auth.signUp({
@@ -83,7 +96,7 @@ export async function POST(request: NextRequest) {
     password,
     options: {
       data: metadata,
-      emailRedirectTo: new URL("/login", request.nextUrl.origin).toString(),
+      emailRedirectTo,
     },
   });
 
