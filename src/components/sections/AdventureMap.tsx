@@ -56,17 +56,23 @@ export function AdventureMap() {
 
   const openWorld = useCallback((worldId: number) => {
     setExpandedId(worldId);
-    // Wait for the expanded card to lay out, then place its heading immediately
-    // below the sticky header instead of centring the player near its bottom.
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        const target = document.getElementById(`world-${worldId}`);
-        if (!target) return;
-        const headerOffset = 96;
-        const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
-        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
-      });
-    });
+
+    // The previous world's long lesson collapses while the next one expands.
+    // Measure only after that animation finishes; otherwise the moving layout
+    // leaves the reader at the bottom of the next world.
+    const scrollToWorldHeading = (behavior: ScrollBehavior) => {
+      const target = document.getElementById(`world-${worldId}`);
+      if (!target) return;
+      const headerOffset = 104;
+      const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({ top: Math.max(0, top), behavior });
+    };
+
+    window.setTimeout(() => {
+      scrollToWorldHeading("smooth");
+      // A final correction accounts for the end of the expand/collapse motion.
+      window.setTimeout(() => scrollToWorldHeading("auto"), 420);
+    }, 360);
   }, []);
 
   /**
