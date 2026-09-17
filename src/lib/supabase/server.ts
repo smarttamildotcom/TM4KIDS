@@ -8,11 +8,15 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
  */
 export function getServiceClient(): SupabaseClient {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  // New Supabase projects may use an sb_secret_ key; older projects use the
+  // legacy service-role JWT. Both are server-only and bypass RLS.
+  const key =
+    process.env.SUPABASE_SECRET_KEY?.trim() ||
+    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
 
   if (!url || !key) {
     throw new Error(
-      "Supabase is not configured: set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.",
+      "Supabase is not configured: set NEXT_PUBLIC_SUPABASE_URL and a Supabase server key.",
     );
   }
 
