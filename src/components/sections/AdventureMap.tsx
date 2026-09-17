@@ -11,6 +11,9 @@ import { CelebrationModal } from "@/components/auth/CelebrationModal";
 import { PremiumGateModal } from "@/components/auth/PremiumGateModal";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { useGame } from "@/lib/gamification/GameProvider";
+import { downloadMasterCertificatePdf } from "@/lib/gamification/master-certificate-pdf";
+import { formatCertificateDate } from "@/lib/gamification/certificate";
+import { supabase } from "@/lib/supabase";
 import { MASTER_CERTIFICATE_ID, TOTAL_WORLDS } from "@/lib/gamification/config";
 import {
   canAccessWorld,
@@ -104,18 +107,43 @@ export function AdventureMap() {
     if (blocked) setShowGate(true);
   }, [isAuthLoaded, isSignedIn, membershipStatus, openWorld]);
 
-  // Immediately reveal the downloadable award after the player completes the
-  // final world. The GameProvider creates the certificate award in the same
-  // state update, so this waits until it is ready to display.
+  // Completing World 15 triggers the first PDF download, stores the award for
+  // later downloads, and sends the signed-in member their certificate link.
   useEffect(() => {
-    if (
-      shouldPresentMasterCertificate.current &&
-      player.certificateAwards[MASTER_CERTIFICATE_ID]
-    ) {
-      shouldPresentMasterCertificate.current = false;
-      router.push(`/certificates/${MASTER_CERTIFICATE_ID}`);
-    }
-  }, [player.certificateAwards, router]);
+    const award = player.certificateAwards[MASTER_CERTIFICATE_ID];
+    if (!shouldPresentMasterCertificate.current || !award) return;
+
+    shouldPresentMasterCertificate.current = false;
+    void (async () => {
+      const studentName = user?.studentName || player.name;
+      try {
+        await downloadMasterCertificatePdf({
+          studentName,
+          completionDate: formatCertificateDate(award.awardedAt),
+          certificateId: award.certificateNumber,
+        });
+
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (session?.access_token) {
+          await fetch("/api/certificates/master", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify({ certificateNumber: award.certificateNumber }),
+          });
+        }
+      } catch (error) {
+        console.error("[journey] Certificate delivery failed", error);
+      } finally {
+        router.push(`/certificates/${MASTER_CERTIFICATE_ID}`);
+      }
+    })();
+  }, [player.certificateAwards, player.name, router, user?.studentName]);
 
   const statuses: WorldStatus[] = worlds.map((world) => {
     if (player.completedWorldIds.includes(world.id)) return "completed";
