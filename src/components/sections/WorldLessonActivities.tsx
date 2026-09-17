@@ -71,9 +71,9 @@ export function FamousLogoJigsaw() {
   const [message, setMessage] = useState("");
   const complete = placed.length === JIGSAW_PIECES.length;
 
-  function tryPlace(slot: number) {
-    if (selected === null || placed.includes(slot)) return;
-    if (selected !== slot) {
+  function tryPlace(slot: number, piece = selected) {
+    if (piece === null || placed.includes(slot)) return;
+    if (piece !== slot) {
       setMessage("That piece does not fit there yet. Try another empty space.");
       return;
     }
@@ -89,7 +89,7 @@ export function FamousLogoJigsaw() {
       <p className="mt-2 text-detective-blue-700/85">Tap a mixed piece, then tap where it belongs. On a computer, you can also drag it.</p>
       <div className="mt-7 grid gap-7 lg:grid-cols-2">
         <div><p className="mb-3 font-display font-bold text-detective-blue-900">Puzzle board</p><div className="grid grid-cols-5 overflow-hidden rounded-2xl border-4 border-detective-blue-300 bg-detective-blue-50">
-          {JIGSAW_PIECES.map((slot) => <button key={slot} type="button" aria-label={"Puzzle space " + (slot + 1)} onClick={() => tryPlace(slot)} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); setSelected(Number(event.dataTransfer.getData("piece"))); }} className="aspect-square border border-detective-blue-200 bg-white p-0">{placed.includes(slot) ? <span className="block h-full w-full" style={logoPieceStyle(slot)} /> : <span className="font-display text-xl text-detective-blue-200">?</span>}</button>)}
+          {JIGSAW_PIECES.map((slot) => <button key={slot} type="button" aria-label={"Puzzle space " + (slot + 1)} onClick={() => tryPlace(slot)} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); tryPlace(slot, Number(event.dataTransfer.getData("piece"))); }} className="aspect-square border border-detective-blue-200 bg-white p-0">{placed.includes(slot) ? <span className="block h-full w-full" style={logoPieceStyle(slot)} /> : <span className="font-display text-xl text-detective-blue-200">?</span>}</button>)}
         </div></div>
         <div><p className="mb-3 font-display font-bold text-detective-blue-900">Mixed pieces</p><div className="grid grid-cols-5 gap-2">
           {MIXED_PIECES.filter((piece) => !placed.includes(piece)).map((piece) => <button key={piece} type="button" draggable onDragStart={(event) => event.dataTransfer.setData("piece", String(piece))} onClick={() => { setSelected(piece); setMessage("Now tap the matching puzzle space."); }} className={"aspect-square overflow-hidden rounded-xl border-2 shadow-sm transition-transform hover:-translate-y-1 " + (selected === piece ? "border-detective-orange-500 ring-4 ring-detective-orange-200" : "border-detective-blue-300")}><span className="block h-full w-full" style={logoPieceStyle(piece)} /></button>)}
