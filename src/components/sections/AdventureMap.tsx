@@ -11,7 +11,6 @@ import { CelebrationModal } from "@/components/auth/CelebrationModal";
 import { PremiumGateModal } from "@/components/auth/PremiumGateModal";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { useGame } from "@/lib/gamification/GameProvider";
-import { TOTAL_WORLDS } from "@/lib/gamification/config";
 import {
   canAccessWorld,
   clearPendingWorld,
