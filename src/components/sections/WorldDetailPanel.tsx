@@ -141,7 +141,7 @@ export function WorldDetailPanel({
           <FamousLogoJigsaw worldId={world.id} />
         ) : (
           <IpDetectiveActivity world={world} />
-        )
+        )}
 
         {/* 7. Detective challenge */}
         <section>
