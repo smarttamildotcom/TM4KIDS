@@ -3,7 +3,14 @@ import Image from "next/image";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Container } from "@/components/ui/Container";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { MembershipView } from "@/components/membership/MembershipView";
+import { CallToAction } from "@/components/sections/CallToAction";
+import {
+  CharityCards,
+  DonationUpdateCards,
+  MissionPoints,
+} from "@/components/csr/CsrSections";
 import { questyArt } from "@/lib/questy-art";
 
 export const metadata: Metadata = {
@@ -60,6 +67,52 @@ export default function MembershipPage() {
         </section>
 
         <MembershipView />
+        {/* CSR content, now included as part of Membership */}
+        <section className="border-t border-detective-blue-100 bg-detective-blue-50/70 py-16 sm:py-24">
+          <Container>
+            <SectionHeading
+              eyebrow="Our shared mission"
+              title="Learning That Gives Back"
+              subtitle="Every Brand Quest membership supports a learning adventure and helps our giving mission reach further."
+            />
+            <div className="mt-12">
+              <MissionPoints />
+            </div>
+          </Container>
+        </section>
+
+        <section className="py-16 sm:py-24">
+          <Container>
+            <SectionHeading
+              eyebrow="Where it goes"
+              title="Our Charity Partners"
+              subtitle="Two Singapore charities supporting children and families through cancer."
+            />
+            <div className="mx-auto mt-12 max-w-4xl">
+              <CharityCards />
+            </div>
+          </Container>
+        </section>
+
+        <section className="bg-detective-blue-50/70 py-16 sm:py-24">
+          <Container>
+            <SectionHeading
+              eyebrow="Transparency"
+              title="Donation Updates"
+              subtitle="We are committed to transparency. Donation summaries, acknowledgements and annual impact updates will be published here so every supporter can see the difference we are making together."
+            />
+            <div className="mt-12">
+              <DonationUpdateCards />
+            </div>
+          </Container>
+        </section>
+
+        <CallToAction
+          title="Learn. Play. Give Back."
+          subtitle="Start the adventure and help a young detective make a real difference."
+          buttonLabel="Start Adventure"
+          buttonHref="/#journey"
+        />
       </main>
 
       <SiteFooter />
