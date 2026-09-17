@@ -4,9 +4,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Check, CheckCircle2, Sparkles, Target } from "lucide-react";
 import { QuizQuestionCard } from "@/components/quiz";
-import { ColourQuesty, FamousLogoJigsaw } from "@/components/sections/WorldLessonActivities";
-import { IpDetectiveActivity } from "@/components/sections/IpDetectiveActivity";
 import { toQuizQuestions, worldTheme, type World } from "@/lib/worlds";
+import { WorldCompletionExperience } from "@/components/sections/WorldCompletionExperience";
 
 /** Section heading styled to match the eyebrow + title pattern used in Levels 1–5. */
 function LessonHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
@@ -135,14 +134,6 @@ export function WorldDetailPanel({
           </div>
         </section>
 
-        {world.activity.kind === "colour" ? (
-          <ColourQuesty worldId={world.id} />
-        ) : world.activity.kind === "jigsaw" ? (
-          <FamousLogoJigsaw worldId={world.id} />
-        ) : (
-          <IpDetectiveActivity world={world} />
-        )}
-
         {/* 7. Detective challenge */}
         <section>
           <LessonHeading eyebrow="Detective challenge" title={world.challenge.title} />
@@ -227,6 +218,8 @@ export function WorldDetailPanel({
             </div>
           </div>
         </section>
+
+        {isCompleted && <WorldCompletionExperience world={world} onNextWorld={onNextWorld} />}
       </div>
     </motion.div>
   );

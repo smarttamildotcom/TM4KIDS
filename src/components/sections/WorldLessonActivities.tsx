@@ -77,6 +77,7 @@ export function ColourQuesty({ worldId = 1 }: { worldId?: number }) {
   const [ready, setReady] = useState(false);
   const [filledAreas, setFilledAreas] = useState(0);
   const [canUndo, setCanUndo] = useState(false);
+  const [done, setDone] = useState(false);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const outlineRef = useRef<Uint8Array | null>(null);
@@ -96,6 +97,11 @@ export function ColourQuesty({ worldId = 1 }: { worldId?: number }) {
     historyRef.current = [];
     setCanUndo(false);
     setReady(true);
+    setDone(false);
+  }
+
+  function surpriseMe() {
+    setColour(PALETTE[Math.floor(Math.random() * PALETTE.length)]);
   }
 
   function undoLastFill() {
@@ -170,11 +176,13 @@ export function ColourQuesty({ worldId = 1 }: { worldId?: number }) {
         <p className="w-full text-center font-display text-sm font-semibold text-detective-blue-700">Selected: {colour.name}</p>
         {PALETTE.map((item) => <button key={item.value} type="button" aria-label={`Use ${item.name}`} aria-pressed={colour.value === item.value} onClick={() => setColour(item)} className={"h-11 w-11 rounded-full border-4 border-white shadow-md ring-2 " + (colour.value === item.value ? "ring-detective-blue-700" : "ring-transparent")} style={{ backgroundColor: item.value }} />)}
         <a href={`/api/activities/colouring/${worldId}`} download={`world-${worldId}-questy-colouring-page.jpg`} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-detective-blue-600 px-4 py-2 font-display text-sm font-semibold text-white"><Download className="h-4 w-4" aria-hidden="true"/>Download / print</a>
+        <button type="button" onClick={surpriseMe} className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-detective-yellow-400 bg-detective-yellow-100 px-4 py-2 font-display text-sm font-semibold text-detective-blue-800"><Sparkles className="h-4 w-4" aria-hidden="true"/>Surprise me</button>
         <button type="button" disabled={!canUndo} onClick={undoLastFill} className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-detective-orange-300 bg-white px-4 py-2 font-display text-sm font-semibold text-detective-orange-700 disabled:cursor-not-allowed disabled:opacity-45"><Undo2 className="h-4 w-4" aria-hidden="true"/>Undo last colour</button>
         <button type="button" onClick={() => { drawOriginal(); setFilledAreas(0); }} className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-detective-blue-300 bg-white px-4 py-2 font-display text-sm font-semibold text-detective-blue-700"><RotateCcw className="h-4 w-4" aria-hidden="true"/>Start again</button>
       </div>
     </div>
-    {filledAreas >= 9 && <Celebration title="You coloured Questy&apos;s whole detective desk!" />}
+    <div className="mt-5 flex justify-center"><button type="button" disabled={!ready || filledAreas === 0} onClick={() => setDone(true)} className="rounded-full bg-detective-orange-500 px-6 py-3 font-display font-semibold text-white shadow-md disabled:cursor-not-allowed disabled:opacity-50">Done colouring!</button></div>
+    {(done || filledAreas >= 9) && <Celebration title="Fantastic! Questy looks amazing!" />}
   </section>;
 }
 
@@ -208,7 +216,7 @@ export function FamousLogoJigsaw({ worldId }: { worldId: number }) {
   return <section className="rounded-[2rem] border-2 border-detective-blue-100 bg-white p-6 shadow-md sm:p-8">
     <p className="font-display text-sm font-semibold uppercase tracking-[0.18em] text-detective-orange-500">Famous logo jigsaw</p><h3 className="mt-1 font-display text-2xl font-bold text-detective-blue-900">Rebuild the hidden logo — 12 mixed pieces</h3><p className="mt-2 text-detective-blue-700/85">Tap a mixed piece, then tap where it belongs. On a computer, you can also drag it.</p>
     <div className="mt-7 grid gap-7 lg:grid-cols-2">
-      <div><p className="mb-3 font-display font-bold text-detective-blue-900">Puzzle board</p><div className="grid grid-cols-4 overflow-hidden rounded-2xl border-4 border-detective-blue-300 bg-detective-blue-50">{JIGSAW_PIECES.map((slot) => <button key={slot} type="button" onClick={() => tryPlace(slot)} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); tryPlace(slot, Number(event.dataTransfer.getData("piece"))); }} className="aspect-square border border-detective-blue-200 bg-white p-0">{placed.includes(slot) ? <span className="block h-full w-full" style={sliceStyle(slot, imageUrl)} /> : <span className="font-display text-xl text-detective-blue-200">?</span>}</button>)}</div>{complete && <Celebration title={"You solved the " + puzzleName + " jigsaw!"} />}</div>
+      <div><p className="mb-3 font-display font-bold text-detective-blue-900">Puzzle board</p><div className="grid grid-cols-4 overflow-hidden rounded-2xl border-4 border-detective-blue-300 bg-detective-blue-50">{JIGSAW_PIECES.map((slot) => <button key={slot} type="button" onClick={() => tryPlace(slot)} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); tryPlace(slot, Number(event.dataTransfer.getData("piece"))); }} className="aspect-square border border-detective-blue-200 bg-white p-0">{placed.includes(slot) ? <span className="block h-full w-full" style={sliceStyle(slot, imageUrl)} /> : <span className="font-display text-xl text-detective-blue-200">?</span>}</button>)}</div>{complete && <Celebration title="Puzzle Solved!" />}</div>
       <div><p className="mb-3 font-display font-bold text-detective-blue-900">Mixed pieces</p><div className="grid grid-cols-4 gap-2">{MIXED_PIECES.filter((piece) => !placed.includes(piece)).map((piece) => <button key={piece} type="button" draggable onDragStart={(event) => event.dataTransfer.setData("piece", String(piece))} onClick={() => { setSelected(piece); setMessage("Now tap the matching puzzle space."); }} className={"aspect-square overflow-hidden rounded-xl border-2 shadow-sm transition-transform hover:-translate-y-1 " + (selected === piece ? "border-detective-orange-500 ring-4 ring-detective-orange-200" : "border-detective-blue-300")}><span className="block h-full w-full" style={sliceStyle(piece, imageUrl)} /></button>)}</div><button type="button" onClick={() => { setSelected(null); setPlaced([]); setMessage(""); }} className="mt-5 inline-flex items-center gap-2 rounded-full border-2 border-detective-blue-300 bg-white px-5 py-2 font-display text-sm font-semibold text-detective-blue-700"><RotateCcw className="h-4 w-4" aria-hidden="true"/>Mix again</button></div>
     </div>
     {!complete && message && <p className="mt-5 rounded-2xl bg-detective-yellow-100 px-5 py-4 font-display font-semibold text-detective-blue-900"><Sparkles className="mr-2 inline h-5 w-5" aria-hidden="true"/>{message}</p>}
