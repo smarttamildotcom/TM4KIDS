@@ -22,7 +22,8 @@ export function ProfileView() {
   if (!user) return null;
 
   const completedCount = player.completedWorldIds.length;
-  const hasMasterCertificate = completedCount >= TOTAL_WORLDS;
+  // Temporary testing rule: finishing World 15 unlocks this certificate.
+  const hasMasterCertificate = player.completedWorldIds.includes(TOTAL_WORLDS);
 
   // Snapshot stats shown at the top of the profile.
   const summary: { icon: typeof Zap; label: string; value: string }[] = [
