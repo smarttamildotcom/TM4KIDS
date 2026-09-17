@@ -32,11 +32,11 @@ const PALETTE = [
   { name: "Purple", value: "#c084fc" },
 ] as const;
 
-const ZIGZAG_STEPS = [
-  { id: 1, clue: "Picture clue", emoji: "⭐" },
-  { id: 2, clue: "Name clue", emoji: "Aa" },
-  { id: 3, clue: "Colour clue", emoji: "🎨" },
-  { id: 4, clue: "Brand detective", emoji: "🕵️" },
+const LOGO_JIGSAW_PIECES = [
+  { id: "apple", brand: "Apple", clue: "🍎", colour: "bg-red-100" },
+  { id: "nike", brand: "Nike", clue: "✓", colour: "bg-slate-100" },
+  { id: "mcdonalds", brand: "McDonald's", clue: "M", colour: "bg-yellow-100" },
+  { id: "adidas", brand: "Adidas", clue: "≡", colour: "bg-blue-100" },
 ] as const;
 
 /** Video-style explainer, colouring play and a zigzag recall puzzle for World 1. */
@@ -45,7 +45,7 @@ export function WorldOneActivities() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [colour, setColour] = useState<string>(PALETTE[0].value);
   const [colouredParts, setColouredParts] = useState<string[]>([]);
-  const [puzzleStep, setPuzzleStep] = useState(0);
+  const [placedPieces, setPlacedPieces] = useState<string[]>([]);
   const [puzzleMessage, setPuzzleMessage] = useState("");
 
   useEffect(() => {
@@ -71,18 +71,14 @@ export function WorldOneActivities() {
     );
   }
 
-  function choosePuzzleStep(id: number) {
-    if (id !== puzzleStep + 1) {
-      setPuzzleMessage("Try the next clue in Questy's zigzag path.");
-      return;
-    }
-
-    const nextStep = puzzleStep + 1;
-    setPuzzleStep(nextStep);
+  function placeJigsawPiece(id: string) {
+    if (placedPieces.includes(id)) return;
+    const nextPieces = [...placedPieces, id];
+    setPlacedPieces(nextPieces);
     setPuzzleMessage(
-      nextStep === ZIGZAG_STEPS.length
-        ? "Brilliant detective work! You solved the zigzag."
-        : "Great! Find the next clue.",
+      nextPieces.length === LOGO_JIGSAW_PIECES.length
+        ? "Brilliant! You assembled Questy's famous-logo case file."
+        : "Great choice! Add another jigsaw piece.",
     );
   }
 
@@ -179,37 +175,69 @@ export function WorldOneActivities() {
 
       <section className="rounded-[2rem] border-2 border-detective-blue-100 bg-white p-6 shadow-md sm:p-8">
         <p className="font-display text-sm font-semibold uppercase tracking-[0.18em] text-detective-orange-500">
-          Zigzag puzzle
+          Famous logo jigsaw
         </p>
         <h3 className="mt-1 font-display text-2xl font-bold text-detective-blue-900">
-          Follow Questy's clue trail
+          Assemble Questy&apos;s logo case file
         </h3>
         <p className="mt-2 text-detective-blue-700/85">
-          Tap the clues in order: picture, name, colour, then become a detective.
+          Tap each familiar logo piece to add it to the jigsaw board.
         </p>
 
-        <div className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {ZIGZAG_STEPS.map((step, index) => {
-            const solved = step.id <= puzzleStep;
-            return (
-              <button
-                key={step.id}
-                type="button"
-                disabled={solved}
-                onClick={() => choosePuzzleStep(step.id)}
-                className={"relative min-h-36 rounded-3xl border-2 p-4 text-center transition-transform hover:-translate-y-1 disabled:cursor-default " + (solved ? "border-green-300 bg-green-50 text-green-800" : "border-detective-blue-200 bg-detective-blue-50 text-detective-blue-900")}
-              >
-                <span className="text-4xl">{step.emoji}</span>
-                <span className="mt-3 block font-display font-bold">{step.clue}</span>
-                {solved && <CheckCircle2 className="absolute right-3 top-3 h-5 w-5 text-green-600" aria-hidden="true" />}
-                {index % 2 === 0 && index < ZIGZAG_STEPS.length - 1 && <span className="absolute -right-4 top-1/2 hidden text-2xl text-detective-orange-500 sm:block" aria-hidden="true">↗</span>}
-              </button>
-            );
-          })}
+        <div className="mt-7 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div className="grid grid-cols-2 overflow-hidden rounded-3xl border-4 border-detective-blue-300 bg-detective-blue-50 shadow-inner">
+            {LOGO_JIGSAW_PIECES.map((piece) => {
+              const placed = placedPieces.includes(piece.id);
+              return (
+                <div
+                  key={piece.id}
+                  className={"relative grid min-h-36 place-items-center border border-detective-blue-200 p-4 text-center transition-all sm:min-h-44 " + (placed ? piece.colour : "bg-white")}
+                >
+                  {placed ? (
+                    <>
+                      <span className="font-display text-5xl font-bold text-detective-blue-900">{piece.clue}</span>
+                      <span className="mt-2 font-display text-sm font-bold text-detective-blue-900">{piece.brand}</span>
+                      <span className="absolute -right-3 top-1/2 h-7 w-7 -translate-y-1/2 rounded-full border-2 border-detective-blue-300 bg-white" aria-hidden="true" />
+                    </>
+                  ) : (
+                    <span className="font-display text-4xl text-detective-blue-200">?</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 lg:w-64">
+            {LOGO_JIGSAW_PIECES.map((piece) => {
+              const placed = placedPieces.includes(piece.id);
+              return (
+                <button
+                  key={piece.id}
+                  type="button"
+                  disabled={placed}
+                  onClick={() => placeJigsawPiece(piece.id)}
+                  className={"min-h-28 rounded-3xl border-2 p-3 text-center shadow-sm transition-transform hover:-translate-y-1 disabled:cursor-default " + (placed ? "border-green-300 bg-green-50 text-green-800" : "border-detective-orange-200 bg-detective-orange-50 text-detective-blue-900")}
+                >
+                  <span className="block font-display text-3xl font-bold">{piece.clue}</span>
+                  <span className="mt-2 block font-display text-sm font-bold">{placed ? "Placed ✓" : piece.brand}</span>
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              onClick={() => {
+                setPlacedPieces([]);
+                setPuzzleMessage("");
+              }}
+              className="col-span-2 inline-flex items-center justify-center gap-2 rounded-full border-2 border-detective-blue-300 bg-white px-4 py-2 font-display text-sm font-semibold text-detective-blue-700"
+            >
+              <RotateCcw className="h-4 w-4" aria-hidden="true" /> Mix pieces again
+            </button>
+          </div>
         </div>
 
         {puzzleMessage && (
-          <p className={"mt-5 rounded-2xl px-5 py-4 font-display font-semibold " + (puzzleStep === ZIGZAG_STEPS.length ? "bg-green-100 text-green-800" : "bg-detective-yellow-100 text-detective-blue-900")}>
+          <p className={"mt-5 rounded-2xl px-5 py-4 font-display font-semibold " + (placedPieces.length === LOGO_JIGSAW_PIECES.length ? "bg-green-100 text-green-800" : "bg-detective-yellow-100 text-detective-blue-900")}>
             <Sparkles className="mr-2 inline h-5 w-5" aria-hidden="true" />
             {puzzleMessage}
           </p>
