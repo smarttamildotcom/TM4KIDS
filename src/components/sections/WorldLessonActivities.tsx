@@ -7,6 +7,7 @@ const PALETTE = ["#ef4444", "#f97316", "#facc15", "#4ade80", "#38bdf8", "#818cf8
 export function ColourQuesty() {
   const [colour, setColour] = useState(PALETTE[0]);
   const [ready, setReady] = useState(false);
+  const [filledAreas, setFilledAreas] = useState(0);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -55,6 +56,7 @@ export function ColourQuesty() {
     }
 
     context.putImageData(image, 0, 0);
+    setFilledAreas((current) => Math.min(9, current + 1));
   }
 
   return <section className="rounded-[2rem] border-2 border-detective-yellow-300 bg-detective-yellow-50 p-6 shadow-md sm:p-8">
@@ -68,9 +70,10 @@ export function ColourQuesty() {
       <div className="flex max-w-64 flex-wrap justify-center gap-3">
         {PALETTE.map((item) => <button key={item} type="button" aria-label={"Use colour " + item} aria-pressed={colour === item} onClick={() => setColour(item)} className={"h-11 w-11 rounded-full border-4 border-white shadow-md ring-2 " + (colour === item ? "ring-detective-blue-700" : "ring-transparent")} style={{ backgroundColor: item }} />)}
         <a href="/api/activities/world-one-colouring" download="questy-colouring-page.png" className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-detective-blue-600 px-4 py-2 font-display text-sm font-semibold text-white"><Download className="h-4 w-4" aria-hidden="true"/>Download / print</a>
-        <button type="button" onClick={drawOriginal} className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-detective-blue-300 bg-white px-4 py-2 font-display text-sm font-semibold text-detective-blue-700"><RotateCcw className="h-4 w-4" aria-hidden="true"/>Start again</button>
+        <button type="button" onClick={() => { drawOriginal(); setFilledAreas(0); }} className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-detective-blue-300 bg-white px-4 py-2 font-display text-sm font-semibold text-detective-blue-700"><RotateCcw className="h-4 w-4" aria-hidden="true"/>Start again</button>
       </div>
     </div>
+    {filledAreas >= 9 && <Celebration title="You coloured Questy&apos;s whole detective desk!" />}
   </section>;
 }
 
