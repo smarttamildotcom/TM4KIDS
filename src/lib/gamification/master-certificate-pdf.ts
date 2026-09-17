@@ -8,15 +8,14 @@ export type MasterCertificatePdfData = {
   certificateId: string;
 };
 
-/** Understandings demonstrated by a Master Brand Detective, printed on the award. */
+/** Understandings celebrated by a Little IP Detective. */
 const UNDERSTANDINGS = [
-  "Brands",
   "Trademarks",
-  "Copyright",
   "Patents",
+  "Copyright",
   "Designs",
-  "Trade Secrets",
-  "Brand Protection",
+  "Respecting creators",
+  "Original ideas",
 ];
 
 // Brand Quest palette as RGB tuples for jsPDF.
@@ -78,8 +77,7 @@ async function loadImageDataUrl(source: string): Promise<string | null> {
 }
 
 /**
- * Generates and downloads the high-resolution A4 (portrait) Master Brand
- * Detective certificate, temporarily awarded when World 15 is complete for testing.
+ * Generates and downloads the high-resolution A4 (portrait) Little IP Detective Certificate of Completion, temporarily awarded when World 15 is complete for testing.
  */
 export async function downloadMasterCertificatePdf(data: MasterCertificatePdfData) {
   const { jsPDF } = await import("jspdf");
@@ -133,7 +131,7 @@ export async function downloadMasterCertificatePdf(data: MasterCertificatePdfDat
 
   doc.setTextColor(...ORANGE);
   doc.setFontSize(26);
-  doc.text("Certificate of Achievement", centre, 74, { align: "center" });
+  doc.text("Certificate of Completion", centre, 74, { align: "center" });
 
   doc.setDrawColor(...GOLD);
   doc.setLineWidth(0.8);
@@ -152,7 +150,7 @@ export async function downloadMasterCertificatePdf(data: MasterCertificatePdfDat
   doc.setFontSize(11);
   doc.setTextColor(...NAVY);
   const intro = doc.splitTextToSize(
-    "has successfully completed World 15 of the Brand Quest Detective Journey and demonstrated an understanding of:",
+    "has completed World 15 of the Little IP Detective Journey and explored:",
     width - 70,
   );
   doc.text(intro, centre, 120, { align: "center" });
@@ -174,14 +172,14 @@ export async function downloadMasterCertificatePdf(data: MasterCertificatePdfDat
   doc.setFontSize(12);
   doc.text("Awarded the title", centre, 176, { align: "center" });
   doc.setFontSize(9);
-  doc.text("Questy proudly celebrates this World 15 achievement!", centre, 171, {
+  doc.text("Questy proudly celebrates this World 15 learning journey!", centre, 171, {
     align: "center",
   });
 
   doc.setFont("helvetica", "bold");
   doc.setTextColor(...ORANGE);
   doc.setFontSize(20);
-  doc.text("MASTER BRAND DETECTIVE", centre, 187, { align: "center" });
+  doc.text("LITTLE IP DETECTIVE", centre, 187, { align: "center" });
 
   // Gold seal with decorative stars.
   doc.setFillColor(...GOLD);
@@ -192,7 +190,7 @@ export async function downloadMasterCertificatePdf(data: MasterCertificatePdfDat
   doc.setTextColor(...NAVY);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
-  doc.text("MASTER", centre, 206, { align: "center" });
+  doc.text("LITTLE IP", centre, 206, { align: "center" });
   doc.text("DETECTIVE", centre, 211, { align: "center" });
   drawStar(doc, centre - 22, 208, 4);
   drawStar(doc, centre + 22, 208, 4);
@@ -215,6 +213,6 @@ export async function downloadMasterCertificatePdf(data: MasterCertificatePdfDat
   doc.text("Founder", width - 28, 245, { align: "right" });
   doc.text(BRAND.name, width - 28, 250, { align: "right" });
 
-  const fileName = `${data.studentName.trim().replaceAll(/\s+/g, "-").toLowerCase()}-master-brand-detective-certificate.pdf`;
+  const fileName = `${data.studentName.trim().replaceAll(/\s+/g, "-").toLowerCase()}-little-ip-detective-certificate-of-completion.pdf`;
   doc.save(fileName);
 }

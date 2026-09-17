@@ -1,13 +1,13 @@
 export const BRAND = {
-  name: "Brand Quest",
-  wordmarkPrimary: "Brand Quest",
+  name: "IP2Kids",
+  wordmarkPrimary: "IP2Kids",
   wordmarkSecondary: "",
-  tagline: "Little Brand Detectives",
+  tagline: "Little IP Detectives",
   description:
-    "Discover the exciting world of brands, logos and trademarks through fun adventures.",
-  courseName: "Brand Quest programme",
-  achievement: "Little Brand Detective",
-  signature: "BrandQuest Education Team",
+    "Explore brands, inventions, designs and creative works through fun detective adventures.",
+  courseName: "Little IP Detectives programme",
+  achievement: "Little IP Detective",
+  signature: "IP2Kids Education Team",
   founder: "Bala Chandran",
-  copyright: "© 2026 Brand Quest. All Rights Reserved.",
+  copyright: "© 2026 IP2Kids. All Rights Reserved.",
 } as const;

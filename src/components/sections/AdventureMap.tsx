@@ -215,16 +215,15 @@ export function AdventureMap() {
               The 15-World Journey
             </p>
             <h2 className="mt-2 font-display text-3xl font-bold text-detective-blue-900 sm:text-4xl lg:text-5xl">
-              Become a Brand Detective!
+              Become a Little IP Detective!
             </h2>
             <p className="mt-4 text-base text-detective-blue-700/80 sm:text-lg">
-              Complete all 15 worlds to become a Master Brand Detective. Every world has a story, a
-              mini lesson, quizzes and a detective challenge.
+              Explore trademarks, patents, copyright and designs with Questy. Every world has a story, a mini lesson and a hands-on detective mission.
             </p>
           </div>
         </div>
 
-        <div className="mx-auto mt-10 max-w-xl rounded-3xl border-2 border-detective-blue-100 bg-white/90 p-5 shadow-md">
+        {completedCount > 0 && (\n          <p className="mx-auto mt-8 max-w-xl rounded-2xl bg-detective-yellow-100 px-5 py-3 text-center font-display font-semibold text-detective-blue-900">\n            ✨ New IP missions are here! Tap any completed world to replay it.\n          </p>\n        )}\n\n        <div className="mx-auto mt-10 max-w-xl rounded-3xl border-2 border-detective-blue-100 bg-white/90 p-5 shadow-md">
           <div className="flex items-center justify-between font-display text-sm font-bold text-detective-blue-900">
             <span>
               🕵️ {completedCount} of {worlds.length} worlds solved

@@ -70,30 +70,30 @@ export const badges: BadgeDefinition[] = [
   },
   {
     id: "brand-basics",
-    name: "Brand Basics",
+    name: "Trademark Detective",
     emoji: "🏷️",
-    description: "Complete World 2 — What is a Brand?",
+    description: "Complete World 3 — Trademark Detectives.",
     isEarned: (state) => hasWorld(state, 2),
   },
   {
     id: "logo-spotter",
-    name: "Logo Spotter",
+    name: "Patent Detective",
     emoji: "🎨",
-    description: "Complete World 3 — Logos Everywhere.",
+    description: "Complete World 8 — Patent Detectives.",
     isEarned: (state) => hasWorld(state, 3),
   },
   {
     id: "brand-explorer",
-    name: "Brand Explorer",
+    name: "Copyright Detective",
     emoji: "🌍",
-    description: "Complete five worlds.",
+    description: "Complete World 11 — Copyright Detectives.",
     isEarned: (state) => state.completedWorldIds.length >= 5,
   },
   {
     id: "halfway-hero",
-    name: "Halfway Hero",
+    name: "Design Detective",
     emoji: "⚡",
-    description: "Complete eight worlds.",
+    description: "Complete World 12 — Design Detectives.",
     isEarned: (state) => state.completedWorldIds.length >= 8,
   },
   {
@@ -119,9 +119,9 @@ export const badges: BadgeDefinition[] = [
   },
   {
     id: "master-detective",
-    name: "Master Brand Detective",
+    name: "Master IP Detective",
     emoji: "👑",
-    description: "Complete all 15 worlds.",
+    description: "Complete World 15 — IP Detective Graduation.",
     isEarned: (state) => state.completedWorldIds.length >= TOTAL_WORLDS,
   },
 ];
@@ -129,15 +129,15 @@ export const badges: BadgeDefinition[] = [
 export const certificates: CertificateDefinition[] = [
   {
     id: "junior-detective",
-    title: "Junior Brand Detective",
-    subtitle: "For solving your very first Brand Quest case",
+    title: "Little IP Detective",
+    subtitle: "For solving your very first IP Detective case",
     emoji: "📜",
     isEarned: (state) => state.completedWorldIds.length >= 1,
   },
   {
     id: "trademark-master",
-    title: "Brand Quest Master Detective Certificate",
-    subtitle: "Complete World 15 to unlock your certificate",
+    title: "Little IP Detective Certificate of Completion",
+    subtitle: "Complete World 15 to unlock your Certificate of Completion",
     emoji: "🏆",
     // TEMPORARY TEST MODE: issue the certificate as soon as World 15 is
     // completed. Restore the all-world rule after certificate approval:

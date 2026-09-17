@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Check, CheckCircle2, Sparkles, Target } from "lucide-react";
 import { QuizQuestionCard } from "@/components/quiz";
 import { ColourQuesty, FamousLogoJigsaw } from "@/components/sections/WorldLessonActivities";
+import { IpDetectiveActivity } from "@/components/sections/IpDetectiveActivity";
 import { toQuizQuestions, worldTheme, type World } from "@/lib/worlds";
 
 /** Section heading styled to match the eyebrow + title pattern used in Levels 1–5. */
@@ -134,8 +135,13 @@ export function WorldDetailPanel({
           </div>
         </section>
 
-        {world.id % 2 === 1 && <ColourQuesty worldId={world.id} />}
-        {world.id % 2 === 0 && <FamousLogoJigsaw worldId={world.id} />}
+        {world.activity.kind === "colour" ? (
+          <ColourQuesty worldId={world.id} />
+        ) : world.activity.kind === "jigsaw" ? (
+          <FamousLogoJigsaw worldId={world.id} />
+        ) : (
+          <IpDetectiveActivity world={world} />
+        )
 
         {/* 7. Detective challenge */}
         <section>

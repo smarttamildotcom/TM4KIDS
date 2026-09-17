@@ -45,15 +45,14 @@ export function Hero() {
             className="mt-6 font-display text-4xl font-bold leading-tight text-detective-blue-900 sm:text-5xl lg:text-6xl"
           >
             Become a{" "}
-            <span className="text-detective-orange-500">Little Brand Detective!</span>
+            <span className="text-detective-orange-500">Little IP Detective!</span>
           </motion.h1>
 
           <motion.p
             variants={fadeUp}
             className="mx-auto mt-6 max-w-xl text-lg text-detective-blue-700/85 sm:text-xl lg:mx-0"
           >
-            Solve fun mysteries while learning how famous brands protect their
-            names, logos and ideas.
+            Explore brands, inventions, designs and creative works while solving fun mysteries with Questy.\n            15 Worlds. 4 Types of IP. One Big Adventure.
           </motion.p>
 
           <motion.div

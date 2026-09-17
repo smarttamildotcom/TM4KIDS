@@ -127,18 +127,18 @@ export async function POST(request: NextRequest) {
   const downloadUrl = new URL("/certificates/trademark-master", siteUrl).toString();
   const mail = await sendEmail({
     to: recipientEmail,
-    subject: "Your Brand Quest Master Detective Certificate",
+    subject: "Your Little IP Detective Certificate of Completion",
     text: [
-      "Congratulations! You completed World 15 of the Brand Quest journey.",
+      "Congratulations! You completed World 15 of the Little IP Detective journey.",
       "",
-      "Your Master Detective certificate is ready. Sign in anytime to download it:",
+      "Your Certificate of Completion is ready. Sign in anytime to download it:",
       downloadUrl,
       "",
       `Certificate ID: ${certificate.certificate_number ?? certificateNumber}`,
     ].join("\n"),
     html: `<div style="font-family:Arial,sans-serif;color:#0b2f5c;line-height:1.6">
       <h2 style="color:#e05a05">Your certificate is ready!</h2>
-      <p>Congratulations on completing World 15 of the Brand Quest journey.</p>
+      <p>Congratulations on completing World 15 of the Little IP Detective journey.</p>
       <p><a href="${downloadUrl}" style="display:inline-block;background:#0a52a1;color:#fff;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:bold">Download my certificate</a></p>
       <p>Certificate ID: ${certificate.certificate_number ?? certificateNumber}</p>
     </div>`,
