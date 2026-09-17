@@ -1,49 +1,76 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Download, Palette, RotateCcw, Sparkles } from "lucide-react";
 
 const PALETTE = ["#ef4444", "#f97316", "#facc15", "#4ade80", "#38bdf8", "#818cf8", "#c084fc", "#f472b6", "#92400e", "#ffffff"];
-const COLOUR_AREAS = [
-  { id: "hat", label: "Questy's hat", style: { left: "31%", top: "12%", width: "29%", height: "16%", clipPath: "ellipse(48% 45% at 50% 50%)" } },
-  { id: "face", label: "Questy's face", style: { left: "28%", top: "24%", width: "34%", height: "26%", clipPath: "ellipse(48% 45% at 50% 50%)" } },
-  { id: "coat", label: "Questy's coat", style: { left: "30%", top: "47%", width: "31%", height: "24%", clipPath: "polygon(18% 0, 82% 0, 100% 100%, 0 100%)" } },
-  { id: "tail", label: "Questy's tail", style: { left: "9%", top: "39%", width: "21%", height: "31%", clipPath: "ellipse(38% 48% at 56% 52%)" } },
-  { id: "magnifier", label: "Questy's magnifying glass", style: { left: "57%", top: "31%", width: "23%", height: "27%", clipPath: "ellipse(48% 45% at 50% 50%)" } },
-  { id: "lamp", label: "desk lamp", style: { left: "76%", top: "37%", width: "21%", height: "29%", clipPath: "polygon(20% 0, 75% 0, 100% 35%, 75% 50%, 75% 100%, 28% 100%, 28% 50%, 0 35%)" } },
-  { id: "star", label: "star clue", style: { left: "6%", top: "68%", width: "23%", height: "18%", clipPath: "polygon(50% 0, 62% 35%, 100% 38%, 70% 59%, 82% 100%, 50% 74%, 18% 100%, 30% 59%, 0 38%, 38% 35%)" } },
-  { id: "shoe", label: "shoe clue", style: { left: "29%", top: "70%", width: "31%", height: "16%", clipPath: "ellipse(48% 45% at 50% 50%)" } },
-  { id: "box", label: "box clue", style: { left: "62%", top: "69%", width: "27%", height: "19%", clipPath: "polygon(8% 18%, 88% 0, 96% 90%, 12% 100%)" } },
-] as const;
-
-function Celebration({ title }: { title: string }) {
-  return <div className="mt-6 overflow-hidden rounded-3xl bg-gradient-to-r from-fuchsia-500 via-detective-orange-500 to-detective-yellow-400 px-6 py-5 text-center text-white shadow-lg">
-    <div className="animate-bounce text-3xl" aria-hidden="true">🎉 ✨ 🥳 ✨ 🎉</div>
-    <p className="mt-2 font-display text-xl font-bold">{title}</p>
-    <p className="mt-1 font-semibold text-white/90">Fantastic detective work!</p>
-  </div>;
-}
-
 export function ColourQuesty() {
   const [colour, setColour] = useState(PALETTE[0]);
-  const [painted, setPainted] = useState<Record<string, string>>({});
-  const complete = COLOUR_AREAS.every((area) => painted[area.id]);
+  const [ready, setReady] = useState(false);
+  const imageRef = useRef<HTMLImageElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  function drawOriginal() {
+    const image = imageRef.current;
+    const canvas = canvasRef.current;
+    if (!image || !canvas) return;
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    canvas.getContext("2d")!.drawImage(image, 0, 0);
+    setReady(true);
+  }
+
+  function floodFill(event: React.PointerEvent<HTMLCanvasElement>) {
+    const canvas = canvasRef.current;
+    if (!canvas || !ready) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.floor((event.clientX - rect.left) * (canvas.width / rect.width));
+    const y = Math.floor((event.clientY - rect.top) * (canvas.height / rect.height));
+    const context = canvas.getContext("2d")!;
+    const image = context.getImageData(0, 0, canvas.width, canvas.height);
+    const { data, width, height } = image;
+    const start = (y * width + x) * 4;
+    // Dark pixels are the printed outlines. They are never painted.
+    if (data[start] < 180 || data[start + 1] < 180 || data[start + 2] < 180) return;
+
+    const [red, green, blue] = colour.match(/\w\w/g)!.map((item) => parseInt(item, 16));
+    const visited = new Uint8Array(width * height);
+    const queue = [y * width + x];
+    let cursor = 0;
+
+    while (cursor < queue.length) {
+      const point = queue[cursor++];
+      if (visited[point]) continue;
+      visited[point] = 1;
+      const offset = point * 4;
+      // Only white/light paper inside a closed black outline is recoloured.
+      if (data[offset] < 180 || data[offset + 1] < 180 || data[offset + 2] < 180) continue;
+      data[offset] = red; data[offset + 1] = green; data[offset + 2] = blue; data[offset + 3] = 255;
+      const px = point % width;
+      const py = Math.floor(point / width);
+      if (px > 0) queue.push(point - 1);
+      if (px < width - 1) queue.push(point + 1);
+      if (py > 0) queue.push(point - width);
+      if (py < height - 1) queue.push(point + width);
+    }
+
+    context.putImageData(image, 0, 0);
+  }
 
   return <section className="rounded-[2rem] border-2 border-detective-yellow-300 bg-detective-yellow-50 p-6 shadow-md sm:p-8">
     <div className="flex items-center justify-between gap-3"><div><p className="font-display text-sm font-semibold uppercase tracking-[0.18em] text-detective-orange-600">Colour Questy</p><h3 className="font-display text-2xl font-bold text-detective-blue-900">Tap and colour Questy&apos;s detective desk</h3></div><Palette className="h-9 w-9 text-detective-orange-500" aria-hidden="true" /></div>
-    <p className="mt-2 text-detective-blue-700/85">Choose a colour, then tap each part of the supplied colouring page.</p>
+    <p className="mt-2 text-detective-blue-700/85">Choose a colour, then tap inside one outlined area. Each tap paints only that enclosed area.</p>
     <div className="mt-6 grid gap-6 md:grid-cols-[1fr_auto] md:items-start">
       <div className="relative mx-auto w-full max-w-xl overflow-hidden rounded-3xl bg-white shadow-inner">
-        <img src="/api/activities/world-one-colouring" alt="Questy detective colouring page" className="block w-full" />
-        {COLOUR_AREAS.map((area) => <button key={area.id} type="button" aria-label={"Colour " + area.label} onClick={() => setPainted((current) => ({ ...current, [area.id]: colour }))} className="absolute opacity-70 transition-opacity hover:opacity-90 focus:opacity-90" style={{ ...area.style, backgroundColor: painted[area.id] ?? "transparent" }} />)}
+        <img ref={imageRef} src="/api/activities/world-one-colouring" alt="" onLoad={drawOriginal} className="hidden" />
+        <canvas ref={canvasRef} onPointerDown={floodFill} className={"block w-full touch-none " + (ready ? "cursor-crosshair" : "opacity-0")} aria-label="Tap an outlined area to paint it" />
       </div>
       <div className="flex max-w-64 flex-wrap justify-center gap-3">
         {PALETTE.map((item) => <button key={item} type="button" aria-label={"Use colour " + item} aria-pressed={colour === item} onClick={() => setColour(item)} className={"h-11 w-11 rounded-full border-4 border-white shadow-md ring-2 " + (colour === item ? "ring-detective-blue-700" : "ring-transparent")} style={{ backgroundColor: item }} />)}
         <a href="/api/activities/world-one-colouring" download="questy-colouring-page.png" className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-detective-blue-600 px-4 py-2 font-display text-sm font-semibold text-white"><Download className="h-4 w-4" aria-hidden="true"/>Download / print</a>
-        <button type="button" onClick={() => setPainted({})} className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-detective-blue-300 bg-white px-4 py-2 font-display text-sm font-semibold text-detective-blue-700"><RotateCcw className="h-4 w-4" aria-hidden="true"/>Start again</button>
+        <button type="button" onClick={drawOriginal} className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-detective-blue-300 bg-white px-4 py-2 font-display text-sm font-semibold text-detective-blue-700"><RotateCcw className="h-4 w-4" aria-hidden="true"/>Start again</button>
       </div>
     </div>
-    {complete && <Celebration title="You coloured every clue!" />}
   </section>;
 }
 
