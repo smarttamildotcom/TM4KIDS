@@ -74,12 +74,12 @@ export function ColourQuesty({ worldId = 1 }: { worldId?: number }) {
     <p className="mt-2 text-detective-blue-700/85">Choose a colour, then tap inside one outlined area. Each tap paints only that enclosed area.</p>
     <div className="mt-6 grid gap-6 md:grid-cols-[1fr_auto] md:items-start">
       <div className="relative mx-auto w-full max-w-xl overflow-hidden rounded-3xl bg-white shadow-inner">
-        <img ref={imageRef} src={`/activities/world-${worldId}-colour.png`} alt="" onLoad={drawOriginal} className="hidden" />
+        <img ref={imageRef} src={`/api/activities/colouring/${worldId}`} alt="" onLoad={drawOriginal} className="hidden" />
         <canvas ref={canvasRef} onPointerDown={floodFill} className={"block w-full touch-none " + (ready ? "cursor-crosshair" : "opacity-0")} aria-label="Tap an outlined area to paint it" />
       </div>
       <div className="flex max-w-64 flex-wrap justify-center gap-3">
         {PALETTE.map((item) => <button key={item} type="button" aria-label={"Use colour " + item} aria-pressed={colour === item} onClick={() => setColour(item)} className={"h-11 w-11 rounded-full border-4 border-white shadow-md ring-2 " + (colour === item ? "ring-detective-blue-700" : "ring-transparent")} style={{ backgroundColor: item }} />)}
-        <a href={`/activities/world-${worldId}-colour.png`} download={`world-${worldId}-questy-colouring-page.png`} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-detective-blue-600 px-4 py-2 font-display text-sm font-semibold text-white"><Download className="h-4 w-4" aria-hidden="true"/>Download / print</a>
+        <a href={`/api/activities/colouring/${worldId}`} download={`world-${worldId}-questy-colouring-page.png`} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-detective-blue-600 px-4 py-2 font-display text-sm font-semibold text-white"><Download className="h-4 w-4" aria-hidden="true"/>Download / print</a>
         <button type="button" onClick={() => { drawOriginal(); setFilledAreas(0); }} className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-detective-blue-300 bg-white px-4 py-2 font-display text-sm font-semibold text-detective-blue-700"><RotateCcw className="h-4 w-4" aria-hidden="true"/>Start again</button>
       </div>
     </div>
