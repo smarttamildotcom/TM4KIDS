@@ -43,7 +43,7 @@ const ZIGZAG_STEPS = [
 export function WorldOneActivities() {
   const [scene, setScene] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [colour, setColour] = useState(PALETTE[0].value);
+  const [colour, setColour] = useState<string>(PALETTE[0].value);
   const [colouredParts, setColouredParts] = useState<string[]>([]);
   const [puzzleStep, setPuzzleStep] = useState(0);
   const [puzzleMessage, setPuzzleMessage] = useState("");
