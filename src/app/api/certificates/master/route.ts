@@ -94,22 +94,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, error: "Could not save certificate." }, { status: 500 });
   }
 
-  if (existing) {
-    return NextResponse.json({ ok: true, certificate: existing, emailed: false });
-  }
+  // A previous delivery may have saved the certificate but failed while sending
+  // mail. Reuse that award and retry the member email instead of stopping early.
+  let certificate = existing;
+  if (!certificate) {
+    const { data: issuedCertificate, error: insertError } = await supabase
+      .from("certificates")
+      .insert({ user_id: member.user.id, certificate_number: certificateNumber })
+      .select("certificate_number, issued_at")
+      .single<CertificateRecord>();
 
-  const { data: certificate, error: insertError } = await supabase
-    .from("certificates")
-    .insert({ user_id: member.user.id, certificate_number: certificateNumber })
-    .select("certificate_number, issued_at")
-    .single<CertificateRecord>();
+    if (insertError || !issuedCertificate) {
+      console.error("[certificates/master] Certificate issue failed", {
+        code: insertError?.code,
+        message: insertError?.message,
+      });
+      return NextResponse.json({ ok: false, error: "Could not save certificate." }, { status: 500 });
+    }
 
-  if (insertError || !certificate) {
-    console.error("[certificates/master] Certificate issue failed", {
-      code: insertError?.code,
-      message: insertError?.message,
-    });
-    return NextResponse.json({ ok: false, error: "Could not save certificate." }, { status: 500 });
+    certificate = issuedCertificate;
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || request.nextUrl.origin;
