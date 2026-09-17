@@ -134,8 +134,8 @@ export function WorldDetailPanel({
           </div>
         </section>
 
-        {world.id === 1 && <ColourQuesty />}
-        {world.id === 2 && <FamousLogoJigsaw />}
+        {world.id % 2 === 1 && <ColourQuesty />}
+        {world.id % 2 === 0 && <FamousLogoJigsaw worldId={world.id} />}
 
         {/* 7. Detective challenge */}
         <section>
