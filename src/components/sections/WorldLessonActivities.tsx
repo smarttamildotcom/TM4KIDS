@@ -89,11 +89,11 @@ export function ColourQuesty() {
 
 const JIGSAW_PIECES = Array.from({ length: 12 }, (_, index) => index);
 const MIXED_PIECES = [7, 1, 10, 4, 0, 8, 3, 11, 5, 9, 2, 6];
-const LOGO_IMAGE = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#fff7ed"/><path d="M247 63c18-22 13-42 13-42-21 2-39 15-49 32-9 16-5 35-5 35 16 1 31-7 41-25z" fill="#22c55e"/><path d="M204 82c-38-43-110-32-129 17-14 35-4 76 18 109 25 38 56 78 91 78 18 0 25-11 46-11 20 0 27 11 46 11 35 0 63-38 85-76 20-34 31-76 17-112-20-50-90-58-127-16-12 13-18 13-47 0z" fill="#ef4444"/></svg>');
+const LOGO_IMAGE = "/api/activities/fruit-animal-jigsaw";
 function sliceStyle(piece: number) { const column = piece % 4; const row = Math.floor(piece / 4); return { backgroundImage: `url("${LOGO_IMAGE}")`, backgroundSize: "400% 300%", backgroundPosition: `${column * (100 / 3)}% ${row * 50}%` }; }
 
 export function FamousLogoJigsaw({ worldId }: { worldId: number }) {
-  const puzzleNames = ["Apple fruit logo", "Orange fruit logo", "Paw-print animal logo"];
+  const puzzleNames = ["fruit-and-animal logo", "famous fruit logo", "animal-paw logo"];
   const puzzleName = puzzleNames[(worldId / 2 - 1) % puzzleNames.length];
   const [selected, setSelected] = useState<number | null>(null);
   const [placed, setPlaced] = useState<number[]>([]);
