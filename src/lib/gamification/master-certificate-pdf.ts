@@ -79,7 +79,7 @@ async function loadImageDataUrl(source: string): Promise<string | null> {
 
 /**
  * Generates and downloads the high-resolution A4 (portrait) Master Brand
- * Detective certificate, awarded after all 15 worlds are complete.
+ * Detective certificate, temporarily awarded when World 15 is complete for testing.
  */
 export async function downloadMasterCertificatePdf(data: MasterCertificatePdfData) {
   const { jsPDF } = await import("jspdf");
@@ -152,7 +152,7 @@ export async function downloadMasterCertificatePdf(data: MasterCertificatePdfDat
   doc.setFontSize(11);
   doc.setTextColor(...NAVY);
   const intro = doc.splitTextToSize(
-    "has successfully completed all 15 Brand Quest Detective Worlds and demonstrated an understanding of:",
+    "has successfully completed World 15 of the Brand Quest Detective Journey and demonstrated an understanding of:",
     width - 70,
   );
   doc.text(intro, centre, 120, { align: "center" });
@@ -174,7 +174,7 @@ export async function downloadMasterCertificatePdf(data: MasterCertificatePdfDat
   doc.setFontSize(12);
   doc.text("Awarded the title", centre, 176, { align: "center" });
   doc.setFontSize(9);
-  doc.text("Questy proudly celebrates this 15-world achievement!", centre, 171, {
+  doc.text("Questy proudly celebrates this World 15 achievement!", centre, 171, {
     align: "center",
   });
 
