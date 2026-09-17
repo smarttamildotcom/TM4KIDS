@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 280" role="img" aria-label="Questy colouring page">
+  <rect width="360" height="280" fill="white"/>
+  <g fill="white" stroke="#0b2f5c" stroke-width="7" stroke-linejoin="round">
+    <path d="M118 96 L94 42 L151 68 M242 96 L266 42 L209 68"/>
+    <path d="M235 164 Q300 170 304 215 Q286 242 248 224" stroke-linecap="round"/>
+    <circle cx="180" cy="126" r="68"/>
+    <path d="M118 188 Q180 164 242 188 L262 250 L98 250 Z"/>
+    <path d="M132 84 Q180 45 228 84 L214 105 Q180 85 146 105 Z"/>
+    <circle cx="180" cy="205" r="28"/>
+    <circle cx="68" cy="74" r="24"/>
+  </g>
+  <g fill="white" stroke="#0b2f5c" stroke-width="4">
+    <ellipse cx="145" cy="126" rx="10" ry="15"/><ellipse cx="215" cy="126" rx="10" ry="15"/>
+  </g>
+  <g fill="#0b2f5c"><circle cx="146" cy="128" r="4"/><circle cx="214" cy="128" r="4"/></g>
+  <g fill="none" stroke="#0b2f5c" stroke-width="5" stroke-linecap="round"><path d="M170 148 Q180 158 190 148"/><path d="M57 74 L66 83 L81 63"/></g>
+  <path d="M180 186 L186 199 L201 201 L190 211 L193 226 L180 218 L167 226 L170 211 L159 201 L174 199 Z" fill="white" stroke="#0b2f5c" stroke-width="3"/>
+  <g stroke="#0b2f5c" stroke-width="3" stroke-linecap="round"><path d="M115 145 L80 140"/><path d="M115 155 L80 162"/><path d="M245 145 L280 140"/><path d="M245 155 L280 162"/></g>
+</svg>
