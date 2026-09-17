@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { LogIn, Lock, Mail, User } from "lucide-react";
 import {
@@ -28,7 +28,6 @@ const rules = {
 
 /** Mock login form. Redirects to /dashboard on success. */
 export function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/#journey";
   const { login, loginWith } = useAuth();
@@ -61,7 +60,7 @@ export function LoginForm() {
     setIsLoading(false);
 
     if (result.ok) {
-      router.push(redirectTo);
+      window.location.assign(redirectTo);
     } else {
       setFormError(result.error);
     }
@@ -72,7 +71,7 @@ export function LoginForm() {
     const result = await loginWith(provider);
     setIsLoading(false);
 
-    if (result.ok) router.push(redirectTo);
+    if (result.ok) window.location.assign(redirectTo);
     else setFormError(result.error);
   }
 
