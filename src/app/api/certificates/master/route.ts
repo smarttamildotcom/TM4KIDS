@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
     to: member.user.email,
     subject: "Your Brand Quest Master Detective Certificate",
     text: [
-      "Congratulations! You completed all 15 Brand Quest worlds.",
+      "Congratulations! You completed World 15 of the Brand Quest journey.",
       "",
       "Your Master Detective certificate is ready. Sign in anytime to download it:",
       downloadUrl,
