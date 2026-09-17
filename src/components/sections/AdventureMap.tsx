@@ -223,7 +223,13 @@ export function AdventureMap() {
           </div>
         </div>
 
-        {completedCount > 0 && (\n          <p className="mx-auto mt-8 max-w-xl rounded-2xl bg-detective-yellow-100 px-5 py-3 text-center font-display font-semibold text-detective-blue-900">\n            ✨ New IP missions are here! Tap any completed world to replay it.\n          </p>\n        )}\n\n        <div className="mx-auto mt-10 max-w-xl rounded-3xl border-2 border-detective-blue-100 bg-white/90 p-5 shadow-md">
+        {completedCount > 0 && (
+          <p className="mx-auto mt-8 max-w-xl rounded-2xl bg-detective-yellow-100 px-5 py-3 text-center font-display font-semibold text-detective-blue-900">
+            ✨ New IP missions are here! Tap any completed world to replay it.
+          </p>
+        )}
+
+        <div className="mx-auto mt-10 max-w-xl rounded-3xl border-2 border-detective-blue-100 bg-white/90 p-5 shadow-md">
           <div className="flex items-center justify-between font-display text-sm font-bold text-detective-blue-900">
             <span>
               🕵️ {completedCount} of {worlds.length} worlds solved
