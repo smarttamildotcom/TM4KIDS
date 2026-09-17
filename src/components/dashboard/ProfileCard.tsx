@@ -62,7 +62,7 @@ export function ProfileCard({
 
         <div className="w-full text-center sm:text-left">
           <p className="font-display text-sm font-semibold uppercase tracking-widest text-detective-yellow-300">
-            Level {level.level} · BrandQuest rank
+            Level {level.level} · IP Detective rank
           </p>
           <h1
             id="profile-heading"

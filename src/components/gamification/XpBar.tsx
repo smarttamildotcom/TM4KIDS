@@ -62,7 +62,7 @@ export function XpBar({
       >
         {nextTitle
           ? `Only ${xpToNext} XP to become a ${nextTitle}!`
-          : "You have reached the highest BrandQuest rank."}
+          : "You have reached the highest IP Detective rank."}
       </p>
     </div>
   );

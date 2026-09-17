@@ -4,7 +4,7 @@ import { MembershipRequestsProvider } from "@/hooks/admin/useMembershipRequests"
 
 // Keep the entire admin area out of search engines.
 export const metadata: Metadata = {
-  title: "Brand Quest Admin",
+  title: "IP2Kids Admin",
   robots: { index: false, follow: false, nocache: true },
 };
 

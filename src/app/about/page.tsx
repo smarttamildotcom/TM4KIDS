@@ -18,9 +18,8 @@ import {
 } from "@/lib/about-content";
 
 export const metadata: Metadata = {
-  title: "About Us | Brand Quest",
-  description:
-    "Inspiring the next generation of Little Brand Detectives through fun, interactive trademark education.",
+  title: "About IP2Kids | Intellectual Property Learning for Kids",
+  description: "Discover how IP2Kids helps children aged 7–12 learn about trademarks, patents, copyright and designs through interactive games and detective adventures.",
 };
 
 export default function AboutPage() {
@@ -49,23 +48,22 @@ export default function AboutPage() {
           <Container className="relative grid items-center gap-12 py-16 lg:grid-cols-2 lg:gap-16 lg:py-24">
             <div className="text-center lg:text-left">
               <p className="inline-flex items-center gap-2 rounded-full bg-detective-yellow-100 px-4 py-2 font-display text-sm font-semibold text-detective-orange-600">
-                Inspiring the Next Generation of Little Brand Detectives
+                Inspiring the Next Generation of Little IP Detectives
               </p>
 
               <h1 className="mt-6 font-display text-4xl font-bold leading-tight text-detective-blue-900 sm:text-5xl lg:text-6xl">
-                About Brand Quest
+                About IP2Kids
               </h1>
 
               <p className="mx-auto mt-6 max-w-xl text-lg text-detective-blue-700/85 sm:text-xl lg:mx-0">
-                Making trademark education fun, interactive and easy for
-                Primary School Students.
+                Making intellectual property education fun, interactive and easy for children aged 7–12.
               </p>
             </div>
 
             <div className="mx-auto flex w-full max-w-md justify-center">
               <Image
                 src={questyArt.reading}
-                alt="Questy reading a book of brand clues"
+                alt="Questy reading an IP detective casebook"
                 priority
                 sizes="(min-width: 640px) 360px, 260px"
                 className="h-[260px] w-auto object-contain drop-shadow-2xl sm:h-[360px]"
@@ -79,8 +77,8 @@ export default function AboutPage() {
           <Container>
             <SectionHeading
               eyebrow="Our mission"
-              title="Helping children understand the world of brands"
-              subtitle="Brand Quest helps children understand:"
+              title="Helping children discover the world of ideas"
+              subtitle="IP2Kids introduces children to the exciting world of intellectual property through stories, games, mysteries and interactive challenges."
             />
             <div className="mt-12">
               <InfoCardGrid items={missionPoints} />
@@ -88,13 +86,13 @@ export default function AboutPage() {
           </Container>
         </section>
 
-        {/* 3. Why Learn About Trademarks? */}
+        {/* 3. Why Learn About Intellectual Property? */}
         <section className="bg-detective-blue-50/70 py-16 sm:py-24">
           <Container>
             <SectionHeading
               eyebrow="Why it matters"
               title="Why Learn About Trademarks?"
-              subtitle="Trademark know-how gives every young detective a real-world superpower."
+              subtitle="Intellectual property helps children understand ideas, creativity and invention all around them."
             />
             <div className="mt-12">
               <InfoCardGrid items={whyLearnCards} />
@@ -107,8 +105,8 @@ export default function AboutPage() {
           <Container>
             <SectionHeading
               eyebrow="Our learning method"
-              title="A journey from curious learner to BrandQuest Champion"
-              subtitle="Every lesson follows the same fun, five-step path."
+              title="A journey from curious learner to Little IP Detective"
+              subtitle="Discover, learn, play and solve missions with Questy."
             />
             <div className="mt-12">
               <LearningTimeline steps={learningTimeline} />
@@ -135,9 +133,9 @@ export default function AboutPage() {
 
         {/* 7. CTA */}
         <CallToAction
-          title="Ready to start your adventure?"
-          subtitle="Join thousands of young detectives learning how brands protect their names, logos and mascots."
-          buttonLabel="Start Learning"
+          title="Ready to start your IP adventure?"
+          subtitle="Join Questy and explore 15 exciting worlds of trademarks, inventions, creativity and designs."
+          buttonLabel="Start Adventure"
           buttonHref="/#journey"
         />
       </main>

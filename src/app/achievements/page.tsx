@@ -7,9 +7,9 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AchievementsView } from "@/components/achievements/AchievementsView";
 
 export const metadata: Metadata = {
-  title: "My Achievements | Brand Quest",
+  title: "My Achievements | IP2Kids",
   description:
-    "See every badge and certificate you've earned at Brand Quest.",
+    "See every badge and certificate you've earned at IP2Kids.",
 };
 
 export default function AchievementsPage() {

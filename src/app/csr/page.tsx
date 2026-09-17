@@ -13,9 +13,9 @@ import {
 import { questyArt } from "@/lib/questy-art";
 
 export const metadata: Metadata = {
-  title: "CSR | Brand Quest",
+  title: "CSR | IP2Kids",
   description:
-    "How Brand Quest gives back — supporting children and families affected by cancer in Singapore.",
+    "How IP2Kids gives back — supporting children and families affected by cancer in Singapore.",
 };
 
 export default function CsrPage() {
@@ -58,7 +58,7 @@ export default function CsrPage() {
                   Giving Back Through Learning
                 </h1>
                 <p className="mt-6 max-w-xl text-lg text-detective-blue-700/85 sm:text-xl">
-                  Every contribution helps Brand Quest support children and families affected by
+                  Every contribution helps IP2Kids support children and families affected by
                   cancer in Singapore.
                 </p>
               </div>
@@ -72,7 +72,7 @@ export default function CsrPage() {
             <SectionHeading
               eyebrow="Our mission"
               title="Learning that reaches beyond the classroom"
-              subtitle="Giving is built into how Brand Quest works — not added on afterwards."
+              subtitle="Giving is built into how IP2Kids works — not added on afterwards."
             />
             <div className="mt-12">
               <MissionPoints />
@@ -118,7 +118,7 @@ export default function CsrPage() {
         <section className="pb-16 sm:pb-24">
           <Container>
             <p className="text-center text-sm text-detective-blue-700/70">
-              Together, every young Brand Detective helps make a real difference.
+              Together, every young IP Detective helps make a real difference.
             </p>
           </Container>
         </section>

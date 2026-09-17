@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { questyArt } from "@/lib/questy-art";
 import { fadeUp, inViewOnce, staggerContainer } from "@/lib/motion";
 
-/** "Meet Detective TM" mascot introduction. */
+/** Questy mascot introduction. */
 export function MascotIntro() {
   return (
     <motion.div
@@ -24,7 +24,7 @@ export function MascotIntro() {
         >
           <Image
             src={questyArt.detective}
-            alt="Questy, the Brand Quest detective mascot"
+            alt="Questy, the IP2Kids detective mascot"
             sizes="(min-width: 640px) 320px, 240px"
             className="h-[240px] w-auto object-contain drop-shadow-2xl sm:h-[320px]"
           />
@@ -42,15 +42,13 @@ export function MascotIntro() {
 
       <motion.div variants={fadeUp} className="text-center lg:text-left">
         <p className="font-display text-sm font-semibold uppercase tracking-widest text-detective-orange-500">
-          Meet Detective TM
+          Meet Questy
         </p>
         <h3 className="mt-2 font-display text-3xl font-bold text-detective-blue-900 sm:text-4xl">
-          Your guide through every mission
+          Your guide through every IP mission
         </h3>
         <p className="mt-4 text-lg text-detective-blue-700/85">
-          Detective TM guides children through exciting BrandQuest adventures —
-          cheering on every discovery, every quiz and every badge earned along
-          the way.
+          Questy guides young detectives through 15 exciting worlds — helping them explore trademarks, inventions, creative works and designs while cheering on every discovery, challenge and badge earned along the way.
         </p>
       </motion.div>
     </motion.div>

@@ -16,18 +16,17 @@ type MasterCertificateProps = {
   certificateId: string;
 };
 
-/** Understandings demonstrated by a Master Brand Detective. */
+/** Understandings demonstrated by a Master IP Detective. */
 const UNDERSTANDINGS = [
-  "Brands",
   "Trademarks",
-  "Copyright",
   "Patents",
+  "Copyright",
   "Designs",
-  "Trade Secrets",
-  "Brand Protection",
+  "Respecting creators",
+  "Original ideas",
 ];
 
-/** Printable A4 Master Brand Detective certificate with download + share actions. */
+/** Printable A4 Master IP Detective certificate with download + share actions. */
 export function MasterCertificate({
   studentName,
   completionDate,
@@ -50,8 +49,8 @@ export function MasterCertificate({
     const shareUrl =
       typeof window !== "undefined" ? window.location.href : "";
     const shareData = {
-      title: "Brand Quest Master Detective",
-      text: `${studentName} became a Master Brand Detective on Brand Quest!`,
+      title: "Little IP Detective Certificate of Completion",
+      text: `${studentName} became a Master IP Detective on IP2Kids!`,
       url: shareUrl,
     };
 
@@ -73,7 +72,7 @@ export function MasterCertificate({
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        aria-label="Brand Quest Master Detective Certificate"
+        aria-label="Little IP Detective Certificate of Completion"
         className="relative mx-auto max-w-3xl overflow-hidden rounded-[2rem] border-8 border-detective-yellow-400 bg-white p-6 text-center shadow-2xl sm:p-12"
       >
         <div
@@ -113,7 +112,7 @@ export function MasterCertificate({
           </p>
 
           <h2 className="mt-2 font-display text-3xl font-bold text-detective-blue-900 sm:text-4xl">
-            Certificate of Achievement
+            Certificate of Completion
           </h2>
 
           <p className="mt-6 text-detective-blue-700/85">This certifies that</p>
@@ -122,8 +121,7 @@ export function MasterCertificate({
           </p>
 
           <p className="mx-auto mt-6 max-w-xl text-detective-blue-700/85">
-            has successfully completed all 15 Brand Quest Detective Worlds and
-            demonstrated an understanding of:
+            has completed all 15 Little IP Detective Worlds and explored:
           </p>
 
           <ul className="mx-auto mt-4 grid max-w-md grid-cols-2 gap-x-6 gap-y-2 text-left">

@@ -89,7 +89,7 @@ export function DashboardView() {
             id="progress-heading"
             className="font-display text-xl font-bold text-detective-blue-900 sm:text-2xl"
           >
-            BrandQuest progress
+            IP2Kids progress
           </h2>
           <p className="font-display text-lg font-bold text-detective-orange-500">
             {coursePercent}%
@@ -98,7 +98,7 @@ export function DashboardView() {
 
         <ProgressBar
           percent={coursePercent}
-          label="Overall BrandQuest progress"
+          label="Overall IP2Kids progress"
           className="mt-4 bg-detective-blue-100"
         />
 

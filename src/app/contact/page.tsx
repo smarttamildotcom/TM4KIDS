@@ -10,9 +10,9 @@ import { CallToAction } from "@/components/sections/CallToAction";
 import { contactCard, faqItems } from "@/lib/contact-content";
 
 export const metadata: Metadata = {
-  title: "Contact Us | Brand Quest",
+  title: "Contact Us | IP2Kids",
   description:
-    "Get in touch with Brand Quest for general enquiries about lessons, memberships, schools and partnerships.",
+    "Get in touch with IP2Kids for general enquiries about lessons, memberships, schools and partnerships.",
 };
 
 export default function ContactPage() {
@@ -85,8 +85,8 @@ export default function ContactPage() {
 
         {/* Closing CTA */}
         <CallToAction
-          title="Become a Little Brand Detective today!"
-          subtitle="Join thousands of young detectives learning how brands protect their names, logos and mascots."
+          title="Ready to start your IP adventure?"
+          subtitle="Join Questy and explore 15 exciting worlds of trademarks, inventions, creativity and designs."
           buttonLabel="Start Adventure"
           buttonHref="/#journey"
         />

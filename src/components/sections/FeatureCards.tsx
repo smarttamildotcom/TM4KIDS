@@ -13,8 +13,8 @@ export function FeatureCards() {
       <Container>
         <SectionHeading
           eyebrow="Why kids love it"
-          title="Why Kids Love Brand Quest"
-          subtitle="Four reasons every mission feels like play, not homework."
+          title="Why Kids Love IP2Kids"
+          subtitle="Learning about ideas has never been this much fun! 15 Worlds. 4 Types of IP. One Big Adventure."
         />
 
         <motion.ul

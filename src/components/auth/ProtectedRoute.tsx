@@ -22,7 +22,7 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
             <Search className="h-7 w-7" />
           </span>
           <p className="mt-4 font-display font-semibold text-detective-blue-700">
-            Checking your BrandQuest badge…
+            Checking your IP Detective badge…
           </p>
         </div>
       </div>

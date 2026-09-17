@@ -76,7 +76,7 @@ export function Certificate({
           </p>
 
           <h2 className="mt-3 font-display text-3xl font-bold text-detective-blue-900 sm:text-4xl">
-            Certificate of Achievement
+            Certificate of Completion
           </h2>
 
           <p className="mt-6 text-detective-blue-700/85">
@@ -156,7 +156,7 @@ export function Certificate({
           </div>
 
           <p className="mt-6 inline-flex rounded-full bg-detective-yellow-100 px-5 py-2 font-display font-bold text-detective-orange-600">
-            Badge earned: BrandQuest Champion
+            Badge earned: Little IP Detective
           </p>
         </div>
       </motion.article>

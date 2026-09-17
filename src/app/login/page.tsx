@@ -4,9 +4,9 @@ import { AuthLayout } from "@/components/auth/AuthLayout";
 import { LoginForm } from "@/components/auth/LoginForm";
 
 export const metadata: Metadata = {
-  title: "Log In | Brand Quest",
+  title: "Log In | IP2Kids",
   description:
-    "Log in to continue your brand adventure at Brand Quest.",
+    "Log in to continue your IP Detective adventure at IP2Kids.",
 };
 
 export default function LoginPage() {

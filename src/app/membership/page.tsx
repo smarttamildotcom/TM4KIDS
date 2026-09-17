@@ -14,9 +14,9 @@ import {
 import { questyArt } from "@/lib/questy-art";
 
 export const metadata: Metadata = {
-  title: "Membership | Brand Quest",
+  title: "Membership | IP2Kids",
   description:
-    "Become a Brand Quest Member — unlock all 15 detective worlds while supporting children's charities in Singapore.",
+    "Become an IP2Kids Member — unlock all 15 detective worlds while supporting children's charities in Singapore.",
 };
 
 export default function MembershipPage() {
@@ -56,7 +56,7 @@ export default function MembershipPage() {
                   Brand Quest Membership
                 </p>
                 <h1 className="mt-3 font-display text-4xl font-bold leading-tight text-detective-blue-900 sm:text-5xl lg:text-6xl">
-                  Become a Brand Quest Member
+                  Become an IP2Kids Member
                 </h1>
                 <p className="mt-6 max-w-xl text-lg text-detective-blue-700/85 sm:text-xl">
                   Unlock all 15 detective worlds while supporting a meaningful cause.

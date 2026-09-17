@@ -49,7 +49,7 @@ export function MeetQuesty() {
             >
               <Image
                 src={questyImage}
-                alt="Questy the detective mascot reading a book of brand clues"
+                alt="Questy the detective mascot reading an IP casebook"
                 sizes="(min-width: 640px) 340px, 280px"
                 className="h-full w-auto object-contain drop-shadow-2xl"
               />
@@ -92,8 +92,7 @@ export function MeetQuesty() {
               className="mx-auto mt-4 max-w-md text-lg text-detective-blue-700/85 lg:mx-0"
             >
               I&apos;ll guide you through exciting missions where you&apos;ll
-              discover how famous brands protect their logos, names and
-              ideas.
+              explore trademarks, inventions, creative works and designs through exciting IP missions.
             </motion.p>
 
             <motion.ul

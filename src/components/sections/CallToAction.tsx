@@ -16,8 +16,8 @@ type CallToActionProps = {
 
 /** Closing call-to-action banner. Reused with different copy across pages. */
 export function CallToAction({
-  title = "Ready to begin your BrandQuest?",
-  subtitle = "Every great detective starts with one clue. Begin your adventure today.",
+  title = "Ready to start your IP adventure?",
+  subtitle = "Join Questy and explore 15 exciting worlds of trademarks, inventions, creativity and designs.",
   buttonLabel = "Start Adventure",
   buttonHref = "/#journey",
 }: CallToActionProps) {

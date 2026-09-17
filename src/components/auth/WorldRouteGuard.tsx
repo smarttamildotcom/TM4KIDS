@@ -58,7 +58,7 @@ export function WorldRouteGuard({
     router.replace("/#journey");
   }, [isLoaded, allowed, worldId, user, router]);
 
-  if (!isLoaded) return <Checking label="Checking your BrandQuest badge…" />;
+  if (!isLoaded) return <Checking label="Checking your IP Detective badge…" />;
   if (!allowed) return <Checking label="This world is locked — taking you back…" />;
 
   return <>{children}</>;

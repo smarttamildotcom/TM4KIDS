@@ -7,7 +7,7 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { ProfileView } from "@/components/profile/ProfileView";
 
 export const metadata: Metadata = {
-  title: "My Profile | Brand Quest",
+  title: "My Profile | IP2Kids",
   description: "View your detective account details and customise your avatar.",
 };
 

@@ -21,7 +21,7 @@ export function downloadCertificatePdf(
 
   doc.setTextColor(224, 90, 5);
   doc.setFontSize(30);
-  doc.text("Brand Quest", width / 2, 120, { align: "center" });
+  doc.text("IP2Kids", width / 2, 120, { align: "center" });
 
   doc.setTextColor(11, 47, 92);
   doc.setFontSize(20);
@@ -37,7 +37,7 @@ export function downloadCertificatePdf(
   doc.setFontSize(14);
   doc.setTextColor(11, 47, 92);
   doc.text(
-    "has successfully completed all 15 worlds of the Brand Quest programme.",
+    "has successfully completed all 15 worlds of the Little IP Detectives programme.",
     width / 2,
     305,
     { align: "center" },
@@ -52,5 +52,5 @@ export function downloadCertificatePdf(
     align: "center",
   });
 
-  doc.save(`brand-quest-certificate-${certificateNumber}.pdf`);
+  doc.save(`ip2kids-certificate-${certificateNumber}.pdf`);
 }

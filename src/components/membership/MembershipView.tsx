@@ -31,7 +31,7 @@ export function MembershipView() {
               <Star className="h-8 w-8 fill-detective-blue-900" aria-hidden="true" />
             </span>
             <h2 className="mt-6 font-display text-3xl font-bold text-detective-blue-900 sm:text-4xl">
-              You&apos;re a Brand Quest Member!
+              You&apos;re a IP2Kids Member!
             </h2>
             <p className="mt-4 text-lg text-detective-blue-700/85">
               All 15 detective worlds are unlocked. Thank you for supporting the mission.
@@ -99,7 +99,7 @@ export function MembershipView() {
             </div>
 
             <p className="mt-6 text-lg leading-relaxed text-detective-blue-700/85">
-              Every membership contribution helps Brand Quest continue creating educational
+              Every membership contribution helps IP2Kids continue creating educational
               adventures for children. Donations are made periodically by the founder to
               children&apos;s charities in Singapore, including organisations supporting children
               affected by cancer.
@@ -134,7 +134,7 @@ export function MembershipView() {
           <div className="mx-auto mt-12 max-w-2xl rounded-[2rem] border-2 border-detective-blue-100 bg-white p-6 shadow-sm sm:p-10">
             {!isLoaded ? (
               <p className="text-center font-display font-semibold text-detective-blue-700">
-                Checking your BrandQuest badge…
+                Checking your IP Detective badge…
               </p>
             ) : user ? (
               <ContributionForm onSubmitted={() => setJustSubmitted(true)} />

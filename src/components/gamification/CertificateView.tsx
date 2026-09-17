@@ -83,7 +83,7 @@ export function CertificateView() {
     (storedMasterCertificate
       ? {
           certificateNumber:
-            storedMasterCertificate.certificate_number ?? "BRAND-QUEST-MASTER",
+            storedMasterCertificate.certificate_number ?? "IP2KIDS-MASTER",
           awardedAt: storedMasterCertificate.issued_at ?? new Date().toISOString(),
         }
       : null);
