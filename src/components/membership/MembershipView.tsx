@@ -106,11 +106,7 @@ export function MembershipView() {
             </p>
 
             <p className="mt-4 text-sm font-semibold text-detective-orange-500">
-              Donation updates will be published regularly on our{" "}
-              <Link href="/csr" className="underline hover:text-detective-orange-600">
-                CSR page
-              </Link>
-              .
+              Donation updates will be published regularly here on the Membership page.
             </p>
           </motion.div>
         </Container>
