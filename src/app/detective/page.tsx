@@ -1,0 +1,1 @@
+import { DetectiveOnboarding } from "@/components/detective/DetectiveOnboarding";export default function DetectivePage(){return <DetectiveOnboarding/>}

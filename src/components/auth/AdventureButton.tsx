@@ -10,7 +10,7 @@ type AdventureButtonProps = {
   className?: string;
 };
 
-/** Sends every detective straight to the 15-world Journey map. */
+/** Sends every detective straight to the detective creator. */
 export function AdventureButton({
   children = "Start Adventure",
   size = "md",
@@ -18,7 +18,7 @@ export function AdventureButton({
   className,
 }: AdventureButtonProps) {
   return (
-    <Button href="/#journey" size={size} variant={variant} className={className}>
+    <Button href="/detective" size={size} variant={variant} className={className}>
       {children}
     </Button>
   );
