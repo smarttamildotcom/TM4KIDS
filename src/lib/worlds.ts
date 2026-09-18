@@ -155,32 +155,82 @@ type IpWorldSeed = Omit<World, "mcqs" | "trueFalse"> & {
   fact: WorldTrueFalse;
 };
 
-const makeIpWorld = ({ mcq, fact, ...world }: IpWorldSeed): World => ({
-  ...world,
-  mcqs: [
-    mcq,
-    {
-      question: "Which choice helps a detective protect a good idea?",
-      options: ["Notice what makes it special", "Copy it without asking", "Hide every clue", "Forget who made it"],
-      answerIndex: 0,
-      explanation: "IP detectives notice what is special and respect the people who create it.",
-    },
-    {
-      question: "What is the best next step when a clue is confusing?",
-      options: ["Make a careful choice", "Give up straight away", "Pretend it is invisible", "Copy a friend's answer"],
-      answerIndex: 0,
-      explanation: "Good detectives pause, look carefully and make a thoughtful choice.",
-    },
-  ],
-  trueFalse: [
-    fact,
-    {
-      statement: "Ideas and creative work can deserve respect and protection.",
-      answer: true,
-      explanation: "That is why different kinds of intellectual property exist.",
-    },
-  ],
-});
+
+const followUpQuestions: Record<
+  number,
+  { mcqs: [WorldMcq, WorldMcq]; fact: WorldTrueFalse }
+> = {
+  1: { mcqs: [
+    { question: "Which clue is something a person created?", options: ["A comic", "A rain cloud", "A shoe size", "A clock tick"], answerIndex: 0, explanation: "A comic is a creative work made by a person." },
+    { question: "Which four IP clue families will Questy explore?", options: ["Trademark, patent, copyright and design", "Cloud, rain, wind and snow", "Breakfast, lunch, dinner and snack", "Red, blue, green and yellow"], answerIndex: 0, explanation: "Those are the four detective keys in this journey." },
+  ], fact: { statement: "IP detectives can spot different kinds of creation clues in everyday life.", answer: true, explanation: "Names, inventions, art and product looks can all be clues." } },
+  2: { mcqs: [
+    { question: "What can help an idea grow into an invention?", options: ["Thinking of a problem to solve", "Copying a friend's work", "Ignoring every problem", "Choosing a random price"], answerIndex: 0, explanation: "Many useful inventions start with a problem." },
+    { question: "Which is an idea rather than a finished object?", options: ["A plan for a rainproof bag", "A bag already on a shelf", "A puddle", "A receipt"], answerIndex: 0, explanation: "A plan is an idea before it becomes an object." },
+  ], fact: { statement: "An idea can start small and grow with careful work.", answer: true, explanation: "Creators often improve ideas step by step." } },
+  3: { mcqs: [
+    { question: "Which clue could help you recognise a pretend bakery?", options: ["Its special name and logo", "Today’s temperature", "The shop floor", "A bus timetable"], answerIndex: 0, explanation: "A name and logo can act as trademark clues." },
+    { question: "A trademark is mainly a clue about...", options: ["Who a product or service comes from", "How an invention works", "The weather outside", "A song’s beat"], answerIndex: 0, explanation: "It helps people recognise a business." },
+  ], fact: { statement: "A trademark is different from the product itself.", answer: true, explanation: "It is an identity clue for the product or service." } },
+  4: { mcqs: [
+    { question: "What makes a strong original visual clue?", options: ["A fresh symbol you create", "An exact copy of another logo", "A blank page only", "A secret price tag"], answerIndex: 0, explanation: "Creating something original is the best choice." },
+    { question: "Which part can make a pretend ice-cream cart memorable?", options: ["Its own moon symbol", "A copied real-world mark", "A broken wheel", "A weather forecast"], answerIndex: 0, explanation: "An original symbol is a visual identity clue." },
+  ], fact: { statement: "Colours and shapes can help people remember a brand clue.", answer: true, explanation: "Visual details can be easier to notice and recall." } },
+  5: { mcqs: [
+    { question: "What is a good slogan for an imaginary drink?", options: ["Sip, smile, sparkle!", "Use another company’s slogan", "A full weather report", "A receipt number"], answerIndex: 0, explanation: "A short original phrase can be memorable." },
+    { question: "Which detail belongs to packaging?", options: ["A box pattern", "A patent drawing of a mechanism", "A school timetable", "A cloud shape"], answerIndex: 0, explanation: "Packaging can use patterns, shapes and words." },
+  ], fact: { statement: "Making up a fresh slogan is better than copying a familiar one.", answer: true, explanation: "Original presentation respects other creators." } },
+  6: { mcqs: [
+    { question: "Which clue means you should check a product more carefully?", options: ["A strangely misspelled label", "A clear safety label", "A trusted adult beside you", "A normal receipt"], answerIndex: 0, explanation: "Odd spelling can be a reason to pause and check." },
+    { question: "What is the safest next step with a suspicious online shop?", options: ["Ask a trusted adult", "Enter personal details quickly", "Share the link everywhere", "Guess that it is safe"], answerIndex: 0, explanation: "A trusted adult can help you decide safely." },
+  ], fact: { statement: "One unusual clue means you should check more carefully, not make a quick accusation.", answer: true, explanation: "Good detectives stay calm and gather information." } },
+  7: { mcqs: [
+    { question: "What does an inventor try to do?", options: ["Solve a problem in a new useful way", "Copy a logo", "Change the weather", "Hide a drawing"], answerIndex: 0, explanation: "Inventions often help solve problems." },
+    { question: "Which is an invention clue?", options: ["A new fold-out rain cover", "A bakery name", "A comic character", "A shoe pattern"], answerIndex: 0, explanation: "A new useful product feature can be an invention clue." },
+  ], fact: { statement: "Inventors can improve an idea after testing it.", answer: true, explanation: "Trying and improving are part of inventing." } },
+  8: { mcqs: [
+    { question: "What does a patent description explain?", options: ["How an invention works", "Only a product’s colour", "A song’s chorus", "A shop opening time"], answerIndex: 0, explanation: "Technical details help explain an invention." },
+    { question: "Why are clear invention details useful?", options: ["They show what is new and useful", "They make every logo the same", "They replace a name", "They hide the problem"], answerIndex: 0, explanation: "Details help people understand the solution." },
+  ], fact: { statement: "A patent clue is mainly about a technical invention, not its logo.", answer: true, explanation: "Names and logos are trademark clues." } },
+  9: { mcqs: [
+    { question: "What comes first on a good invention card?", options: ["The problem to solve", "A copied brand name", "A payment receipt", "A weather symbol"], answerIndex: 0, explanation: "A clear problem gives an invention purpose." },
+    { question: "Which feature could help explain an invention?", options: ["A labelled sketch", "Someone else’s logo", "An empty slogan", "A hidden problem"], answerIndex: 0, explanation: "Labels make an idea easier to understand." },
+  ], fact: { statement: "Your invention can be imaginative and still solve a real everyday problem.", answer: true, explanation: "Useful ideas can also be playful." } },
+  10: { mcqs: [
+    { question: "Which item is a creative work?", options: ["An original song", "A shoe size", "A rain cloud", "A bus stop"], answerIndex: 0, explanation: "Songs can be original creative works." },
+    { question: "What is a respectful way to share an artist’s work?", options: ["Ask first and give credit where appropriate", "Post it as your own", "Remove the artist’s name", "Copy it without checking"], answerIndex: 0, explanation: "Creators deserve respect for their work." },
+  ], fact: { statement: "Stories, music, art and photos can all be creative works.", answer: true, explanation: "They can be made through imagination and effort." } },
+  11: { mcqs: [
+    { question: "What should you do before using someone else’s drawing online?", options: ["Ask permission or check with a trusted adult", "Claim you made it", "Erase the credit", "Copy it quickly"], answerIndex: 0, explanation: "Permission and credit are respectful habits." },
+    { question: "Which work might be protected by copyright?", options: ["An original story", "A shoe price", "A puddle", "A calendar date"], answerIndex: 0, explanation: "Original creative expression can have copyright." },
+  ], fact: { statement: "Making your own artwork is a great way to respect creators.", answer: true, explanation: "Your own creativity matters too." } },
+  12: { mcqs: [
+    { question: "Which clue is about a product’s design?", options: ["Its special lamp shape", "Its technical motor", "Its shop name", "Its song"], answerIndex: 0, explanation: "Shape and appearance are design clues." },
+    { question: "How is a design clue different from a patent clue?", options: ["Design is about how it looks; patent is about how it works", "They are always identical", "Design is only a price", "Patent is only a colour"], answerIndex: 0, explanation: "They focus on different parts of a product." },
+  ], fact: { statement: "Patterns and decoration can be design clues.", answer: true, explanation: "They are part of an object’s visual appearance." } },
+  13: { mcqs: [
+    { question: "Robo-Rover has a new wheel mechanism. Which IP clue fits best?", options: ["Patent", "Trademark", "Copyright", "Design"], answerIndex: 0, explanation: "A technical mechanism is an invention clue." },
+    { question: "Robo-Rover has artwork on its box. Which IP clue fits best?", options: ["Copyright", "Patent", "Trademark", "Design"], answerIndex: 0, explanation: "Original artwork is a creative-work clue." },
+  ], fact: { statement: "Robo-Rover’s name/logo, mechanism, artwork and shell appearance can each point to different IP.", answer: true, explanation: "One product can contain several kinds of clues." } },
+  14: { mcqs: [
+    { question: "Which key opens the case for a new useful mechanism?", options: ["Patent", "Trademark", "Copyright", "Design"], answerIndex: 0, explanation: "A new useful mechanism is an invention clue." },
+    { question: "Which key opens the case for an original museum poster?", options: ["Copyright", "Trademark", "Patent", "Design"], answerIndex: 0, explanation: "An original poster is creative work." },
+  ], fact: { statement: "A master detective chooses the best IP key by reading each clue closely.", answer: true, explanation: "The same product can have several different clues." } },
+  15: { mcqs: [
+    { question: "Which habit shows you are a Little IP Detective?", options: ["Respect creators and make original ideas", "Copy without asking", "Ignore every clue", "Share private details"], answerIndex: 0, explanation: "Respect and creativity are key detective habits." },
+    { question: "What does your Certificate of Completion celebrate?", options: ["Your learning journey", "A professional licence", "A shopping reward", "A secret pass"], answerIndex: 0, explanation: "It celebrates what you learned across the journey." },
+  ], fact: { statement: "Graduation is a celebration of your learning, curiosity and respectful creator habits.", answer: true, explanation: "You have completed the Little IP Detective journey." } },
+};
+
+const makeIpWorld = ({ mcq, fact, ...world }: IpWorldSeed): World => {
+  const followUp = followUpQuestions[world.id];
+
+  return {
+    ...world,
+    mcqs: [mcq, ...followUp.mcqs],
+    trueFalse: [fact, followUp.fact],
+  };
+};
 
 export const worlds: World[] = [
   makeIpWorld({

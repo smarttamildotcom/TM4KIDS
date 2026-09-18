@@ -7,8 +7,7 @@ import { QrCode } from "lucide-react";
  * PayNow contribution option. Displays the QR image when one is available and
  * falls back to a placeholder automatically until it is added.
  *
- * To go live, drop the QR image at `public/paynow-qr.png` (or pass a different
- * `qrSrc`). No code changes are needed — the placeholder disappears on its own.
+ * The provided QR image is served directly from `public/paynow-qr.png`.
  */
 export function PayNowCard({ qrSrc = "/paynow-qr.png" }: { qrSrc?: string }) {
   const [hasImage, setHasImage] = useState(true);
@@ -29,7 +28,7 @@ export function PayNowCard({ qrSrc = "/paynow-qr.png" }: { qrSrc?: string }) {
           // eslint-disable-next-line @next/next/no-img-element -- swappable placeholder image, existence checked at runtime.
           <img
             src={qrSrc}
-            alt="Brand Quest PayNow QR code"
+            alt="IP2Kids PayNow QR code"
             onError={() => setHasImage(false)}
             className="h-full w-full object-contain"
           />
