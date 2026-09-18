@@ -89,6 +89,49 @@ export async function POST(request: NextRequest) {
     emailRedirectTo = new URL("/login", request.nextUrl.origin).toString();
   }
 
+  // A prior attempt can already have created a profile/auth record. Check
+  // before sign-up so a second attempt never reaches the unique email error.
+  let existingProfile: { id: string } | null = null;
+  let supabase: ReturnType<typeof getServiceClient>;
+  try {
+    supabase = getServiceClient();
+    const { data, error } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle();
+    if (error) throw error;
+    existingProfile = data;
+  } catch (error) {
+    console.error("[auth/register] Could not check the existing profile.", error);
+    return NextResponse.json(
+      { ok: false, error: "Registration is temporarily unavailable. Please try again later." },
+      { status: 500 },
+    );
+  }
+
+  if (existingProfile) {
+    const { data: existingAuth } = await supabase.auth.admin.getUserById(existingProfile.id);
+    const existingUser = existingAuth.user;
+
+    if (existingUser && !existingUser.email_confirmed_at) {
+      const { error: resendError } = await auth.auth.resend({
+        type: "signup",
+        email,
+        options: { emailRedirectTo },
+      });
+      if (!resendError) {
+        return NextResponse.json({ ok: true, verificationRequired: true });
+      }
+      console.error("[auth/register] Could not resend verification email.", resendError);
+    }
+
+    return NextResponse.json(
+      { ok: false, error: "An account with that email already exists. Please sign in, reset your password, or check your inbox for the verification email." },
+      { status: 409 },
+    );
+  }
+
   // signUp is the Supabase flow that sends the confirmation email when
   // Confirm Email is enabled in the project's Email provider settings.
   const { data: created, error: createError } = await auth.auth.signUp({
@@ -112,7 +155,6 @@ export async function POST(request: NextRequest) {
   }
 
   const userId = created.user.id;
-  const supabase = getServiceClient();
 
   // Upsert safely completes a profile left behind by an interrupted prior
   // registration attempt, rather than treating it as a fatal duplicate.
