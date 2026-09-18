@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import { ArrowRight, Check, CheckCircle2, Sparkles, Target } from "lucide-react";
 import { QuizQuestionCard } from "@/components/quiz";
 import { toQuizQuestions, worldTheme, type World } from "@/lib/worlds";
-import { WorldCompletionExperience } from "@/components/sections/WorldCompletionExperience";\nimport { DetectiveActivity } from "@/components/sections/DetectiveActivity";
+import { WorldCompletionExperience } from "@/components/sections/WorldCompletionExperience";
+import { DetectiveActivity } from "@/components/sections/DetectiveActivity";
 
 /** Section heading styled to match the eyebrow + title pattern used in Levels 1–5. */
 function LessonHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
