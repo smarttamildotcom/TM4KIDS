@@ -1,3 +1,14 @@
+export type InfoCardItem = {
+  emoji: string;
+  title: string;
+  description: string;
+  surface: string;
+  badge: string;
+};
+export type AboutIconName = "award" | "gamepad" | "graduation-cap" | "heart" | "lightbulb" | "puzzle" | "search" | "sprout" | "sparkles" | "trophy";
+export type TimelineStep = { label: string; icon: AboutIconName };
+export type ValueItem = { label: string; icon: AboutIconName };
+
 export type AboutCard = {
   emoji: string;
   title: string;
