@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Check, CheckCircle2, Sparkles, Target } from "lucide-react";
 import { QuizQuestionCard } from "@/components/quiz";
 import { toQuizQuestions, worldTheme, type World } from "@/lib/worlds";
-import { WorldCompletionExperience } from "@/components/sections/WorldCompletionExperience";
+import { WorldCompletionExperience } from "@/components/sections/WorldCompletionExperience";\nimport { DetectiveActivity } from "@/components/sections/DetectiveActivity";
 
 /** Section heading styled to match the eyebrow + title pattern used in Levels 1–5. */
 function LessonHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
@@ -109,11 +109,11 @@ export function WorldDetailPanel({
           </div>
         </section>
 
-        {/* 5 + 6. Three multiple choice, then two true or false */}
+        {/* Detective Step 7: a lightweight, replayable activity. */}\n        <DetectiveActivity world={world} />\n\n        {/* Detective Steps 4–6: questions and true/false. */}
         <section>
           <LessonHeading
-            eyebrow="Think like a detective"
-            title="Five questions to earn your badge"
+            eyebrow="Detective steps 4–6"
+            title="Detective questions"
           />
           <div className="mx-auto mt-8 max-w-3xl space-y-6">
             {questions.map((question, index) => (
@@ -134,9 +134,9 @@ export function WorldDetailPanel({
           </div>
         </section>
 
-        {/* 7. Detective challenge */}
+        {/* Detective Step 8: apply the clue. */}
         <section>
-          <LessonHeading eyebrow="Detective challenge" title={world.challenge.title} />
+          <LessonHeading eyebrow="Detective step 8 · Challenge" title={world.challenge.title} />
           <div className="mx-auto mt-8 max-w-3xl rounded-3xl border-2 border-detective-orange-400 bg-detective-orange-100/50 p-6 shadow-lg sm:p-8">
             <h4 className="flex items-center gap-2 font-display text-xl font-bold text-detective-blue-900">
               <Target className="h-5 w-5 text-detective-orange-500" aria-hidden="true" />
@@ -152,9 +152,9 @@ export function WorldDetailPanel({
           </div>
         </section>
 
-        {/* 8. Reward */}
+        {/* Detective Steps 9–10: fact and mission complete. */}
         <section>
-          <LessonHeading eyebrow="Reward" title="Case closed, detective!" />
+          <LessonHeading eyebrow="Mission complete" title="Case closed, detective!" />
           <div
             className={`mx-auto mt-8 max-w-3xl rounded-3xl border-2 bg-white p-6 text-center shadow-lg sm:p-8 ${theme.border}`}
           >

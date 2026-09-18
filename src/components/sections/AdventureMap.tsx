@@ -19,7 +19,7 @@ import {
   readPendingWorld,
   rememberPendingWorld,
 } from "@/lib/access";
-import { totalJourneyXp, worlds } from "@/lib/worlds";
+import { journeyChapters, totalJourneyXp, worlds } from "@/lib/worlds";
 
 /** Treasure-map scenery floating behind the path. Decorative only. */
 const scenery: { emoji: string; className: string; duration: number }[] = [
@@ -250,29 +250,28 @@ export function AdventureMap() {
           </div>
         </div>
 
-        <ol className="mt-14 grid list-none grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {worlds.map((world, index) => (
-            <motion.li
-              key={world.id}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className={`${zigzagClass(index)} ${expandedId === world.id ? "sm:col-span-2 lg:col-span-3 lg:translate-y-0" : ""}`}
-            >
-              <WorldCard
-                world={world}
-                status={statuses[index]}
-                isActive={index === activeIndex}
-                isExpanded={expandedId === world.id}
-                onToggle={() => handleToggle(world.id)}
-                onRequestUnlock={() => gateWorld(world.id)}
-                onComplete={(correct, total) => handleComplete(world.id, correct, total)}
-                onNextWorld={handleNextWorld}
-              />
-            </motion.li>
-          ))}
-        </ol>
+        <div className="mt-14 space-y-14">
+          {journeyChapters.map((chapter) => {
+            const chapterWorlds = worlds.filter((world) => chapter.worldIds.includes(world.id));
+            const chapterComplete = chapterWorlds.filter((world) => player.completedWorldIds.includes(world.id)).length;
+            return (
+              <section key={chapter.id} aria-labelledby={`chapter-${chapter.id}`} className="rounded-[2rem] border-2 border-detective-blue-100 bg-white/60 p-4 shadow-sm sm:p-6">
+                <div className="mb-7 flex flex-col gap-2 rounded-3xl bg-detective-blue-900 px-5 py-4 text-white sm:flex-row sm:items-center sm:justify-between">
+                  <div><p className="font-display text-xs font-semibold uppercase tracking-[.2em] text-detective-yellow-300">Chapter {chapter.id} · {chapter.focus}</p><h3 id={`chapter-${chapter.id}`} className="mt-1 font-display text-2xl font-bold">{chapter.title}</h3><p className="mt-1 text-sm text-white/80">{chapter.setting}</p></div>
+                  <span className="rounded-full bg-white/15 px-4 py-2 font-display text-sm font-semibold">{chapterComplete} / {chapterWorlds.length} Worlds Complete</span>
+                </div>
+                <ol className="grid list-none grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  {chapterWorlds.map((world) => {
+                    const index = world.id - 1;
+                    return <motion.li key={world.id} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }} className={`${zigzagClass(index)} ${expandedId === world.id ? "sm:col-span-2 lg:col-span-3 lg:translate-y-0" : ""}`}>
+                      <WorldCard world={world} status={statuses[index]} isActive={index === activeIndex} isExpanded={expandedId === world.id} onToggle={() => handleToggle(world.id)} onRequestUnlock={() => gateWorld(world.id)} onComplete={(correct, total) => handleComplete(world.id, correct, total)} onNextWorld={handleNextWorld} />
+                    </motion.li>;
+                  })}
+                </ol>
+              </section>
+            );
+          })}
+        </div>
       </Container>
 
       <AnimatePresence>
