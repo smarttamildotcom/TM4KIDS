@@ -1,0 +1,4 @@
+export type CreatorPortfolio = { version: 1; creations: Record<number, Record<string, string>> };
+export const CREATOR_PORTFOLIO_KEY = "ip2kids.creator-portfolio";
+export function readCreatorPortfolio(): CreatorPortfolio { try { const raw=window.localStorage.getItem(CREATOR_PORTFOLIO_KEY); const value=raw?JSON.parse(raw):null; return value?.version===1&&value.creations?value:{version:1,creations:{}}; } catch { return {version:1,creations:{}}; } }
+export function saveCreatorCreation(worldId:number, creation:Record<string,string>) { try { const current=readCreatorPortfolio(); window.localStorage.setItem(CREATOR_PORTFOLIO_KEY,JSON.stringify({version:1,creations:{...current.creations,[worldId]:creation}})); return true; } catch { return false; } }
