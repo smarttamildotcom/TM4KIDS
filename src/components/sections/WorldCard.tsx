@@ -19,6 +19,8 @@ type WorldCardProps = {
   onRequestUnlock: () => void;
   onComplete: (correct: number, total: number) => void;
   onNextWorld: (worldId: number) => void;
+  caseTitle?: string;
+  caseScene?: string;
 };
 
 /** Circular progress indicator drawn around the world number. */
@@ -62,6 +64,8 @@ export function WorldCard({
   onRequestUnlock,
   onComplete,
   onNextWorld,
+  caseTitle,
+  caseScene,
 }: WorldCardProps) {
   const theme = worldTheme[world.color];
   const isLocked = status === "locked";
