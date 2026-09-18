@@ -14,12 +14,12 @@ export type EmailContent = { subject: string; text: string; html: string };
 export function buildMemberApprovalEmail(
   payload: ApprovalEmailPayload,
 ): EmailContent {
-  const subject = "Welcome to Brand Quest!";
+  const subject = "Welcome to IP2Kids!";
   const text = [
     `Hi ${payload.name},`,
     "",
     "Congratulations!",
-    "Your Brand Quest Membership has been activated.",
+    "Your IP2Kids Membership has been activated.",
     "You now have unlimited access to all 15 detective worlds.",
     "",
     "Happy Learning!",
@@ -29,10 +29,10 @@ export function buildMemberApprovalEmail(
 
   const html = `
     <div style="font-family: Arial, sans-serif; color: #0b2f5c; line-height: 1.6;">
-      <h2 style="color: #e05a05; margin-bottom: 8px;">Welcome to Brand Quest!</h2>
+      <h2 style="color: #e05a05; margin-bottom: 8px;">Welcome to IP2Kids!</h2>
       <p>Hi ${payload.name},</p>
       <p><strong>Congratulations!</strong></p>
-      <p>Your Brand Quest Membership has been activated.</p>
+      <p>Your IP2Kids Membership has been activated.</p>
       <p>You now have unlimited access to all 15 detective worlds.</p>
       <p>Happy Learning!</p>
       <p style="margin-top: 24px; color: #0a52a1;">— Questy</p>

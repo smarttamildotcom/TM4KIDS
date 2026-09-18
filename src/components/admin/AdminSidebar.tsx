@@ -26,7 +26,7 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
           <Shield className="h-5 w-5" aria-hidden="true" />
         </span>
         <div>
-          <p className="font-display text-lg font-bold leading-tight">Brand Quest</p>
+          <p className="font-display text-lg font-bold leading-tight">IP2Kids</p>
           <p className="text-xs text-detective-blue-200">Admin Console</p>
         </div>
       </div>

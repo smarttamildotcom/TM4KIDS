@@ -49,7 +49,7 @@ export function AdminLoginView() {
             <Shield className="h-7 w-7" aria-hidden="true" />
           </span>
           <h1 className="mt-4 font-display text-2xl font-bold text-detective-blue-900">
-            Brand Quest Admin
+            IP2Kids Admin
           </h1>
           <p className="mt-1 text-sm text-detective-blue-700/70">
             Sign in to manage the platform.

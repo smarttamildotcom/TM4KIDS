@@ -53,7 +53,7 @@ export default function MembershipPage() {
 
               <div>
                 <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-detective-orange-500">
-                  Brand Quest Membership
+                  IP2Kids Membership
                 </p>
                 <h1 className="mt-3 font-display text-4xl font-bold leading-tight text-detective-blue-900 sm:text-5xl lg:text-6xl">
                   Become an IP2Kids Member
@@ -73,7 +73,7 @@ export default function MembershipPage() {
             <SectionHeading
               eyebrow="Our shared mission"
               title="Learning That Gives Back"
-              subtitle="Every Brand Quest membership supports a learning adventure and helps our giving mission reach further."
+              subtitle="Every IP2Kids membership supports a learning adventure and helps our giving mission reach further."
             />
             <div className="mt-12">
               <MissionPoints />

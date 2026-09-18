@@ -45,7 +45,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
           <p className="font-display font-bold text-detective-blue-900">
-            Brand Quest Admin
+            IP2Kids Admin
           </p>
         </header>
 

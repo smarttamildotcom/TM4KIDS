@@ -118,7 +118,7 @@ export function CelebrationModal({
 
         <p className="mx-auto mt-4 max-w-lg text-base text-detective-blue-700/85">
           You&apos;re now ready to explore the remaining 13 detective worlds, unlock exclusive
-          missions, collect badges and become a Brand Quest Master Detective.
+          missions, collect badges and become a IP2Kids Master Detective.
         </p>
 
         <ul className="mt-8 grid gap-4 sm:grid-cols-3">

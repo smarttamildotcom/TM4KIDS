@@ -82,7 +82,7 @@ export function DashboardHome() {
     <div>
       <AdminSectionHeading
         title="Dashboard"
-        description="A live snapshot of the Brand Quest community."
+        description="A live snapshot of the IP2Kids community."
       />
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

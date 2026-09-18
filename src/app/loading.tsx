@@ -11,7 +11,7 @@ export default function Loading() {
           <Search className="h-7 w-7" />
         </span>
         <p className="mt-4 font-display font-semibold text-detective-blue-700">
-          Loading your BrandQuest…
+          Loading your IP2Kids…
         </p>
       </div>
     </main>

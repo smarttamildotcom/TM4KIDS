@@ -18,7 +18,7 @@ export function MembershipCard() {
 
         <div className="relative flex items-center gap-2 font-display text-sm font-semibold uppercase tracking-[0.2em] text-detective-yellow-300">
           <Star className="h-5 w-5 fill-detective-yellow-300" aria-hidden="true" />
-          Brand Quest Membership
+          IP2Kids Membership
         </div>
 
         <p className="relative mt-6 font-display text-lg font-semibold text-detective-blue-100">

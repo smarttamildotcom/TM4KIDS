@@ -18,7 +18,7 @@ type WorldArt = { src: StaticImageData; alt: string };
 const detective: WorldArt = { src: detectiveQuesty, alt: "Questy on the case with a magnifying glass" };
 const thinking: WorldArt = { src: thinkingQuesty, alt: "Questy thinking hard about a clue" };
 const reading: WorldArt = { src: readingQuesty, alt: "Questy reading a detective book" };
-const standing: WorldArt = { src: questyImage, alt: "Questy the Brand Quest mascot" };
+const standing: WorldArt = { src: questyImage, alt: "Questy the IP2Kids mascot" };
 const celebrating: WorldArt = { src: celebratingQuesty, alt: "Questy celebrating a solved case" };
 
 /** Questy artwork shown on each world card, cycling through the illustration set. */

@@ -31,7 +31,7 @@ export function QuestyHeroIllustration() {
       >
         <Image
           src={questyImage}
-          alt="Questy, the Brand Quest detective mascot"
+          alt="Questy, the IP2Kids detective mascot"
           priority
           className="h-full w-auto object-contain drop-shadow-2xl"
         />

@@ -52,14 +52,14 @@ export function buildMemberEmail(
   ];
 
   const text = [
-    "New Brand Quest Member",
+    "New IP2Kids Member",
     "",
     ...rows.map(([label, value]) => `${label}: ${value}`),
   ].join("\n");
 
   const html = `
     <div style="font-family: Arial, sans-serif; color: #0b2f5c;">
-      <h2 style="color: #e05a05;">New Brand Quest Member</h2>
+      <h2 style="color: #e05a05;">New IP2Kids Member</h2>
       <table cellpadding="6" style="border-collapse: collapse;">
         ${rows
           .map(
@@ -72,7 +72,7 @@ export function buildMemberEmail(
   `.trim();
 
   return {
-    subject: `New Brand Quest Member: ${payload.name}`,
+    subject: `New IP2Kids Member: ${payload.name}`,
     text,
     html,
   };

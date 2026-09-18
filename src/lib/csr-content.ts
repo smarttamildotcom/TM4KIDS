@@ -40,7 +40,7 @@ export const missionPoints: MissionPoint[] = [
   {
     emoji: "🎓",
     title: "Education with purpose",
-    body: "Brand Quest believes education should create a positive impact far beyond the classroom.",
+    body: "IP2Kids believes education should create a positive impact far beyond the classroom.",
   },
   {
     emoji: "🪙",

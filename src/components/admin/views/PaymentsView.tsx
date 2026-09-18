@@ -60,8 +60,8 @@ export function PaymentsView() {
         description="All membership contributions and their status."
         action={
           <ExportButtons
-            filename="brand-quest-payments"
-            title="Brand Quest Payments"
+            filename="ip2kids-payments"
+            title="IP2Kids Payments"
             columns={exportColumns}
             rows={filtered}
           />

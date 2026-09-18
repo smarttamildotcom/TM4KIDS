@@ -72,7 +72,7 @@ export function PremiumGateModal({ onClose }: { onClose: () => void }) {
 
         <p className="mx-auto mt-3 max-w-md text-base text-detective-blue-700/85">
           Create your free account to continue exploring the remaining 13 worlds, save your
-          progress, earn badges and become a Master Brand Detective.
+          progress, earn badges and become a Master IP Detective.
         </p>
 
         <div className="mt-8 flex flex-col gap-3">
