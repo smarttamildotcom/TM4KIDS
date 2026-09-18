@@ -8,7 +8,6 @@ import { QuestyExpression } from "@/components/illustrations/QuestyExpression";
 import { downloadMasterCertificatePdf } from "@/lib/gamification/master-certificate-pdf";
 import { useNotify } from "@/lib/notifications/NotificationProvider";
 import { BRAND } from "@/lib/brand";
-import brandQuestLogo from "@/Brand Quest Logo.png";
 
 type MasterCertificateProps = {
   studentName: string;
@@ -96,9 +95,11 @@ export function MasterCertificate({
 
         <div className="relative">
           <Image
-            src={brandQuestLogo}
-            alt={`${BRAND.name} logo`}
-            className="mx-auto h-16 w-auto object-contain"
+            src="/ip2kids-little-ip-detectives-logo.png"
+            alt="IP2Kids – Little IP Detectives"
+            width={192}
+            height={192}
+            className="mx-auto h-24 w-24 object-contain sm:h-28 sm:w-28"
           />
 
           <div className="mt-4 flex items-center justify-center">
@@ -141,7 +142,7 @@ export function MasterCertificate({
 
           <p className="mt-8 text-detective-blue-700/85">Awarded the title</p>
           <p className="mt-2 font-display text-2xl font-bold uppercase tracking-wide text-detective-orange-500">
-            Master Brand Detective
+            Master IP Detective
           </p>
 
           {/* Gold seal */}

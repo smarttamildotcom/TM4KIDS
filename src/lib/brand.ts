@@ -8,6 +8,6 @@ export const BRAND = {
   courseName: "Little IP Detectives programme",
   achievement: "Little IP Detective",
   signature: "IP2Kids Education Team",
-  founder: "Bala Chandran",
+  founder: "Balaji",
   copyright: "© 2026 IP2Kids. All Rights Reserved.",
 } as const;

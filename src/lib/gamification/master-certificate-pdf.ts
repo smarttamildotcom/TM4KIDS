@@ -1,5 +1,4 @@
 import { BRAND } from "@/lib/brand";
-import brandQuestLogo from "@/Brand Quest Logo.png";
 import questyImage from "@/Questy Image.png";
 
 export type MasterCertificatePdfData = {
@@ -18,7 +17,7 @@ const UNDERSTANDINGS = [
   "Original ideas",
 ];
 
-// Brand Quest palette as RGB tuples for jsPDF.
+// IP2Kids palette as RGB tuples for jsPDF.
 const NAVY: [number, number, number] = [11, 47, 92];
 const BLUE: [number, number, number] = [26, 134, 240];
 const ORANGE: [number, number, number] = [224, 90, 5];
@@ -102,20 +101,20 @@ export async function downloadMasterCertificatePdf(data: MasterCertificatePdfDat
   drawStar(doc, 24, height - 24, 5);
   drawStar(doc, width - 24, height - 24, 5);
 
-  // Brand Quest logo (best effort) with a wordmark fallback.
+  // Official IP2Kids Little IP Detectives logo (best effort).
   const [logo, questy] = await Promise.all([
-    loadImageDataUrl(brandQuestLogo.src),
+    loadImageDataUrl("/ip2kids-little-ip-detectives-logo.png"),
     loadImageDataUrl(questyImage.src),
   ]);
   if (logo) {
     try {
-      doc.addImage(logo, "PNG", centre - 20, 24, 40, 26, undefined, "FAST");
+      doc.addImage(logo, "PNG", centre - 18, 18, 36, 36, undefined, "FAST");
     } catch {
       // Ignore malformed image data; the wordmark below still identifies the brand.
     }
   }
 
-  // Questy, the Brand Quest cat detective, celebrates alongside the award.
+  // Questy celebrates alongside the award.
   if (questy) {
     try {
       doc.addImage(questy, "PNG", 24, 182, 38, 38, undefined, "FAST");
@@ -127,24 +126,24 @@ export async function downloadMasterCertificatePdf(data: MasterCertificatePdfDat
   doc.setTextColor(...NAVY);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(16);
-  doc.text(BRAND.name.toUpperCase(), centre, 58, { align: "center" });
+  doc.text(BRAND.name.toUpperCase(), centre, 60, { align: "center" });
 
   doc.setTextColor(...ORANGE);
   doc.setFontSize(26);
-  doc.text("Certificate of Completion", centre, 74, { align: "center" });
+  doc.text("Certificate of Completion", centre, 76, { align: "center" });
 
   doc.setDrawColor(...GOLD);
   doc.setLineWidth(0.8);
-  doc.line(centre - 45, 79, centre + 45, 79);
+  doc.line(centre - 45, 81, centre + 45, 81);
 
   doc.setTextColor(...NAVY);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(12);
-  doc.text("This certifies that", centre, 92, { align: "center" });
+  doc.text("This certifies that", centre, 94, { align: "center" });
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(28);
-  doc.text(data.studentName, centre, 106, { align: "center" });
+  doc.text(data.studentName, centre, 108, { align: "center" });
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(11);
@@ -153,13 +152,13 @@ export async function downloadMasterCertificatePdf(data: MasterCertificatePdfDat
     "has completed World 15 of the Little IP Detective Journey and explored:",
     width - 70,
   );
-  doc.text(intro, centre, 120, { align: "center" });
+  doc.text(intro, centre, 122, { align: "center" });
 
   // Two-column list of understandings.
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.setTextColor(...BLUE);
-  const listTop = 134;
+  const listTop = 136;
   UNDERSTANDINGS.forEach((topic, index) => {
     const column = index % 2;
     const row = Math.floor(index / 2);
@@ -170,16 +169,16 @@ export async function downloadMasterCertificatePdf(data: MasterCertificatePdfDat
   doc.setTextColor(...NAVY);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(12);
-  doc.text("Awarded the title", centre, 176, { align: "center" });
+  doc.text("Awarded the title", centre, 178, { align: "center" });
   doc.setFontSize(9);
-  doc.text("Questy proudly celebrates this World 15 learning journey!", centre, 171, {
+  doc.text("Questy proudly celebrates this World 15 learning journey!", centre, 173, {
     align: "center",
   });
 
   doc.setFont("helvetica", "bold");
   doc.setTextColor(...ORANGE);
   doc.setFontSize(20);
-  doc.text("LITTLE IP DETECTIVE", centre, 187, { align: "center" });
+  doc.text("MASTER IP DETECTIVE", centre, 189, { align: "center" });
 
   // Gold seal with decorative stars.
   doc.setFillColor(...GOLD);
