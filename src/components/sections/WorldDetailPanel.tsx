@@ -7,6 +7,7 @@ import { QuizQuestionCard } from "@/components/quiz";
 import { toQuizQuestions, worldTheme, type World } from "@/lib/worlds";
 import { WorldCompletionExperience } from "@/components/sections/WorldCompletionExperience";
 import { DetectiveActivity } from "@/components/sections/DetectiveActivity";
+import { CaseOneExperience } from "@/components/cases/CaseOneExperience";
 
 /** Section heading styled to match the eyebrow + title pattern used in Levels 1–5. */
 function LessonHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
@@ -41,6 +42,10 @@ export function WorldDetailPanel({
   const questions = toQuizQuestions(world);
   const nextWorldId = world.id < 15 ? world.id + 1 : null;
   const [answers, setAnswers] = useState<Record<string, boolean>>({});
+
+  if (world.id === 1) {
+    return <CaseOneExperience isCompleted={isCompleted} onComplete={onComplete} />;
+  }
 
   const answeredCount = Object.keys(answers).length;
   const correctCount = Object.values(answers).filter(Boolean).length;
