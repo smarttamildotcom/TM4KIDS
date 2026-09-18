@@ -10,7 +10,6 @@ import { UserNavCluster } from "@/components/layout/UserNavCluster";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { useLogout } from "@/lib/auth/useLogout";
 import { BRAND } from "@/lib/brand";
-import brandQuestLogo from "@/Brand Quest Logo.png";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -28,18 +27,20 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-detective-blue-100 bg-white/90 backdrop-blur">
-      <Container className="flex h-16 items-center justify-between sm:h-20">
+      <Container className="flex h-[76px] items-center justify-between sm:h-[96px]">
         <Link
           href="/"
           aria-label={`${BRAND.name} home`}
           className="flex min-w-0 items-center"
         >
           <Image
-            src={brandQuestLogo}
-            alt={`${BRAND.name} — ${BRAND.tagline}`}
+            src="/ip2kids-little-ip-detectives-logo.png"
+            alt="IP2Kids – Little IP Detectives"
             priority
-            sizes="(min-width: 640px) 90px, 66px"
-            className="h-[44px] w-auto object-contain sm:h-[60px]"
+            width={192}
+            height={192}
+            sizes="(min-width: 640px) 92px, 64px"
+            className="h-16 w-16 object-contain sm:h-[88px] sm:w-[88px]"
           />
         </Link>
 

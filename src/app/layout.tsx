@@ -20,7 +20,7 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: `${BRAND.name} | ${BRAND.tagline}`,
+  title: "IP2Kids – Little IP Detectives",
   description: BRAND.description,
 };
 

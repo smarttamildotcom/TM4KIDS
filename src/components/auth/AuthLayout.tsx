@@ -5,7 +5,6 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import type { ReactNode } from "react";
-import brandQuestLogo from "@/Brand Quest Logo.png";
 import detectiveQuesty from "@/6. Detective Questy.png";
 import { BRAND } from "@/lib/brand";
 
@@ -39,11 +38,13 @@ export function AuthLayout({
             className="inline-flex w-fit items-center"
           >
             <Image
-              src={brandQuestLogo}
-              alt={`${BRAND.name} — ${BRAND.tagline}`}
+              src="/ip2kids-little-ip-detectives-logo.png"
+              alt="IP2Kids – Little IP Detectives"
               priority
-              sizes="120px"
-              className="h-[56px] w-auto rounded-2xl bg-white/95 object-contain p-2 shadow-lg"
+              width={192}
+              height={192}
+              sizes="96px"
+              className="h-[88px] w-[88px] rounded-2xl bg-white object-contain p-1 shadow-lg"
             />
           </Link>
 
