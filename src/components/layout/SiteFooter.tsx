@@ -23,8 +23,8 @@ export function SiteFooter() {
               {BRAND.name}
             </p>
             <p className="text-sm text-detective-blue-200">
-              Helping young minds discover the exciting world of brands,
-              creativity and trademarks.
+              Helping young minds discover the world of ideas, brands,
+              inventions, creativity and design.
             </p>
           </div>
         </div>
