@@ -114,10 +114,11 @@ export function WorldCard({
                 {world.difficulty}
               </span>
             </div>
+            {world.id === 1 && caseTitle && <p className="mt-1 font-display text-xs font-bold uppercase tracking-[.16em] text-detective-orange-500">Case 1 · Creator Park</p>}
             <h3 className="mt-1 font-display text-lg font-bold text-detective-blue-900">
-              {world.name}
+              {world.id === 1 && caseTitle ? caseTitle : world.name}
             </h3>
-            <p className="mt-1 text-sm text-detective-blue-700/80">{world.description}</p>
+            <p className="mt-1 text-sm text-detective-blue-700/80">{world.id === 1 && caseTitle ? "Help Questy solve the first Creator Park mystery." : world.description}</p>
           </div>
 
           <motion.div
