@@ -1,8 +1,33 @@
 "use client";
+
+import Image from "next/image";
 import type { DetectiveProfile } from "@/lib/detective-profile";
-const skin:Record<string,string>={light:"#FFD7B5",tan:"#E7AB79",brown:"#B96F42",deep:"#70401F"};
-const palettes:Record<string,[string,string]>={shirt:["#2D8BFF","#1760C2"],jacket:["#FF9B45","#C75C18"],hoodie:["#46C878","#167446"]};
-const hair:Record<string,string>={short:"#55311E",long:"#231C2E",curly:"#4A291D",braids:"#7B3B22"};
-const badge:Record<string,string>={star:"⭐",paw:"🐾",heart:"♥",search:"⌕"};
-function Hat({kind}:{kind:string}){if(kind==="none")return null;const color=kind==="cap"?"#258DF4":"#8A5738";return <><path d="M62 45 Q100 12 138 45 L132 61 H68Z" fill={color} stroke="#123B6D" strokeWidth="4"/><path d="M53 57 Q100 44 150 57 Q100 70 53 57" fill={color} stroke="#123B6D" strokeWidth="4"/></>}
-export function DetectiveAvatar({avatar,pose="default"}:{avatar:DetectiveProfile["avatar"];pose?:"default"|"investigate"|"thinking"|"celebrate"|"notes"}){const tone=skin[avatar.skinTone]??skin.light;const [top,trim]=palettes[avatar.top]??palettes.shirt;const hairColor=hair[avatar.hairstyle]??hair.short;const backpack=avatar.backpack!=="none";return <div className="relative mx-auto w-full max-w-[250px] rounded-[2rem] bg-gradient-to-b from-sky-100 to-detective-yellow-50 p-3 shadow-xl"><svg viewBox="0 0 200 260" role="img" aria-label="Custom detective avatar" className="h-auto w-full"><circle cx="100" cy="125" r="90" fill="#ffffff" opacity=".6"/>{backpack&&<rect x="133" y="143" width="36" height="64" rx="12" fill={avatar.backpack==="green"?"#35A75B":avatar.backpack==="orange"?"#F5AB25":"#2D8BFF"} stroke="#123B6D" strokeWidth="4"/>}<ellipse cx="100" cy="220" rx="47" ry="25" fill={avatar.bottom==="skirt"?"#F47FA7":avatar.bottom==="shorts"?"#3C78B8":"#405A76"} stroke="#123B6D" strokeWidth="4"/><path d="M55 170 Q100 145 145 170 L151 222 H49Z" fill={top} stroke="#123B6D" strokeWidth="4"/><path d="M65 175 Q100 190 135 175" fill="none" stroke={trim} strokeWidth="7"/><rect x="54" y="238" width="35" height="12" rx="6" fill={avatar.shoes==="boots"?"#28313A":"#F05B52"} stroke="#123B6D" strokeWidth="3"/><rect x="111" y="238" width="35" height="12" rx="6" fill={avatar.shoes==="boots"?"#28313A":"#F05B52"} stroke="#123B6D" strokeWidth="3"/><circle cx="100" cy="105" r="52" fill={tone} stroke="#123B6D" strokeWidth="4"/><path d="M55 95 Q57 44 100 47 Q143 44 145 95 Q127 70 100 73 Q73 70 55 95" fill={hairColor} stroke="#123B6D" strokeWidth="4"/>{avatar.hairstyle==="long"&&<><path d="M54 96 Q42 145 63 160" fill={hairColor} stroke="#123B6D" strokeWidth="4"/><path d="M146 96 Q158 145 137 160" fill={hairColor} stroke="#123B6D" strokeWidth="4"/></>}<ellipse cx="80" cy="108" rx="10" ry="14" fill="#fff"/><ellipse cx="120" cy="108" rx="10" ry="14" fill="#fff"/><circle cx="82" cy="111" r="6" fill="#183862"/><circle cx="118" cy="111" r="6" fill="#183862"/><path d="M87 132 Q100 143 113 132" fill="none" stroke="#A84854" strokeWidth="4" strokeLinecap="round"/><circle cx="80" cy="127" r="5" fill="#F3A0A2" opacity=".65"/><circle cx="120" cy="127" r="5" fill="#F3A0A2" opacity=".65"/><rect x="88" y="176" width="24" height="24" rx="7" fill="#FFD64A" stroke="#123B6D" strokeWidth="3"/><text x="100" y="194" textAnchor="middle" fontSize="14">{badge[avatar.badge]??"⭐"}</text><Hat kind={avatar.hat}/>{pose==="investigate"&&<g><circle cx="45" cy="150" r="20" fill="#AEEAFF" stroke="#7A4D1E" strokeWidth="5"/><path d="M58 164 L78 188" stroke="#7A4D1E" strokeWidth="6"/></g>}{pose==="thinking"&&<text x="160" y="55" fontSize="32">?</text>}{pose==="celebrate"&&<text x="100" y="28" textAnchor="middle" fontSize="28">✨</text>}{pose==="notes"&&<rect x="15" y="175" width="38" height="45" rx="4" fill="#FFF8D5" stroke="#123B6D" strokeWidth="3"/>}</svg></div>}
+
+type Pose = "default" | "investigate" | "thinking" | "celebrate" | "notes";
+
+function characterFor(avatar: DetectiveProfile["avatar"]) {
+  if (avatar.characterType === "boy" || avatar.characterType === "girl") return avatar.characterType;
+  return avatar.baseCharacter === "two" || avatar.baseCharacter === "four" ? "girl" : "boy";
+}
+
+export function DetectiveAvatar({ avatar, pose = "default" }: { avatar: DetectiveProfile["avatar"]; pose?: Pose }) {
+  const character = characterFor(avatar);
+  const src = character === "girl" ? "/detective/characters/detective-girl.png" : "/detective/characters/detective-boy.png";
+
+  return (
+    <div className="relative mx-auto w-full max-w-[250px] overflow-visible">
+      <Image
+        src={src}
+        alt={character === "girl" ? "Girl detective avatar" : "Boy detective avatar"}
+        width={1024}
+        height={1536}
+        sizes="(max-width: 640px) 190px, 250px"
+        className="h-auto w-full object-contain drop-shadow-xl"
+      />
+      {pose === "investigate" && <span aria-hidden className="pointer-events-none absolute left-2 top-1/3 text-3xl motion-safe:animate-pulse">✦</span>}
+      {pose === "thinking" && <span aria-hidden className="pointer-events-none absolute right-2 top-8 rounded-full bg-white px-3 py-1 font-display text-2xl font-bold text-detective-blue-700 shadow">?</span>}
+      {pose === "celebrate" && <span aria-hidden className="pointer-events-none absolute inset-x-0 -top-3 text-center text-3xl motion-safe:animate-bounce">✨ 🎉 ✨</span>}
+      {pose === "notes" && <span aria-hidden className="pointer-events-none absolute -right-1 bottom-12 rounded-lg bg-detective-yellow-100 px-2 py-1 text-lg shadow">📝</span>}
+    </div>
+  );
+}
