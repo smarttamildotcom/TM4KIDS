@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [progress, setProgress] = useState<ProgressRow[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const { setProfile } = useGame();
+  const { setProfile, setSessionUser, clearSession } = useGame();
   const isRefreshing = useRef(false);
 
   const syncFromSupabase = useCallback(async () => {
@@ -64,21 +64,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isRefreshing.current = true;
     try {
       const nextUser = await loadCurrentUser();
-      setUser(nextUser);
 
       if (nextUser) {
+        setSessionUser(nextUser.id, nextUser.studentName);
+        setUser(nextUser);
         writeSessionCookie(true);
         writeMembershipCookie(nextUser.membershipStatus);
         setProgress(await loadProgress(nextUser.id));
       } else {
-        clearAuthCookies();
+        setUser(null);
         setProgress([]);
+        clearSession();
+        clearAuthCookies();
       }
     } finally {
       isRefreshing.current = false;
       setIsLoaded(true);
     }
-  }, []);
+  }, [setSessionUser, clearSession]);
 
   // Initial load plus reaction to Supabase auth changes (sign in/out, refresh).
   useEffect(() => {
@@ -126,24 +129,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (input: LoginInput) => {
     const result = await loginWithPassword(input);
     if (result.ok) {
+      setSessionUser(result.user.id, result.user.studentName);
       setUser(result.user);
       writeSessionCookie(true);
       writeMembershipCookie(result.user.membershipStatus);
       void loadProgress(result.user.id).then(setProgress);
     }
     return result;
-  }, []);
+  }, [setSessionUser]);
 
   const register = useCallback(async (input: RegisterInput) => {
     const result = await registerAccount(input);
     if (result.ok && !result.verificationRequired) {
+      setSessionUser(result.user.id, result.user.studentName);
       setUser(result.user);
       writeSessionCookie(true);
       writeMembershipCookie(result.user.membershipStatus);
       void loadProgress(result.user.id).then(setProgress);
     }
     return result;
-  }, []);
+  }, [setSessionUser]);
 
   const loginWith = useCallback(
     (provider: "google" | "apple") => loginWithProvider(provider),
@@ -165,10 +170,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refresh = useCallback(() => syncFromSupabase(), [syncFromSupabase]);
 
   const logout = useCallback(async () => {
-    await signOut();
+    // Cut off the visible session synchronously, before the network sign-out finishes.
     setUser(null);
     setProgress([]);
-  }, []);
+    clearSession();
+    clearAuthCookies();
+    await signOut();
+  }, [clearSession]);
 
   const value = useMemo<AuthContextValue>(
     () => ({

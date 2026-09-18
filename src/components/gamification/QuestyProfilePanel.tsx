@@ -16,13 +16,16 @@ import { worlds } from "@/lib/worlds";
 /** Detective profile, progress, stats and achievements — all derived from live state. */
 export function QuestyProfilePanel({ onNavigate }: { onNavigate?: () => void }) {
   const { player, level } = useGame();
-  const { user } = useAuth();
+  const { user, isLoaded: authLoaded } = useAuth();
   const logout = useLogout();
 
   const completed = worlds.filter((world) => player.completedWorldIds.includes(world.id));
   const remainingIds = getRemainingWorldIds(player);
   const earnedBadges = badges.filter((badge) => player.badgeIds.includes(badge.id));
   const accuracy = getQuizAccuracy(player);
+
+  // This component contains private account and progress data.
+  if (!authLoaded || !user) return null;
 
   const stats = [
     { icon: "star" as const, label: "Stars Earned", value: player.stats.starsEarned },

@@ -7,6 +7,7 @@ import { CaseColourReward, CaseFile, CaseHeader, CaseIntro, CaseInvestigation, C
 import { DetectiveAvatar } from "@/components/detective/DetectiveAvatar";
 import { readDetectiveProfile, type DetectiveProfile } from "@/lib/detective-profile";
 import { caseOne } from "@/lib/cases/case-one";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 type Reward = "colour" | "puzzle" | null;
 
@@ -16,9 +17,13 @@ export function CaseOneExperience({ isCompleted, onComplete }: { isCompleted: bo
   const [question, setQuestion] = useState(0);
   const [reward, setReward] = useState<Reward>(null);
   const reduced = useReducedMotion();
+  const { user, isLoaded: authLoaded } = useAuth();
   const nickname = detective?.nickname ?? "";
 
-  useEffect(() => { setDetective(readDetectiveProfile()); }, []);
+  useEffect(() => {
+    if (!authLoaded || !user) { setDetective(null); return; }
+    setDetective(readDetectiveProfile(user.id, user.studentName));
+  }, [authLoaded, user?.id, user?.studentName]);
 
   const finishCase = () => {
     if (!isCompleted) onComplete(3, 3);

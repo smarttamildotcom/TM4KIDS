@@ -6,6 +6,7 @@ import { ArrowRight, Dice5, MapPin } from "lucide-react";
 import { DetectiveAvatar } from "@/components/detective/DetectiveAvatar";
 import { readDetectiveProfile, saveDetectiveProfile, type DetectiveCharacterType, type DetectiveProfile } from "@/lib/detective-profile";
 import { questyArt } from "@/lib/questy-art";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 const initial: DetectiveProfile["avatar"] = {
   baseCharacter: "one",
@@ -31,15 +32,27 @@ export function DetectiveOnboarding() {
   const [nickname, setNickname] = useState("");
   const [avatar, setAvatar] = useState(initial);
   const [error, setError] = useState("");
+  const { user, isLoaded: authLoaded } = useAuth();
 
   useEffect(() => {
-    const saved = readDetectiveProfile();
+    if (!authLoaded) return;
+    if (!user) {
+      setProfile(null);
+      setNickname("");
+      setAvatar(initial);
+      return;
+    }
+    const saved = readDetectiveProfile(user.id, user.studentName);
     if (saved) {
       setProfile(saved);
       setNickname(saved.nickname);
       setAvatar(saved.avatar);
+    } else {
+      setProfile(null);
+      setNickname("");
+      setAvatar(initial);
     }
-  }, []);
+  }, [authLoaded, user?.id, user?.studentName]);
 
   function chooseCharacter(characterType: DetectiveCharacterType) {
     setAvatar((current) => ({
@@ -54,13 +67,17 @@ export function DetectiveOnboarding() {
   }
 
   function create() {
+    if (!user) {
+      setError("Please sign in before saving your detective.");
+      return;
+    }
     const clean = nickname.trim();
     if (!clean) {
       setError("Please choose a fun detective nickname first.");
       return;
     }
     const next: DetectiveProfile = { version: 1, nickname: clean, avatar };
-    saveDetectiveProfile(next);
+    saveDetectiveProfile(next, user.id);
     setProfile(next);
     setScreen("meet");
   }

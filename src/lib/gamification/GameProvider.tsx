@@ -46,6 +46,10 @@ type GameContextValue = {
     badgeLabel: string;
   }) => void;
   setProfile: (profile: { name?: string; avatarEmoji?: string }) => void;
+  /** Starts an authenticated, user-scoped game session. */
+  setSessionUser: (userId: string, studentName: string) => void;
+  /** Immediately removes active child state from the visible session without deleting it. */
+  clearSession: () => void;
   resetProgress: () => void;
 };
 
@@ -58,6 +62,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [player, setPlayer] = useState<PlayerState>(initialPlayerState);
   const [isLoaded, setIsLoaded] = useState(false);
   const [toasts, setToasts] = useState<RewardToastItem[]>([]);
+  const [sessionUserId, setSessionUserId] = useState<string | null>(null);
 
   const pushToast = useCallback(
     (kind: RewardToastItem["kind"], label: string) => {
@@ -72,22 +77,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setToasts((current) => current.filter((toast) => toast.id !== id));
   }, []);
 
-  // Hydrate from localStorage and record today's visit for the streak.
-  useEffect(() => {
-    const saved = loadPlayerState();
-    const { streak, changed } = recordStreak(saved.streak);
-
-    setPlayer({ ...saved, streak });
-    setIsLoaded(true);
-
-    if (changed && streak.count > 1) {
-      pushToast("streak", `${streak.count}-day streak!`);
-    }
-  }, [pushToast]);
+  // Public visitors always start from neutral state. AuthProvider selects a
+  // user-scoped state only after the authenticated session is known.
+  useEffect(() => { setIsLoaded(true); }, []);
 
   useEffect(() => {
-    if (isLoaded) savePlayerState(player);
-  }, [player, isLoaded]);
+    if (isLoaded && sessionUserId) savePlayerState(player, sessionUserId);
+  }, [player, isLoaded, sessionUserId]);
 
   // Earlier final-challenge completions were stored as a lesson only. Treat
   // them as World 15 too, without paying a second XP or coin reward.
@@ -263,10 +259,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
     },
     [],
   );
-  const resetProgress = useCallback(() => {
-    clearPlayerState();
+  const setSessionUser = useCallback((userId: string, studentName: string) => {
+    if (sessionUserId === userId) return;
+    const saved = loadPlayerState(userId, studentName);
+    const { streak, changed } = recordStreak(saved.streak);
+    setToasts([]);
+    setSessionUserId(userId);
+    setPlayer({ ...saved, streak });
+    if (changed && streak.count > 1) pushToast("streak", `${streak.count}-day streak!`);
+  }, [pushToast, sessionUserId]);
+
+  const clearSession = useCallback(() => {
+    if (sessionUserId) savePlayerState(player, sessionUserId);
+    setToasts([]);
+    setSessionUserId(null);
     setPlayer(initialPlayerState);
-  }, []);
+  }, [player, sessionUserId]);
+
+  const resetProgress = useCallback(() => {
+    if (sessionUserId) clearPlayerState(sessionUserId);
+    setPlayer(initialPlayerState);
+  }, [sessionUserId]);
 
   const value = useMemo<GameContextValue>(
     () => ({
@@ -280,6 +293,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       completeLesson,
       completeWorld,
       setProfile,
+      setSessionUser,
+      clearSession,
       resetProgress,
     }),
     [
@@ -292,6 +307,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       completeLesson,
       completeWorld,
       setProfile,
+      setSessionUser,
+      clearSession,
       resetProgress,
     ],
   );

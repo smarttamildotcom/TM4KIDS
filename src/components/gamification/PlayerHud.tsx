@@ -14,7 +14,7 @@ import { useAuth } from "@/lib/auth/AuthProvider";
 /** Questy avatar in the header. Opens the live detective profile popup. */
 export function PlayerHud() {
   const { player, level, isLoaded } = useGame();
-  const { user } = useAuth();
+  const { user, isLoaded: authLoaded } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -36,7 +36,8 @@ export function PlayerHud() {
     };
   }, [isOpen]);
 
-  if (!isLoaded) return null;
+  // Never expose a browser-cached player to a public or unresolved session.
+  if (!isLoaded || !authLoaded || !user) return null;
 
   return (
     <div ref={containerRef} className="relative">

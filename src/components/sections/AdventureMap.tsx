@@ -55,8 +55,13 @@ export function AdventureMap() {
   const [detective, setDetective] = useState<DetectiveProfile | null>(null);
   const hasResumed = useRef(false);
 
-  const isSignedIn = Boolean(user);
+  // Until auth is resolved, render the same neutral state as a guest. This
+  // prevents a stale browser profile from flashing during account changes.
+  const hasActiveSession = isAuthLoaded && Boolean(user);
+  const isSignedIn = hasActiveSession;
   const membershipStatus = user?.membershipStatus ?? "FREE";
+  const completedWorldIds = hasActiveSession ? player.completedWorldIds : [];
+  const visibleStars = hasActiveSession ? player.stats.starsEarned : 0;
 
   const openWorld = useCallback((worldId: number) => {
     setExpandedId(worldId);
@@ -94,7 +99,10 @@ export function AdventureMap() {
     [isSignedIn, router],
   );
 
-  useEffect(() => { setDetective(readDetectiveProfile()); }, []);
+  useEffect(() => {
+    if (!hasActiveSession || !user) { setDetective(null); return; }
+    setDetective(readDetectiveProfile(user.id, user.studentName));
+  }, [hasActiveSession, user?.id, user?.studentName]);
 
   // A blocked route redirects here; pick the gate or the remembered world back up.
   useEffect(() => {
@@ -114,14 +122,14 @@ export function AdventureMap() {
   }, [isAuthLoaded, isSignedIn, membershipStatus, openWorld]);
 
   const statuses: WorldStatus[] = worlds.map((world) => {
-    if (player.completedWorldIds.includes(world.id)) return "completed";
+    if (completedWorldIds.includes(world.id)) return "completed";
     // Before hydration everything reads as unlocked so the markup matches the server.
     if (isLoaded && isAuthLoaded && !canAccessWorld(world.id, isSignedIn, membershipStatus))
       return "locked";
     return "unlocked";
   });
 
-  const completedCount = player.completedWorldIds.length;
+  const completedCount = completedWorldIds.length;
   const activeIndex = statuses.indexOf("unlocked");
   const percentComplete = Math.round((completedCount / worlds.length) * 100);
 
@@ -233,7 +241,7 @@ export function AdventureMap() {
           </div>
         </div>
 
-        <div className="mx-auto mt-8 flex max-w-3xl flex-col items-center gap-4 rounded-3xl border-2 border-detective-blue-100 bg-white/90 p-4 shadow-md sm:flex-row sm:text-left">\n          {detective ? <DetectiveAvatar avatar={detective.avatar} pose="investigate" /> : <div className="grid h-24 w-24 place-items-center rounded-full bg-detective-yellow-100 text-4xl" aria-label="Create your detective">🕵️</div>}\n          <div><p className="font-display text-lg font-bold text-detective-blue-900">{detective ? `DETECTIVE ${detective.nickname.toUpperCase()}` : "YOUR DETECTIVE AWAITS"}</p><p className="text-detective-blue-700">{detective ? detectiveRank(completedCount) : "Create a detective partner to join Questy."}</p><p className="mt-1 text-sm font-semibold text-detective-orange-600">CASES SOLVED {completedCount} / 15 · ⭐ {player.stats.starsEarned}</p>{!detective&&<a href="/detective" className="mt-2 inline-block font-display font-bold text-detective-blue-700 underline">CREATE MY DETECTIVE</a>}</div>\n        </div>\n\n        {completedCount > 0 && (
+        <div className="mx-auto mt-8 flex max-w-3xl flex-col items-center gap-4 rounded-3xl border-2 border-detective-blue-100 bg-white/90 p-4 shadow-md sm:flex-row sm:text-left">          {hasActiveSession && detective ? <DetectiveAvatar avatar={detective.avatar} pose="investigate" /> : <div className="grid h-24 w-24 place-items-center rounded-full bg-detective-yellow-100 text-4xl" aria-label="Create your detective">🕵️</div>}          <div><p className="font-display text-lg font-bold text-detective-blue-900">{hasActiveSession && detective ? `DETECTIVE ${detective.nickname.toUpperCase()}` : "YOUR DETECTIVE AWAITS"}</p><p className="text-detective-blue-700">{hasActiveSession && detective ? detectiveRank(completedCount) : "Create a detective partner to join Questy."}</p><p className="mt-1 text-sm font-semibold text-detective-orange-600">{hasActiveSession && detective ? <>CASES SOLVED {completedCount} / 15 · ⭐ {visibleStars}</> : "Start your detective adventure."}</p>{(!hasActiveSession || !detective)&&<a href="/detective" className="mt-2 inline-block font-display font-bold text-detective-blue-700 underline">CREATE MY DETECTIVE</a>}</div>        </div>        {completedCount > 0 && (
           <p className="mx-auto mt-8 max-w-xl rounded-2xl bg-detective-yellow-100 px-5 py-3 text-center font-display font-semibold text-detective-blue-900">
             ✨ New IP missions are here! Tap any completed world to replay it.
           </p>
@@ -270,7 +278,7 @@ export function AdventureMap() {
                   {chapterWorlds.map((world) => {
                     const index = world.id - 1;
                     return <motion.li key={world.id} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }} className={`${zigzagClass(index)} ${expandedId === world.id ? "sm:col-span-2 lg:col-span-3 lg:translate-y-0" : ""}`}>
-                      <WorldCard world={world} status={statuses[index]} isActive={index === activeIndex} isExpanded={expandedId === world.id} onToggle={() => handleToggle(world.id)} onRequestUnlock={() => gateWorld(world.id)} onComplete={(correct, total) => handleComplete(world.id, correct, total)} onNextWorld={handleNextWorld} caseTitle={(world.id === 1 || player.completedWorldIds.includes(world.id-1)) ? cityCase(world.id).title : "???"} caseScene={cityCase(world.id).scene} />
+                      <WorldCard world={world} status={statuses[index]} isActive={index === activeIndex} isExpanded={expandedId === world.id} onToggle={() => handleToggle(world.id)} onRequestUnlock={() => gateWorld(world.id)} onComplete={(correct, total) => handleComplete(world.id, correct, total)} onNextWorld={handleNextWorld} caseTitle={(world.id === 1 || completedWorldIds.includes(world.id-1)) ? cityCase(world.id).title : "???"} caseScene={cityCase(world.id).scene} />
                     </motion.li>;
                   })}
                 </ol>

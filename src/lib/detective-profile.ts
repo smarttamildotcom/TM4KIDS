@@ -18,10 +18,11 @@ export type DetectiveProfile = {
 };
 
 export const DETECTIVE_PROFILE_KEY = "ip2kids.detective-profile";
+const keyFor = (userId: string) => `${DETECTIVE_PROFILE_KEY}:${userId}`;
+const normalise = (value: string | undefined) => (value ?? "").trim().toLocaleLowerCase();
 
-export function readDetectiveProfile(): DetectiveProfile | null {
+function parseProfile(raw: string | null): DetectiveProfile | null {
   try {
-    const raw = window.localStorage.getItem(DETECTIVE_PROFILE_KEY);
     const data = raw ? JSON.parse(raw) : null;
     return data?.version === 1 && data.nickname && data.avatar ? data : null;
   } catch {
@@ -29,9 +30,24 @@ export function readDetectiveProfile(): DetectiveProfile | null {
   }
 }
 
-export function saveDetectiveProfile(profile: DetectiveProfile) {
+/** Reads only the authenticated user's profile. Legacy data migrates only when its nickname matches the signed-in student name. */
+export function readDetectiveProfile(userId?: string, studentName?: string): DetectiveProfile | null {
+  if (!userId || typeof window === "undefined") return null;
+  const scoped = parseProfile(window.localStorage.getItem(keyFor(userId)));
+  if (scoped) return scoped;
+
+  const legacy = parseProfile(window.localStorage.getItem(DETECTIVE_PROFILE_KEY));
+  if (legacy && normalise(legacy.nickname) === normalise(studentName)) {
+    saveDetectiveProfile(legacy, userId);
+    return legacy;
+  }
+  return null;
+}
+
+export function saveDetectiveProfile(profile: DetectiveProfile, userId?: string) {
+  if (!userId || typeof window === "undefined") return false;
   try {
-    window.localStorage.setItem(DETECTIVE_PROFILE_KEY, JSON.stringify(profile));
+    window.localStorage.setItem(keyFor(userId), JSON.stringify(profile));
     return true;
   } catch {
     return false;
