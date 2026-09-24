@@ -26,7 +26,7 @@ export function CasePictureStory({
   scenes: readonly PictureStoryScene[];
   nickname: string;
   detective: DetectiveProfile | null;
-  creators: ReadonlyArray<{ id: string; name: string; creation: string; icon: string; dialogue: string }>;
+  creators: ReadonlyArray<{ id: string; name: string; creation: string; icon: string; dialogue: string; image?: string }>;
   onComplete: () => void;
 }) {
   const [index, setIndex] = useState(0);
@@ -61,8 +61,7 @@ export function CasePictureStory({
         >
           <div className="relative min-h-[420px] overflow-hidden rounded-[1.75rem] border-2 border-sky-100 bg-gradient-to-b from-sky-100 via-emerald-50 to-detective-yellow-100 p-5 sm:min-h-[480px] sm:p-8">
             <div aria-hidden className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-emerald-200/70 to-transparent" />
-            <div aria-hidden className="absolute left-5 top-5 text-4xl">🌳</div>
-            <div aria-hidden className="absolute right-6 top-8 text-3xl">☀️</div>
+            <div aria-hidden className="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-detective-orange-300 via-detective-yellow-300 to-sky-300" />
 
             <div className="relative z-10 text-center">
               <p className="font-display text-xs font-bold uppercase tracking-[.2em] text-detective-orange-600">{scene.eyebrow}</p>
@@ -72,14 +71,14 @@ export function CasePictureStory({
 
             {scene.kind === "welcome" && (
               <div className="relative z-10 mt-7 grid items-end gap-4 sm:grid-cols-[1fr_1.2fr_1fr]">
-                <Image src={questyArt.detective} alt="Questy the detective mascot" className="mx-auto h-44 w-auto object-contain sm:h-56" priority />
+                <div className="flex justify-center"><Image src={questyArt.waving} alt="Questy welcoming the Little IP Detective" className="h-44 w-auto object-contain sm:h-56" priority /></div>
                 <div className="order-first rounded-3xl border-2 border-white bg-white/95 p-5 text-center shadow-lg sm:order-none">
                   <p className="font-display text-xl font-bold text-detective-blue-900">Questy</p>
                   <p className="mt-2 text-lg leading-relaxed text-detective-blue-800">“Welcome to Creator Park, Little IP Detective!”</p>
                   <p className="mt-2 text-detective-blue-700">“Today is Idea Day. Everyone has brought something they created.”</p>
                   <p className="mt-2 font-display font-bold text-detective-orange-600">“Come on — let’s investigate!”</p>
                 </div>
-                {detective ? <DetectiveAvatar avatar={detective.avatar} pose="investigate" /> : <div className="mx-auto grid h-40 w-32 place-items-center rounded-3xl border-2 border-dashed border-detective-blue-300 bg-white/70 text-5xl" aria-label="Detective">🕵️</div>}
+                {detective ? <div className="mx-auto w-36 sm:w-44"><DetectiveAvatar avatar={detective.avatar} pose="celebrate" /></div> : <div className="mx-auto rounded-3xl bg-white/85 p-5 text-center text-sm font-semibold text-detective-blue-700">Create your detective to join Questy.</div>}
               </div>
             )}
 
@@ -95,7 +94,7 @@ export function CasePictureStory({
                       aria-pressed={activeCreator === creator.id}
                       className={"min-h-32 rounded-3xl border-2 bg-white/95 p-4 text-center shadow-sm transition focus-visible:outline focus-visible:outline-4 focus-visible:outline-detective-yellow-300 " + (activeCreator === creator.id ? "border-detective-orange-500 ring-4 ring-detective-orange-200" : "border-white hover:border-detective-blue-200")}
                     >
-                      <span aria-hidden className="text-5xl">{creator.icon}</span>
+                      {creator.image ? <Image src={creator.image} alt={creator.creation} width={180} height={135} className="mx-auto h-24 w-full rounded-2xl object-contain" /> : <span aria-hidden className="text-5xl">{creator.icon}</span>}
                       <span className="mt-2 block font-display text-lg font-bold text-detective-blue-900">{creator.name}</span>
                       <span className="block text-sm text-detective-blue-600">{creator.creation}</span>
                     </button>
@@ -130,7 +129,7 @@ export function CasePictureStory({
 
             {scene.kind === "mission" && (
               <div className="relative z-10 mt-7 grid items-center gap-5 sm:grid-cols-[auto_1fr_auto]">
-                <Image src={questyArt.detective} alt="Questy investigating the mystery" className="mx-auto h-48 w-auto object-contain" />
+                <Image src={questyArt.thinking} alt="Questy thinking about the mystery" className="mx-auto h-48 w-auto object-contain" />
                 <div className="rounded-3xl border-2 border-white bg-white/95 p-6 text-center shadow-lg">
                   <Search className="mx-auto h-9 w-9 text-detective-orange-500" aria-hidden="true" />
                   <p className="mt-3 text-lg text-detective-blue-800">“{detectiveName}, we know <strong>WHAT</strong> was created...”</p>
