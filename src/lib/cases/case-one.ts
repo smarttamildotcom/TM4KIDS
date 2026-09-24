@@ -10,10 +10,10 @@ export const caseOne = {
     { id: "mission", eyebrow: "Little IP Detectives", title: "Your First Case", kind: "mission" },
   ],
   creators: [
-    { id: "mia", name: "Mia", creation: "Dragon Drawing", icon: "🐉", detail: "a bright dragon drawing", dialogue: "Look! I drew this dragon myself." },
-    { id: "ben", name: "Ben", creation: "Robo-Roller", icon: "🤖", detail: "a tiny imaginary invention", dialogue: "I built Robo-Roller to solve a problem!" },
-    { id: "zara", name: "Zara", creation: "The Moon Cat", icon: "📖", detail: "a short story", dialogue: "I wrote my own story called The Moon Cat." },
-    { id: "leo", name: "Leo", creation: "Sunny Snacks", icon: "☀️", detail: "a fictional snack-shop sign", dialogue: "I created a name and sign for my pretend snack shop!" },
+    { id: "mia", name: "Mia", creation: "Dragon Drawing", icon: "🐉", detail: "a bright dragon drawing", dialogue: "Look! I drew this dragon myself.", image: "/cases/world-1/dragon-drawing.svg" },
+    { id: "ben", name: "Ben", creation: "Robo-Roller", icon: "🤖", detail: "a tiny imaginary invention", dialogue: "I built Robo-Roller to solve a problem!", image: "/cases/world-1/robo-roller.svg" },
+    { id: "zara", name: "Zara", creation: "The Moon Cat", icon: "📖", detail: "a short story", dialogue: "I wrote my own story called The Moon Cat.", image: "/cases/world-1/moon-cat.svg" },
+    { id: "leo", name: "Leo", creation: "Sunny Snacks", icon: "☀️", detail: "a fictional snack-shop sign", dialogue: "I created a name and sign for my pretend snack shop!", image: "/cases/world-1/sunny-snacks.svg" },
   ],
   story: [
     { title: "Idea Day is here!", text: "Creator Park is buzzing. Young creators have brought their wonderful creations to share.", icon: "🎪" },
