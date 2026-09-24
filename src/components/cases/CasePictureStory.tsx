@@ -71,7 +71,7 @@ export function CasePictureStory({
 
             {scene.kind === "welcome" && (
               <div className="relative z-10 mt-7 grid items-end gap-4 sm:grid-cols-[1fr_1.2fr_1fr]">
-                <div className="flex justify-center"><Image src={questyArt.waving} alt="Questy welcoming the Little IP Detective" className="h-44 w-auto object-contain sm:h-56" priority /></div>
+                <div className="flex justify-center"><Image src={questyArt.hero} alt="Questy welcoming the Little IP Detective" className="h-44 w-auto object-contain sm:h-56" priority /></div>
                 <div className="order-first rounded-3xl border-2 border-white bg-white/95 p-5 text-center shadow-lg sm:order-none">
                   <p className="font-display text-xl font-bold text-detective-blue-900">Questy</p>
                   <p className="mt-2 text-lg leading-relaxed text-detective-blue-800">“Welcome to Creator Park, Little IP Detective!”</p>
