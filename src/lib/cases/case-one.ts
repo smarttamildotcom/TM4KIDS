@@ -5,7 +5,7 @@ export const caseOne = {
   video: undefined as { mp4?: string; webm?: string; poster?: string; captions?: string } | undefined,
   pictureStory: [
     { id: "idea-day", eyebrow: "Creator Park", title: "Welcome to Idea Day", kind: "welcome" },
-    { id: "creators", eyebrow: "Meet the creators", title: "Four Creators. Four Creations.", description: "Tap each creator to hear their clue.", kind: "creators" },
+    { id: "creators", eyebrow: "Meet the creators", title: "Four Creators. Four Creations.", kind: "creators" },
     { id: "whoosh", eyebrow: "Something goes wrong!", title: "WHOOSH!", description: "A sudden gust sends everything into a mix-up!", kind: "wind" },
     { id: "mission", eyebrow: "Little IP Detectives", title: "Your First Case", kind: "mission" },
   ],
