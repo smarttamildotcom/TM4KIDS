@@ -58,16 +58,45 @@ export function CaseVideo({ source, slides, onReady }: { source?: CaseVideoSourc
   return <div className="rounded-3xl bg-white p-5 text-center shadow-sm"><p className="font-display text-sm font-bold uppercase tracking-[.18em] text-detective-orange-500">The story</p><motion.div key={scene.title} initial={reduced ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mx-auto mt-5 grid min-h-64 max-w-xl place-items-center rounded-3xl bg-gradient-to-br from-sky-100 to-detective-yellow-100 p-6"><div><span aria-hidden className="block text-7xl">{scene.icon}</span><h2 className="mt-4 font-display text-3xl font-bold text-detective-blue-900">{scene.title}</h2><p className="mx-auto mt-3 max-w-md text-lg leading-relaxed text-detective-blue-800">{scene.text}</p></div></motion.div><div className="mt-5 flex items-center justify-center gap-3"><span className="text-sm font-semibold text-detective-blue-700">{slide + 1} of {slides.length}</span>{slide < slides.length - 1 ? <button type="button" onClick={() => setSlide((value) => value + 1)} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-detective-blue-600 px-6 py-3 font-display font-bold text-white">Next clue <ArrowRight className="h-4 w-4" /></button> : <button type="button" onClick={onReady} className="rounded-full bg-detective-orange-500 px-6 py-3 font-display font-bold text-white">I&apos;M READY! 🔎</button>}</div></div>;
 }
 
-export function CaseInvestigation({ creators, onComplete }: { creators: ReadonlyArray<{ id: string; name: string; creation: string; icon: string; detail: string }>; onComplete: () => void }) {
+export function CaseInvestigation({ creators, onComplete }: { creators: ReadonlyArray<{ id: string; name: string; creation: string; icon: string; detail: string; image?: string }>; onComplete: () => void }) {
   const [creator, setCreator] = useState<string | null>(null);
   const [found, setFound] = useState<string[]>([]);
-  const [message, setMessage] = useState("Tap a creator, then tap the creation that belongs to them.");
+  const [message, setMessage] = useState("Choose a creator. Then find the creation they made.");
+  const mixed = [...creators].sort((a, b) => ({ leo: 0, ben: 1, zara: 2, mia: 3 }[a.id as "leo" | "ben" | "zara" | "mia"] - ({ leo: 0, ben: 1, zara: 2, mia: 3 }[b.id as "leo" | "ben" | "zara" | "mia"]));
   const chooseCreation = (id: string) => {
     if (!creator || found.includes(id)) return;
-    if (creator === id) { const matched = creators.find((item) => item.id === id)!; const next = [...found, id]; setFound(next); setCreator(null); setMessage(`🔎 CLUE FOUND! ${matched.name} created ${matched.creation}!`); if (next.length === creators.length) window.setTimeout(onComplete, 450); }
-    else setMessage("Good try, Detective! Let’s investigate once more.");
+    if (creator === id) {
+      const matched = creators.find((item) => item.id === id)!;
+      const next = [...found, id];
+      setFound(next);
+      setCreator(null);
+      setMessage(`🔎 CLUE FOUND! ${matched.name} created ${matched.creation}!`);
+      if (next.length === creators.length) window.setTimeout(onComplete, 450);
+    } else setMessage("Good try, Little IP Detective. Look at the clues again!");
   };
-  return <div className="rounded-3xl bg-white p-5 shadow-sm"><p className="font-display text-sm font-bold uppercase tracking-[.18em] text-detective-orange-500">Investigate</p><h2 className="mt-1 font-display text-3xl font-bold text-detective-blue-900">WHO CREATED WHAT?</h2><p className="mt-2 text-detective-blue-700">Choose a creator, then choose their creation.</p><div className="mt-5 grid gap-3 sm:grid-cols-2">{creators.map((item) => <button key={item.id} type="button" disabled={found.includes(item.id)} onClick={() => { setCreator(item.id); setMessage(`Now find what ${item.name} created.`); }} aria-pressed={creator === item.id} className={"min-h-20 rounded-2xl border-2 p-4 text-left font-display font-bold transition " + (found.includes(item.id) ? "border-green-500 bg-green-50 text-green-800" : creator === item.id ? "border-detective-orange-500 bg-detective-yellow-100 text-detective-blue-900" : "border-detective-blue-100 bg-sky-50 text-detective-blue-900")}><span className="mr-2 text-2xl">🕵️</span>{item.name}{found.includes(item.id) && " ✓"}</button>)}</div><div className="mt-5 grid gap-3 sm:grid-cols-2">{creators.map((item) => <button key={item.id} type="button" disabled={found.includes(item.id)} onClick={() => chooseCreation(item.id)} className={"min-h-24 rounded-2xl border-2 p-4 text-left transition " + (found.includes(item.id) ? "border-green-500 bg-green-50" : "border-detective-blue-100 bg-white hover:border-detective-orange-300")}><span className="mr-3 text-3xl">{item.icon}</span><span className="font-display font-bold text-detective-blue-900">{item.creation}</span><span className="mt-1 block text-sm text-detective-blue-700">{item.detail}</span></button>)}</div><p role="status" className="mt-5 rounded-2xl bg-detective-yellow-100 px-4 py-3 font-display font-semibold text-detective-blue-900">{message}</p>{found.length === creators.length && <p className="mt-4 text-center font-display text-xl font-bold text-detective-orange-600">🎉 ALL CLUES FOUND!</p>}</div>;
+  return <div className="rounded-[2rem] bg-white p-5 shadow-sm sm:p-7">
+    <div className="text-center">
+      <p className="font-display text-sm font-bold uppercase tracking-[.18em] text-detective-orange-500">Case 1 · Investigation</p>
+      <h2 className="mt-1 font-display text-3xl font-bold text-detective-blue-900">WHO CREATED WHAT?</h2>
+      <p className="mt-2 text-detective-blue-700">The creations are mixed up. Tap a name, then tap the creation that belongs to them.</p>
+    </div>
+    <div className="mt-6 grid gap-5 lg:grid-cols-[.75fr_1.25fr]">
+      <div className="rounded-3xl bg-sky-50 p-4">
+        <p className="mb-3 text-center font-display font-bold text-detective-blue-900">CREATORS</p>
+        <div className="grid gap-3">
+          {creators.map((item) => <button key={item.id} type="button" disabled={found.includes(item.id)} onClick={() => { setCreator(item.id); setMessage(`Now find what ${item.name} created.`); }} aria-pressed={creator === item.id} className={"min-h-14 rounded-2xl border-2 px-5 py-3 text-left font-display text-lg font-bold transition focus-visible:outline focus-visible:outline-4 focus-visible:outline-detective-yellow-300 " + (found.includes(item.id) ? "border-green-500 bg-green-50 text-green-800" : creator === item.id ? "border-detective-orange-500 bg-detective-yellow-100 text-detective-blue-900" : "border-detective-blue-100 bg-white text-detective-blue-900 hover:border-detective-orange-300")}>{item.name}{found.includes(item.id) && " ✓"}</button>)}
+        </div>
+      </div>
+      <div className="rounded-3xl bg-detective-yellow-50 p-4">
+        <p className="mb-3 text-center font-display font-bold text-detective-blue-900">CREATIONS — MIXED UP</p>
+        <div className="grid grid-cols-2 gap-3">
+          {mixed.map((item) => <button key={item.id} type="button" disabled={found.includes(item.id)} onClick={() => chooseCreation(item.id)} className={"min-h-40 rounded-2xl border-2 p-3 text-center transition focus-visible:outline focus-visible:outline-4 focus-visible:outline-detective-yellow-300 " + (found.includes(item.id) ? "border-green-500 bg-green-50" : "border-detective-blue-100 bg-white hover:border-detective-orange-300")}>{item.image ? <Image src={item.image} alt={item.creation} width={240} height={180} className="mx-auto h-28 w-full rounded-xl object-contain" /> : <span className="text-4xl">{item.icon}</span>}<span className="mt-2 block font-display font-bold text-detective-blue-900">{item.creation}</span></button>)}
+        </div>
+      </div>
+    </div>
+    <p role="status" className="mt-5 rounded-2xl bg-detective-yellow-100 px-4 py-3 text-center font-display font-semibold text-detective-blue-900">{message}</p>
+    {found.length === creators.length && <p className="mt-4 text-center font-display text-xl font-bold text-detective-orange-600">🎉 ALL CLUES FOUND!</p>}
+  </div>;
 }
 
 export function CaseQuestion({ question, index, total, onComplete }: { question: { prompt: string; choices: readonly string[]; correct: number; feedback: string }; index: number; total: number; onComplete: () => void }) {
