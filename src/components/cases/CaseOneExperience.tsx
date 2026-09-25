@@ -1,69 +1,65 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
-import { ArrowRight, FileText, Palette, Puzzle, Sparkles } from "lucide-react";
-import { CaseColourReward, CaseFile, CaseHeader, CaseIntro, CaseInvestigation, CaseJigsawReward, CaseQuestion, CaseShell, type CaseStep } from "@/components/cases/CaseEngine";
-import { CasePictureStory, type PictureStoryScene } from "@/components/cases/CasePictureStory";
-import { DetectiveAvatar } from "@/components/detective/DetectiveAvatar";
-import { readDetectiveProfile, type DetectiveProfile } from "@/lib/detective-profile";
-import { caseOne } from "@/lib/cases/case-one";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { CaseShell } from "@/components/cases/CaseEngine";
+import { CreatorParkColouring } from "@/components/cases/CreatorParkColouring";
+import { caseOne, type CaseQuestionData } from "@/lib/cases/case-one";
+import { readDetectiveProfile } from "@/lib/detective-profile";
 import { useAuth } from "@/lib/auth/AuthProvider";
 
-type Reward = "colour" | "puzzle" | null;
+type Step = "story" | "find" | "discovery" | "challenge" | "problem" | "solved" | "file" | "reward";
+const buttonClass = "inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-detective-orange-500 px-6 py-3 font-display font-bold text-white focus-visible:outline focus-visible:outline-4 focus-visible:outline-detective-yellow-300";
 
 export function CaseOneExperience({ isCompleted, onComplete }: { isCompleted: boolean; onComplete: (correct: number, total: number) => void }) {
-  const [step, setStep] = useState<CaseStep>("intro");
-  const [detective, setDetective] = useState<DetectiveProfile | null>(null);
-  const [question, setQuestion] = useState(0);
-  const [reward, setReward] = useState<Reward>(null);
+  const [step, setStep] = useState<Step>("story");
+  const [scene, setScene] = useState(0);
+  const [storyIndex, setStoryIndex] = useState(0);
+  const [knowledgeIndex, setKnowledgeIndex] = useState(0);
+  const completedThisVisit = useRef(false);
+  const active = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const { user, isLoaded: authLoaded } = useAuth();
-  const nickname = detective?.nickname ?? "";
-
+  const { user } = useAuth();
+  const nickname = user ? readDetectiveProfile(user.id, user.studentName)?.nickname ?? "" : "";
+  const name = nickname ? `Detective ${nickname}` : "Detective";
+  const go = (next: Step) => setStep(next);
   useEffect(() => {
-    if (!authLoaded || !user) { setDetective(null); return; }
-    setDetective(readDetectiveProfile(user.id, user.studentName));
-  }, [authLoaded, user?.id, user?.studentName]);
-
-  const finishCase = () => {
-    if (!isCompleted) onComplete(3, 3);
-    setStep("solved");
+    const id = requestAnimationFrame(() => {
+      const target = active.current;
+      if (target) window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 96, behavior: reduced ? "instant" : "smooth" });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [step, scene, storyIndex, knowledgeIndex, reduced]);
+  const finish = () => {
+    if (!isCompleted && !completedThisVisit.current) { completedThisVisit.current = true; onComplete(10, 10); }
+    go("solved");
   };
-
-  const returnToCity = () => {
-    document.getElementById("journey")?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
-  };
-
-  if (step === "intro") return <CaseShell step={step}><CaseIntro nickname={nickname} detective={detective} onStart={() => setStep("story")} /></CaseShell>;
-  if (step === "story") return <CaseShell step={step}><CasePictureStory scenes={caseOne.pictureStory as readonly PictureStoryScene[]} nickname={nickname} detective={detective} creators={caseOne.creators} onComplete={() => setStep("investigate")} /></CaseShell>;
-  if (step === "investigate") return <CaseShell step={step}><CaseInvestigation creators={caseOne.creators} onComplete={() => setStep("discovery")} /></CaseShell>;
-  if (step === "discovery") return <CaseShell step={step}><div className="rounded-3xl bg-white p-6 text-center shadow-sm"><CaseHeader nickname={nickname} detective={detective} /><p className="mt-6 font-display text-sm font-bold uppercase tracking-[.18em] text-detective-orange-500">Little IP Detectives · Discovery</p><h2 className="mt-2 font-display text-3xl font-bold text-detective-blue-900">People create things every day.</h2><div className="mt-5 grid gap-3 sm:grid-cols-3"><p className="rounded-2xl bg-sky-50 p-4 font-display font-bold text-detective-blue-900">🎨 Drawings</p><p className="rounded-2xl bg-detective-yellow-50 p-4 font-display font-bold text-detective-blue-900">📖 Stories</p><p className="rounded-2xl bg-sky-50 p-4 font-display font-bold text-detective-blue-900">💡 Inventions</p></div><p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-detective-blue-800">People use their ideas, imagination, knowledge and skills to create many different things. Different kinds of creations can involve different types of intellectual property.</p><div className="mx-auto mt-6 max-w-xl rounded-3xl border-2 border-detective-orange-300 bg-detective-yellow-50 p-5"><p className="font-display text-sm font-bold uppercase tracking-[.18em] text-detective-orange-600">New detective word</p><h3 className="mt-1 font-display text-3xl font-bold text-detective-blue-900">IP</h3><p className="font-display text-xl font-bold text-detective-blue-800">Intellectual Property</p><p className="mt-3 text-detective-blue-800">IP is short for Intellectual Property. Don&apos;t worry — we&apos;ll discover them one mystery at a time!</p></div><p className="mt-5 text-detective-blue-700">Creators matter, and recognising who created something is an important detective clue.</p><button type="button" onClick={() => setStep("clues")} className="mt-6 inline-flex items-center gap-2 rounded-full bg-detective-orange-500 px-7 py-3 font-display font-bold text-white">CHECK THE CLUES 🔎 <ArrowRight className="h-4 w-4" /></button></div></CaseShell>;
-  if (step === "clues") return <CaseShell step={step}><CaseQuestion question={caseOne.questions[question]} index={question} total={caseOne.questions.length} onComplete={() => question < caseOne.questions.length - 1 ? setQuestion((value) => value + 1) : setStep("problem")} /></CaseShell>;
-  if (step === "problem") return <CaseShell step={step}><div className="rounded-3xl bg-white p-6 text-center shadow-sm"><CaseHeader nickname={nickname} detective={detective} /><p className="mt-6 font-display text-sm font-bold uppercase tracking-[.18em] text-detective-orange-500">Solve the case</p><h2 className="mt-2 font-display text-3xl font-bold text-detective-blue-900">Copycat needs a reminder!</h2><p className="mx-auto mt-4 max-w-2xl text-lg text-detective-blue-800">Copycat finds Mia&apos;s dragon drawing and says, “I&apos;ll put MY name on it and tell everyone I made it!”</p><p className="mt-4 font-display text-xl text-detective-blue-900">{nickname ? `Detective ${nickname}, what should we do?` : "What should we do?"}</p><FinalProblem onSolved={finishCase} /></div></CaseShell>;
-  if (step === "solved") return <CaseShell step={step}><CaseSolved nickname={nickname} detective={detective} onReward={() => setStep("reward")} onFile={() => setStep("file")} /></CaseShell>;
-  if (step === "reward") return <CaseShell step={step}><RewardRoom reward={reward} setReward={setReward} onFile={() => setStep("file")} onReturn={returnToCity} /></CaseShell>;
-  return <CaseShell step={step}><CaseFile solved={isCompleted || step === "file"} onReturn={returnToCity} /></CaseShell>;
+  const returnToCity = () => document.getElementById("journey")?.scrollIntoView({ behavior: reduced ? "instant" : "smooth", block: "start" });
+  const shellStep = step === "story" ? "story" : step === "find" ? "investigate" : step === "discovery" ? "discovery" : step === "challenge" ? "clues" : step === "problem" ? "problem" : step === "solved" ? "solved" : step;
+  return <div ref={active} className="scroll-mt-24"><CaseShell step={shellStep}>
+    {step === "story" && <section className="rounded-3xl bg-white p-4 shadow-sm sm:p-6">
+      <p className="font-display text-sm font-bold uppercase tracking-widest text-detective-orange-600">World 1 / Case 1 · Creator Park · Scene {scene + 1} of 4</p>
+      <h2 className="mt-2 font-display text-3xl font-bold text-detective-blue-900">{caseOne.title}</h2>
+      <h3 className="mt-2 font-display text-2xl font-bold text-detective-blue-800">{caseOne.scenes[scene].title}</h3>
+      <Image src={caseOne.scenes[scene].image} alt={caseOne.scenes[scene].alt} width={1672} height={941} priority={scene === 0} className="mt-4 h-auto w-full rounded-2xl" />
+      <div className="mt-5 space-y-2">{caseOne.scenes[scene].dialogue.map(([speaker, line], index) => <p key={index} className="rounded-2xl bg-sky-50 px-4 py-3 text-lg text-detective-blue-900"><strong>{speaker === "Detective" ? name : speaker}:</strong> {line.replace("[nickname]", nickname || "Detective")}</p>)}</div>
+      {scene === 3 && <div className="mt-5 rounded-2xl bg-detective-yellow-50 p-4 text-center"><p className="font-display font-bold">CASE 1 · THE MYSTERY: {caseOne.mystery}</p><p>MISSION: Find the clues and match every creator to their creation.</p></div>}
+      <nav aria-label="Picture story scenes" className="mt-5 flex flex-wrap items-center justify-between gap-3"><button type="button" disabled={scene === 0} onClick={() => setScene(scene - 1)} className="min-h-12 rounded-full border-2 border-detective-blue-200 px-5 font-display font-bold text-detective-blue-800 disabled:invisible"><ArrowLeft className="mr-2 inline h-4 w-4" />BACK</button><button type="button" onClick={() => scene === 3 ? go("find") : setScene(scene + 1)} className={buttonClass}>{scene === 3 ? "START INVESTIGATION" : "NEXT"}<ArrowRight className="h-4 w-4" /></button></nav>
+    </section>}
+    {step === "find" && <SequentialQuestion key={`story-${storyIndex}`} title="🔎 FIND THE CLUES" question={caseOne.storyQuestions[storyIndex]} index={storyIndex} total={5} onNext={() => storyIndex < 4 ? setStoryIndex(storyIndex + 1) : go("discovery")} nextLabel={storyIndex === 4 ? "DISCOVER IP" : "NEXT CLUE"} afterCorrect={storyIndex === 4 ? "Questy: Excellent detective work! But what do drawings, stories, inventions and brands have to do with IP?" : undefined} />}
+    {step === "discovery" && <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-7"><h2 className="font-display text-3xl font-bold text-detective-blue-900">🔎 QUESTY’S DISCOVERY</h2><div className="mt-5 grid gap-4"><FactCard title="WHAT IS IP?"><p>IP is short for:</p><p className="mt-2 font-display text-2xl font-bold">INTELLECTUAL PROPERTY</p><p className="mt-3">Questy: “That sounds like a big phrase. But don’t worry!”</p></FactCard><FactCard title="PEOPLE CREATE IN DIFFERENT WAYS"><p>People use their 🧠 Knowledge, 💭 Imagination, ✨ Creativity and 🛠️ Skills to create new things.</p><ul className="mt-3 space-y-1"><li>🎨 Mia created a drawing.</li><li>🤖 Ben built an invention.</li><li>📖 Zara wrote a story.</li><li>☀️ Leo created a brand idea.</li></ul></FactCard><FactCard title="DETECTIVE FACT"><p>Different creations can involve different kinds of intellectual property. You will discover them as you explore Idea City.</p><p className="mt-3 font-semibold">🏪 Brand Street · 🔬 Inventor Lab · 🎨 Creator Studio · 🏛️ Detective HQ</p><p className="mt-3">Questy: “There are trademarks, copyright, patents, designs and more mysteries waiting for us. You don’t need to remember them yet. One mystery at a time, Detective!”</p></FactCard></div><button type="button" onClick={() => go("challenge")} className={`${buttonClass} mt-6`}>TAKE THE DETECTIVE CHALLENGE <ArrowRight className="h-4 w-4" /></button></section>}
+    {step === "challenge" && <SequentialQuestion key={`knowledge-${knowledgeIndex}`} title="🏅 DETECTIVE CHALLENGE" question={caseOne.knowledgeQuestions[knowledgeIndex]} index={knowledgeIndex} total={5} onNext={() => knowledgeIndex < 4 ? setKnowledgeIndex(knowledgeIndex + 1) : go("problem")} nextLabel={knowledgeIndex === 4 ? "SOLVE THE CASE" : "NEXT QUESTION"} afterCorrect={knowledgeIndex === 4 ? "🏅 DETECTIVE CHALLENGE COMPLETE! Questy: You’ve discovered your first IP secret. Kids can be creators too!" : undefined} />}
+    {step === "problem" && <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-7"><h2 className="font-display text-3xl font-bold text-detective-blue-900">🚨 FINAL PROBLEM · THE COPYCAT PROBLEM</h2><Image src="/cases/world-1/copycat-problem.png" alt="Copycat replaces Mia's Creator Card beneath her dragon drawing" width={1672} height={941} className="mt-4 h-auto w-full rounded-2xl" /><div className="mt-4 space-y-2 text-lg text-detective-blue-900"><p>Mia puts her dragon drawing on the Idea Day display. Later, Copycat finds the drawing.</p><p>Copycat removes Mia’s Creator Card and puts his own card underneath it: “Created by Copycat.”</p><p><strong>Mia:</strong> “But I drew that!”</p><p><strong>Questy:</strong> “{name}, we need your help!”</p></div><SequentialQuestion key="final" title="SOLVE THE CASE" question={caseOne.final} onNext={finish} nextLabel="SEE CASE SOLVED" afterCorrect="CREATORS MATTER. THEIR CREATIONS MATTER TOO." /></section>}
+    {step === "solved" && <section className="rounded-3xl bg-gradient-to-br from-detective-yellow-100 to-sky-100 p-6 text-center shadow-sm"><h2 className="font-display text-4xl font-bold text-detective-blue-900">🎉 CASE #1 SOLVED!</h2><p className="mt-3 text-2xl">{caseOne.title}</p><p className="mt-4">Awarded to: <strong>{name}</strong></p><p className="mt-3">For discovering: “People can create in many different ways.”</p><p className="mt-5 rounded-2xl bg-white p-5 font-display text-2xl font-bold text-detective-blue-900">🏅 CREATOR DETECTIVE BADGE</p><p className="mt-3 text-detective-blue-800">World 1 rewards are recorded in your existing detective progress.</p><div className="mt-6 flex flex-wrap justify-center gap-3"><button type="button" className={buttonClass} onClick={() => go("file")}>VIEW CASE FILE</button><button type="button" className={buttonClass} onClick={() => go("reward")}>COLOUR CREATOR PARK 🎨</button></div></section>}
+    {step === "file" && <section className="rounded-3xl bg-white p-6 shadow-sm"><p className="font-display font-bold uppercase tracking-widest text-detective-orange-600">LITTLE IP DETECTIVES · CASE FILE #1</p><h2 className="mt-2 font-display text-3xl font-bold text-detective-blue-900">{caseOne.title}</h2><dl className="mt-5 grid gap-3 sm:grid-cols-2">{[["Case", caseOne.title], ["Mystery", "Who Created What?"], ["New Detective Word", "IP — Intellectual Property"], ["Discovery", "People use their imagination, knowledge and skills to create different things."], ["Detective Rule", "Creators matter. Their creations matter too."], ["Status", "✅ CASE SOLVED"]].map(([label, value]) => <div key={label} className="rounded-2xl bg-sky-50 p-4"><dt className="font-display font-bold">{label}</dt><dd>{value}</dd></div>)}</dl><div className="mt-6 flex flex-wrap gap-3"><button type="button" className={buttonClass} onClick={() => go("reward")}>COLOUR CREATOR PARK 🎨</button><button type="button" className={buttonClass} onClick={returnToCity}>RETURN TO IDEA CITY <ArrowRight className="h-4 w-4" /></button></div></section>}
+    {step === "reward" && <CreatorParkColouring onReturn={returnToCity} onFile={() => go("file")} />}
+  </CaseShell></div>;
 }
-
-function FinalProblem({ onSolved }: { onSolved: () => void }) {
+function FactCard({ title, children }: { title: string; children: React.ReactNode }) { return <article className="rounded-3xl border-2 border-detective-yellow-200 bg-detective-yellow-50 p-5 text-lg leading-relaxed text-detective-blue-900"><h3 className="mb-2 font-display text-xl font-bold">{title}</h3>{children}</article>; }
+function SequentialQuestion({ title, question, index, total, onNext, nextLabel, afterCorrect }: { title: string; question: CaseQuestionData; index?: number; total?: number; onNext: () => void; nextLabel: string; afterCorrect?: string }) {
+  const [correct, setCorrect] = useState(false);
   const [feedback, setFeedback] = useState("");
-  const [solved, setSolved] = useState(false);
-  const answer = (index: number) => { if (index === caseOne.final.correct) { setSolved(true); setFeedback("Exactly! Mia created the drawing, so we should recognise Mia as the creator."); } else setFeedback("Think like a detective. Who actually created the dragon drawing?"); };
-  return <><div className="mx-auto mt-6 grid max-w-2xl gap-3">{caseOne.final.choices.map((choice, index) => <button key={choice} type="button" disabled={solved} onClick={() => answer(index)} className={"min-h-14 rounded-2xl border-2 px-5 py-3 text-left font-semibold text-detective-blue-900 " + (solved && index === caseOne.final.correct ? "border-green-500 bg-green-50" : "border-detective-blue-100 bg-sky-50 hover:border-detective-orange-400")}><span className="mr-3 font-display">{String.fromCharCode(65 + index)}.</span>{choice}</button>)}</div>{feedback && <p role="status" className="mx-auto mt-5 max-w-2xl rounded-2xl bg-detective-yellow-100 px-5 py-4 font-display font-semibold text-detective-blue-900">{solved ? "🔎 " : "💡 "}{feedback}</p>}{solved && <button type="button" onClick={onSolved} className="mt-5 inline-flex items-center gap-2 rounded-full bg-detective-orange-500 px-7 py-3 font-display font-bold text-white">SOLVE THE CASE <ArrowRight className="h-4 w-4" /></button>}</>;
-}
-
-function CaseSolved({ nickname, detective, onReward, onFile }: { nickname: string; detective: DetectiveProfile | null; onReward: () => void; onFile: () => void }) {
-  const reduced = useReducedMotion();
-  return <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-detective-yellow-100 via-white to-sky-100 p-6 text-center shadow-sm"><div aria-hidden className="text-3xl">{reduced ? "✨" : "✨ 🎉 ⭐ 🎉 ✨"}</div><div className="mx-auto mt-2 max-w-2xl"><CaseHeader nickname={nickname} detective={detective} /></div><h2 className="mt-3 font-display text-4xl font-bold text-detective-blue-900">🎉 CASE SOLVED!</h2><p className="mt-2 font-display text-xl font-bold text-detective-orange-600">YOU SOLVED QUESTY&apos;S FIRST MYSTERY!</p><p className="mx-auto mt-4 max-w-xl text-lg text-detective-blue-800">Fantastic detective work{nickname ? `, Detective ${nickname}` : ""}! You found the creators, followed the clues, and solved the mystery.</p><div className="mx-auto mt-6 max-w-xl rounded-3xl border-2 border-detective-orange-300 bg-white p-5"><p className="font-display text-sm font-bold uppercase tracking-[.18em] text-detective-orange-500">First rule of Idea City</p><p className="mt-2 font-display text-2xl font-bold text-detective-blue-900">⭐ CREATORS MATTER.<br />THEIR CREATIONS MATTER TOO.</p></div><div className="mt-6 flex flex-wrap justify-center gap-3"><button type="button" onClick={onReward} className="rounded-full bg-detective-orange-500 px-6 py-3 font-display font-bold text-white">🎁 DETECTIVE REWARD</button><button type="button" onClick={onFile} className="inline-flex items-center gap-2 rounded-full border-2 border-detective-blue-200 bg-white px-6 py-3 font-display font-bold text-detective-blue-800"><FileText className="h-4 w-4" />VIEW CASE FILE</button></div></div>;
-}
-
-function RewardRoom({ reward, setReward, onFile, onReturn }: { reward: Reward; setReward: (reward: Reward) => void; onFile: () => void; onReturn: () => void }) {
-  if (reward === "colour") return <div><CaseColourReward onDone={() => setReward(null)} /><RewardDone onFile={onFile} onReturn={onReturn} /></div>;
-  if (reward === "puzzle") return <div><CaseJigsawReward onDone={() => setReward(null)} /><RewardDone onFile={onFile} onReturn={onReturn} /></div>;
-  return <div className="rounded-3xl bg-white p-6 text-center shadow-sm"><p className="font-display text-sm font-bold uppercase tracking-[.18em] text-detective-orange-500">🎁 Detective reward unlocked!</p><h2 className="mt-2 font-display text-3xl font-bold text-detective-blue-900">Choose some detective fun!</h2><p className="mt-2 text-detective-blue-700">These activities are just for fun. Your Case is already safely solved.</p><div className="mt-6 grid gap-4 sm:grid-cols-2"><button type="button" onClick={() => setReward("colour")} className="rounded-3xl border-2 border-detective-yellow-300 bg-detective-yellow-50 p-6 font-display text-xl font-bold text-detective-blue-900"><Palette className="mx-auto h-9 w-9 text-detective-orange-500" />🎨 COLOUR THE CASE</button><button type="button" onClick={() => setReward("puzzle")} className="rounded-3xl border-2 border-detective-blue-200 bg-sky-50 p-6 font-display text-xl font-bold text-detective-blue-900"><Puzzle className="mx-auto h-9 w-9 text-detective-orange-500" />🧩 SOLVE THE CASE PUZZLE</button></div><div className="mt-6 flex flex-wrap justify-center gap-3"><button type="button" onClick={onFile} className="rounded-full border-2 border-detective-blue-200 px-5 py-3 font-display font-bold text-detective-blue-800">VIEW CASE FILE</button><button type="button" onClick={onReturn} className="rounded-full bg-detective-blue-600 px-5 py-3 font-display font-bold text-white">SKIP & RETURN TO IDEA CITY</button></div></div>;
-}
-
-function RewardDone({ onFile, onReturn }: { onFile: () => void; onReturn: () => void }) {
-  return <div className="mt-5 rounded-3xl bg-green-100 p-5 text-center"><p className="font-display text-xl font-bold text-green-800">🎉 GREAT WORK, DETECTIVE!</p><div className="mt-4 flex flex-wrap justify-center gap-3"><button type="button" onClick={onFile} className="rounded-full border-2 border-green-700 bg-white px-5 py-3 font-display font-bold text-green-800">VIEW CASE FILE</button><button type="button" onClick={onReturn} className="rounded-full bg-detective-blue-600 px-5 py-3 font-display font-bold text-white">RETURN TO IDEA CITY</button></div></div>;
+  return <section className="rounded-3xl bg-white p-5 text-center shadow-sm sm:p-7"><p className="font-display font-bold uppercase tracking-widest text-detective-orange-600">{title}{total && ` · ${index! + 1} of ${total}`}</p><h2 className="mx-auto mt-3 max-w-2xl font-display text-2xl font-bold text-detective-blue-900">{question.prompt}</h2><div className="mx-auto mt-6 grid max-w-2xl gap-3">{question.choices.map((choice, i) => <button key={i} type="button" disabled={correct} onClick={() => { const match = i === question.correct; setCorrect(match); setFeedback(match ? question.feedback : "Good try, Detective. Look at the clues again!"); }} className={`min-h-14 rounded-2xl border-2 px-5 py-3 text-left text-lg font-semibold text-detective-blue-900 focus-visible:outline focus-visible:outline-4 focus-visible:outline-detective-yellow-300 disabled:opacity-75 ${correct && i === question.correct ? "border-green-500 bg-green-50" : "border-detective-blue-100 bg-sky-50 hover:border-detective-orange-400"}`}><span className="mr-3">{String.fromCharCode(65 + i)}.</span>{choice}</button>)}</div>{feedback && <p role="status" className="mx-auto mt-5 max-w-2xl rounded-2xl bg-detective-yellow-100 p-4 font-display font-bold">{feedback}</p>}{correct && <>{afterCorrect && <p className="mx-auto mt-4 max-w-xl text-lg font-bold text-detective-blue-900">{afterCorrect}</p>}<button type="button" className={`${buttonClass} mt-5`} onClick={onNext}>{nextLabel} <ArrowRight className="h-4 w-4" /></button></>}</section>;
 }

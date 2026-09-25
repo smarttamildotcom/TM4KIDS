@@ -1,39 +1,26 @@
+/** World 1 curriculum data. The scene/question shapes are reusable for later cases. */
+export type CaseQuestionData = { prompt: string; choices: readonly string[]; correct: number; feedback: string };
 export const caseOne = {
-  id: 1,
-  title: "Questy’s First Mystery",
-  location: "Creator Park",
-  video: undefined as { mp4?: string; webm?: string; poster?: string; captions?: string } | undefined,
-  pictureStory: [
-    { id: "idea-day", eyebrow: "Creator Park", title: "Welcome to Idea Day", kind: "welcome" },
-    { id: "creators", eyebrow: "Meet the creators", title: "Four Creators. Four Creations.", kind: "creators" },
-    { id: "whoosh", eyebrow: "Something goes wrong!", title: "WHOOSH!", description: "A sudden gust sends everything into a mix-up!", kind: "wind" },
-    { id: "mission", eyebrow: "Little IP Detectives", title: "Your First Case", kind: "mission" },
+  title: "Questy’s First Mystery", district: "Creator Park", mystery: "Who Created What?",
+  scenes: [
+    { title: "Welcome to Idea Day", image: "/cases/world-1/scene-1-welcome-idea-day.png", alt: "Questy the orange detective cat welcomes a child to Creator Park on Idea Day", dialogue: [["Questy", "Welcome to Idea Day, Detective!"], ["Questy", "Kids from all over Idea City have brought things they created."], ["Detective", "They made all of these?"], ["Questy", "They did! Come and meet our four creators."]] },
+    { title: "Four Creators, Four Creations", image: "/cases/world-1/scene-2-four-creators.png", alt: "Mia, Ben, Zara and Leo show their drawing, invention, story and snack shop sign", dialogue: [["Mia — Dragon Drawing", "I love drawing things from my imagination!"], ["Ben — Robo-Roller", "I like building things that solve problems."], ["Zara — The Moon Cat", "I make up characters and write adventures about them."], ["Leo — Sunny Snacks", "I invented a name and sign for my pretend snack shop."], ["Questy", "Four creators. Four very different creations!"]] },
+    { title: "WHOOSH!", image: "/cases/world-1/scene-3-whoosh-approved.png", alt: "A gust of wind mixes the Creator Cards at Idea Day", dialogue: [["Story", "A sudden gust mixes everything up."], ["Mia", "Oh no!"], ["Questy", "The Creator Cards have been mixed up!"], ["Questy", "Detective [nickname], this sounds like a job for you!"]] },
+    { title: "Your First Case", image: "/cases/world-1/scene-4-first-case-approved.png", alt: "Questy and a child detective investigate the mixed Creator Cards", dialogue: [["Questy", "We know WHAT was created…"], ["Questy", "…but can you discover WHO created each one?"]] },
   ],
-  creators: [
-    { id: "mia", name: "Mia", creation: "Dragon Drawing", icon: "🐉", detail: "a bright dragon drawing", dialogue: "I drew a colourful dragon.", image: "/cases/world-1/dragon-drawing.svg" },
-    { id: "ben", name: "Ben", creation: "Robo-Roller", icon: "🤖", detail: "a tiny imaginary invention", dialogue: "I built Robo-Roller to help solve a problem.", image: "/cases/world-1/robo-roller.svg" },
-    { id: "zara", name: "Zara", creation: "The Moon Cat", icon: "📖", detail: "a short story", dialogue: "I wrote a story called The Moon Cat.", image: "/cases/world-1/moon-cat.svg" },
-    { id: "leo", name: "Leo", creation: "Sunny Snacks", icon: "☀️", detail: "a fictional snack-shop sign", dialogue: "I created the name and sign for my pretend snack shop.", image: "/cases/world-1/sunny-snacks.svg" },
-  ],
-  story: [
-    { title: "Idea Day is here!", text: "Creator Park is buzzing. Young creators have brought their wonderful creations to share.", icon: "🎪" },
-    { title: "Mia’s dragon", text: "Mia brings a colourful dragon drawing.", icon: "🐉" },
-    { title: "Ben’s invention", text: "Ben brings Robo-Roller, a small imaginary invention.", icon: "🤖" },
-    { title: "Zara’s story", text: "Zara brings her story, The Moon Cat.", icon: "📖" },
-    { title: "Leo’s sign", text: "Leo brings the Sunny Snacks shop sign.", icon: "☀️" },
-    { title: "Oh no!", text: "Their Creator Cards get mixed up. Now we know what was created, but not who created it.", icon: "🌀" },
-    { title: "Questy needs you", text: "Can you follow the clues and match every creation to its creator?", icon: "🔎" },
-  ],
-  questions: [
-    { prompt: "A colourful dragon drawing was found among the Idea Day creations. Which creator made it?", choices: ["Mia", "Ben", "Zara", "Leo"], correct: 0, feedback: "CLUE FOUND! Mia created the dragon drawing." },
-    { prompt: "One creator built Robo-Roller to solve a useful problem. What could we call someone who creates a new useful device?", choices: ["An inventor", "A copy machine", "A shop"], correct: 0, feedback: "Exactly! Inventors create solutions to problems." },
-    { prompt: "Why is it useful to know who created something?", choices: ["So we can recognise the creator and their work", "Only adults can create things", "It never matters who created something"], correct: 0, feedback: "Great detective thinking! We can recognise the creator and their work." },
-  ],
-  final: { prompt: "Copycat says: “I’ll put MY name on Mia’s drawing!” What should we do?", choices: ["Let Copycat say they created it", "Tell everyone Mia created the drawing", "Throw the drawing away"], correct: 1 },
-  caseFile: {
-    mystery: "Who created what?",
-    discovery: "People create many different things.",
-    word: "IP — Intellectual Property",
-    rule: "Creators matter. Their creations matter too.",
-  },
+  storyQuestions: [
+    { prompt: "A colourful dragon drawing was found at Idea Day. Who created it?", choices: ["Mia", "Ben", "Zara", "Leo"], correct: 0, feedback: "🔎 Clue Found! Mia created the dragon drawing." },
+    { prompt: "Which creator likes building things that solve problems?", choices: ["Leo", "Zara", "Ben", "Mia"], correct: 2, feedback: "🔎 Clue Found! Ben created Robo-Roller." },
+    { prompt: "Who created characters and wrote an adventure?", choices: ["Ben", "Zara", "Mia", "Leo"], correct: 1, feedback: "🔎 Clue Found! Zara wrote The Moon Cat." },
+    { prompt: "Who created a name and sign for a pretend snack shop?", choices: ["Leo", "Ben", "Zara", "Mia"], correct: 0, feedback: "🔎 Clue Found! Leo created Sunny Snacks." },
+    { prompt: "Mia drew, Ben built, Zara wrote and Leo created a brand idea. What do they all have in common?", choices: ["They all created something", "They all built robots", "They all opened shops", "They all wrote books"], correct: 0, feedback: "⭐ BIG CLUE FOUND! They are all CREATORS!" },
+  ] satisfies readonly CaseQuestionData[],
+  knowledgeQuestions: [
+    { prompt: "What does IP stand for?", choices: ["Interesting Pictures", "Intellectual Property", "Internet Projects", "Important Products"], correct: 1, feedback: "⭐ Correct! IP stands for Intellectual Property." },
+    { prompt: "Which of these can people use when creating something?", choices: ["Imagination", "Knowledge", "Skills", "All of these"], correct: 3, feedback: "⭐ Correct! People use imagination, knowledge and skills." },
+    { prompt: "Which person is being a creator?", choices: ["A child writing their own story", "A child designing a new character", "A child building a new invention", "All of them"], correct: 3, feedback: "⭐ Correct! Children can create in many ways." },
+    { prompt: "Do all creations involve exactly the same kind of intellectual property?", choices: ["Yes, always", "No, different creations can involve different types of IP", "Only inventions involve IP", "Only businesses involve IP"], correct: 1, feedback: "⭐ Correct! Different creations can involve different types of IP." },
+    { prompt: "Which statement is the best detective rule?", choices: ["Only adults can be creators", "Only expensive inventions matter", "People can create in many different ways", "Everything you imagine is automatically registered as IP"], correct: 2, feedback: "⭐ Correct! People can create in many different ways." },
+  ] satisfies readonly CaseQuestionData[],
+  final: { prompt: "What is the best solution?", choices: ["Leave Copycat’s name there.", "Throw the drawing away.", "Put Mia’s Creator Card back and recognise her as the creator.", "Tell everyone nobody created it."], correct: 2, feedback: "🎉 CASE SOLVED! Mia created the dragon drawing, so we should recognise her as its creator." } satisfies CaseQuestionData,
 } as const;
