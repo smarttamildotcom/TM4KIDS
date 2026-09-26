@@ -22,6 +22,7 @@ export function WorldPageExperience({ worldId }: { worldId: number }) {
     );
   }
 
+  const currentWorld = world;
   const isCompleted = player.completedWorldIds.includes(worldId);
 
   function handleComplete(correct: number, total: number) {
@@ -29,11 +30,11 @@ export function WorldPageExperience({ worldId }: { worldId: number }) {
     const stars = total > 0 ? Math.max(1, Math.round((correct / total) * 3)) : 1;
     completeWorld({
       worldId,
-      xp: world.xp,
+      xp: currentWorld.xp,
       stars,
       correct,
       total,
-      badgeLabel: `${world.reward.badge} ${world.reward.label}`,
+      badgeLabel: `${currentWorld.reward.badge} ${currentWorld.reward.label}`,
     });
   }
 
@@ -50,17 +51,17 @@ export function WorldPageExperience({ worldId }: { worldId: number }) {
             <Link href="/#journey" className="inline-flex items-center gap-2 rounded-full border-2 border-detective-blue-200 bg-white px-4 py-2 font-display text-sm font-bold text-detective-blue-800 hover:bg-detective-blue-50">
               <Map className="h-4 w-4" /> Idea City
             </Link>
-            <span className="rounded-full bg-detective-blue-900 px-4 py-2 font-display text-sm font-bold text-white">World {world.id} of {worlds.length}</span>
+            <span className="rounded-full bg-detective-blue-900 px-4 py-2 font-display text-sm font-bold text-white">World {currentWorld.id} of {worlds.length}</span>
           </nav>
 
           <header className="mb-7 rounded-[2rem] border-2 border-detective-blue-100 bg-white p-5 shadow-md sm:p-7">
-            <p className="font-display text-sm font-bold uppercase tracking-[.18em] text-detective-orange-500">{world.id === 1 ? "Case 1 · Creator Park" : `World ${world.id}`}</p>
-            <h1 className="mt-2 font-display text-3xl font-bold text-detective-blue-900 sm:text-4xl">{world.id === 1 ? "Questy’s First Mystery" : world.name}</h1>
-            <p className="mt-3 max-w-3xl text-detective-blue-700/85">{world.description}</p>
+            <p className="font-display text-sm font-bold uppercase tracking-[.18em] text-detective-orange-500">{currentWorld.id === 1 ? "Case 1 · Creator Park" : `World ${currentWorld.id}`}</p>
+            <h1 className="mt-2 font-display text-3xl font-bold text-detective-blue-900 sm:text-4xl">{currentWorld.id === 1 ? "Questy’s First Mystery" : currentWorld.name}</h1>
+            <p className="mt-3 max-w-3xl text-detective-blue-700/85">{currentWorld.description}</p>
           </header>
 
           <section className="rounded-[2rem] border-2 border-detective-blue-100 bg-white p-4 shadow-lg sm:p-6 lg:p-8">
-            <WorldDetailPanel world={world} isCompleted={isCompleted} onComplete={handleComplete} onNextWorld={handleNextWorld} />
+            <WorldDetailPanel world={currentWorld} isCompleted={isCompleted} onComplete={handleComplete} onNextWorld={handleNextWorld} />
           </section>
 
           <nav aria-label="Move between worlds" className="mt-8 grid gap-3 sm:grid-cols-3">
