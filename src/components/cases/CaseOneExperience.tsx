@@ -15,7 +15,15 @@ const buttonClass = "inline-flex min-h-12 items-center justify-center gap-2 roun
 const portraitScenes = ["/cases/world-1/Scene 1.png", "/cases/world-1/Scene 2.png", "/cases/world-1/Scene 3.png", "/cases/world-1/Scene 4.png"] as const;
 
 function ResponsiveArtwork({ landscape, portrait, alt, priority = false }: { landscape: string; portrait: string; alt: string; priority?: boolean }) {
-  return <picture><source media="(orientation: portrait)" srcSet={portrait} /><Image src={landscape} alt={alt} width={1672} height={941} priority={priority} sizes="(max-width: 1024px) 100vw, 896px" className="mt-4 h-auto w-full rounded-2xl" /></picture>;
+  const [isPortrait, setIsPortrait] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(orientation: portrait)");
+    const sync = () => setIsPortrait(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+  return <Image key={isPortrait ? portrait : landscape} src={isPortrait ? portrait : landscape} alt={alt} width={isPortrait ? 941 : 1672} height={isPortrait ? 1672 : 941} priority={priority} sizes="(max-width: 1024px) 100vw, 896px" className="mt-4 h-auto w-full rounded-2xl" />;
 }
 
 export function CaseOneExperience({ isCompleted, onComplete }: { isCompleted: boolean; onComplete: (correct: number, total: number) => void }) {
