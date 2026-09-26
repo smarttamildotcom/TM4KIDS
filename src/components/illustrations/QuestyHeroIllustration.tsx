@@ -10,7 +10,7 @@ const float = (distance: number, duration: number, delay = 0) => ({
   transition: { duration, delay, repeat: Infinity, ease: "easeInOut" as const },
 });
 
-/** Hero illustration: Questy subtly turns toward the pointer for a playful interactive prototype. */
+/** Hero illustration: responsive Questy with subtle pointer-follow movement on fine-pointer devices. */
 export function QuestyHeroIllustration() {
   const rootRef = useRef<HTMLDivElement>(null);
   const pointerX = useMotionValue(0);
@@ -51,29 +51,35 @@ export function QuestyHeroIllustration() {
       initial={{ opacity: 0, scale: 0.94 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.65, ease: "easeOut", delay: 0.1 }}
-      className="relative mx-auto w-full max-w-[28rem]"
+      className="relative mx-auto flex w-full max-w-[28rem] justify-center overflow-visible"
     >
-      <div aria-hidden="true" className="absolute inset-0 -z-10 mx-auto h-[85%] w-[85%] translate-y-4 rounded-[45%] bg-detective-blue-100" />
+      <div aria-hidden="true" className="absolute left-1/2 top-0 -z-10 h-[85%] w-[85%] -translate-x-1/2 translate-y-4 rounded-[45%] bg-detective-blue-100" />
 
       <motion.div
         animate={{ y: [0, -8, 0] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        className="relative mx-auto h-[340px] w-auto sm:h-[420px] lg:h-[500px]"
+        className="relative flex h-[300px] w-full items-center justify-center sm:h-[420px] lg:h-[500px]"
       >
         <motion.div
           style={{ x: lookX, y: lookY, rotateX, rotateY, transformPerspective: 900 }}
-          className="h-full w-full"
+          className="flex h-full w-full items-center justify-center"
         >
-          <Image src={questyImage} alt="Questy, the IP2Kids detective mascot" priority className="h-full w-auto object-contain drop-shadow-2xl" />
+          <Image
+            src={questyImage}
+            alt="Questy, the IP2Kids detective mascot"
+            priority
+            sizes="(max-width: 639px) 200px, (max-width: 1023px) 280px, 333px"
+            className="mx-auto block h-full w-auto max-w-full object-contain object-center drop-shadow-2xl"
+          />
         </motion.div>
       </motion.div>
 
-      <motion.span aria-hidden="true" {...float(12, 4.2)} className="absolute left-[2%] top-[6%] grid h-12 w-12 place-items-center rounded-full bg-detective-yellow-400 text-xl shadow-lg">⭐</motion.span>
-      <motion.span aria-hidden="true" {...float(15, 5, 0.4)} className="absolute right-[0%] top-[2%] grid h-14 w-14 place-items-center rounded-2xl bg-white text-2xl shadow-xl">🏅</motion.span>
-      <motion.span aria-hidden="true" {...float(10, 3.8, 0.8)} className="absolute right-[-2%] top-[45%] grid h-12 w-12 place-items-center rounded-full bg-detective-blue-600 text-xl shadow-lg">🔍</motion.span>
-      <motion.span aria-hidden="true" {...float(11, 4.6, 0.2)} className="absolute left-[-2%] top-[38%] grid h-12 w-12 place-items-center rounded-full bg-detective-orange-400 text-xl shadow-lg">🐾</motion.span>
-      <motion.span aria-hidden="true" {...float(9, 4, 1.1)} className="absolute bottom-[6%] left-[6%] grid h-12 w-12 place-items-center rounded-2xl bg-white text-xl shadow-lg">📓</motion.span>
-      <motion.span aria-hidden="true" {...float(13, 4.4, 0.6)} className="absolute bottom-[2%] right-[8%] grid h-12 w-12 place-items-center rounded-2xl bg-detective-yellow-100 text-xl shadow-lg">🗺️</motion.span>
+      <motion.span aria-hidden="true" {...float(12, 4.2)} className="absolute left-[4%] top-[6%] grid h-10 w-10 place-items-center rounded-full bg-detective-yellow-400 text-lg shadow-lg sm:left-[2%] sm:h-12 sm:w-12 sm:text-xl">⭐</motion.span>
+      <motion.span aria-hidden="true" {...float(15, 5, 0.4)} className="absolute right-[4%] top-[2%] grid h-11 w-11 place-items-center rounded-2xl bg-white text-xl shadow-xl sm:right-0 sm:h-14 sm:w-14 sm:text-2xl">🏅</motion.span>
+      <motion.span aria-hidden="true" {...float(10, 3.8, 0.8)} className="absolute right-[2%] top-[45%] grid h-10 w-10 place-items-center rounded-full bg-detective-blue-600 text-lg shadow-lg sm:right-[-2%] sm:h-12 sm:w-12 sm:text-xl">🔍</motion.span>
+      <motion.span aria-hidden="true" {...float(11, 4.6, 0.2)} className="absolute left-[2%] top-[38%] grid h-10 w-10 place-items-center rounded-full bg-detective-orange-400 text-lg shadow-lg sm:left-[-2%] sm:h-12 sm:w-12 sm:text-xl">🐾</motion.span>
+      <motion.span aria-hidden="true" {...float(9, 4, 1.1)} className="absolute bottom-[6%] left-[7%] grid h-10 w-10 place-items-center rounded-2xl bg-white text-lg shadow-lg sm:left-[6%] sm:h-12 sm:w-12 sm:text-xl">📓</motion.span>
+      <motion.span aria-hidden="true" {...float(13, 4.4, 0.6)} className="absolute bottom-[2%] right-[9%] grid h-10 w-10 place-items-center rounded-2xl bg-detective-yellow-100 text-lg shadow-lg sm:right-[8%] sm:h-12 sm:w-12 sm:text-xl">🗺️</motion.span>
     </motion.div>
   );
 }
