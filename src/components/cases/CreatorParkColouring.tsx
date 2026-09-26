@@ -12,7 +12,7 @@ const palette = [
   { name: "Purple", value: "#a855f7" },
   { name: "Pink", value: "#f472b6" },
   { name: "Brown", value: "#92400e" },
-  { name: "Grey", value: "#9ca3af" },
+  { name: "Orange", value: "#f97316" },
 ];
 
 const IMAGE_SRC = "/cases/world-1/creator-park-colouring.png";
@@ -54,16 +54,13 @@ export function CreatorParkColouring({ onFile }: { onFile: () => void }) {
       if (!ctx) return;
       ctx.drawImage(image, 0, 0);
       originalRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const savedImage = new Image();
         savedImage.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(savedImage, 0, 0, canvas.width, canvas.height); setReady(true); };
         savedImage.onerror = () => setReady(true);
         savedImage.src = saved;
-      } else {
-        setReady(true);
-      }
+      } else setReady(true);
       historyRef.current = [];
       setHistoryCount(0);
     };
@@ -156,13 +153,13 @@ export function CreatorParkColouring({ onFile }: { onFile: () => void }) {
   return <section className="rounded-3xl bg-white p-3 shadow-sm sm:p-5 md:p-7">
     <h2 className="font-display text-2xl font-bold text-detective-blue-900 sm:text-3xl">🎨 COLOUR CREATOR PARK!</h2>
     <p className="mt-2 text-base sm:text-lg">Questy: “Idea Day needs some colour!” Choose a colour, then tap an area to colour it. This activity is optional.</p>
-    <div className="mt-5 grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_210px] lg:gap-5">
+    <div className="mt-5 grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_190px] lg:gap-5">
       <div className="min-w-0 overflow-hidden rounded-2xl border-2 border-detective-blue-100 bg-white">
-        <canvas ref={canvasRef} onPointerDown={paintRegion} aria-label="Creator Park colouring canvas. Select a colour and tap an enclosed area to colour it." className="block h-auto w-full touch-manipulation cursor-crosshair select-none" />
+        <canvas ref={canvasRef} onPointerDown={paintRegion} aria-label="Creator Park colouring canvas. Select a colour and tap an enclosed area to colour it." className="block h-auto w-full touch-manipulation cursor-pointer select-none" />
       </div>
       <div className="flex min-w-0 flex-col gap-3">
-        <div className="grid grid-cols-5 gap-2 sm:grid-cols-9 lg:grid-cols-3" aria-label="Colour palette">
-          {palette.map(item => <button key={item.name} type="button" title={item.name} aria-label={`Select ${item.name}`} aria-pressed={colour === item.value} onClick={() => setColour(item.value)} style={{ backgroundColor: item.value }} className={`aspect-square min-h-10 min-w-10 rounded-full border-4 border-white shadow focus-visible:outline focus-visible:outline-4 focus-visible:outline-detective-blue-700 ${colour === item.value ? "ring-4 ring-detective-blue-700" : "ring-2 ring-detective-blue-100"}`} />)}
+        <div className="grid grid-cols-5 gap-1.5 sm:grid-cols-9 lg:grid-cols-3" aria-label="Colour palette">
+          {palette.map(item => <button key={item.name} type="button" title={item.name} aria-label={`Select ${item.name}`} aria-pressed={colour === item.value} onClick={() => setColour(item.value)} style={{ backgroundColor: item.value }} className={`mx-auto h-10 w-10 rounded-full border-3 border-white shadow focus-visible:outline focus-visible:outline-4 focus-visible:outline-detective-blue-700 sm:h-11 sm:w-11 ${colour === item.value ? "ring-3 ring-detective-blue-700" : "ring-2 ring-detective-blue-100"}`} />)}
         </div>
         <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
           <button type="button" onClick={undo} disabled={!historyCount} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-detective-blue-200 px-3 font-display font-bold text-detective-blue-900 disabled:opacity-40"><Undo2 className="h-5 w-5" />UNDO</button>
