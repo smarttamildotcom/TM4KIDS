@@ -67,7 +67,7 @@ export function WorldCard({ world, status, isActive, onRequestUnlock, caseTitle 
 
         <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-detective-blue-700/80">{world.id === 1 && caseTitle ? "Help Questy solve the first Creator Park mystery." : world.description}</p>
 
-        <div className="mt-3 flex flex-wrap gap-1.5 text-[11px] font-semibold">
+        <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] font-semibold">
           <span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 ${theme.chip}`}><Star className="h-3 w-3" /> {world.xp} XP</span>
           <span className="inline-flex items-center gap-1 rounded-full bg-detective-blue-50 px-2 py-1 text-detective-blue-700"><Clock className="h-3 w-3" /> {world.time}</span>
           <span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 ${isCompleted ? "bg-green-100 text-green-700" : isLocked ? "bg-detective-blue-100 text-detective-blue-700" : "bg-detective-orange-100 text-detective-orange-700"}`}>
@@ -76,7 +76,7 @@ export function WorldCard({ world, status, isActive, onRequestUnlock, caseTitle 
           {isFreeTrial && !isLocked && <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-green-700">✨ Free</span>}
         </div>
 
-        <div className="mt-auto pt-3">
+        <div className="pt-2">
           {isLocked ? (
             <button type="button" onClick={onRequestUnlock} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-detective-blue-200 px-4 py-2.5 font-display text-xs font-bold text-detective-blue-800"><Lock className="h-3.5 w-3.5" /> Unlock World</button>
           ) : (
