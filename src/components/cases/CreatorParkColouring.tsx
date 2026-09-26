@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Download, RotateCcw, Undo2 } from "lucide-react";
+import { Download, RotateCcw, Save, Undo2 } from "lucide-react";
 
 const palette = [
   { name: "Red", value: "#ef4444" },
@@ -16,13 +16,10 @@ const palette = [
 ];
 
 const IMAGE_SRC = "/cases/world-1/creator-park-colouring.png";
+const STORAGE_KEY = "ip2kids:world-1:creator-park-colouring";
 
 function hexToRgb(hex: string) {
-  return {
-    r: parseInt(hex.slice(1, 3), 16),
-    g: parseInt(hex.slice(3, 5), 16),
-    b: parseInt(hex.slice(5, 7), 16),
-  };
+  return { r: parseInt(hex.slice(1, 3), 16), g: parseInt(hex.slice(3, 5), 16), b: parseInt(hex.slice(5, 7), 16) };
 }
 
 export function CreatorParkColouring({ onFile }: { onFile: () => void }) {
@@ -32,6 +29,18 @@ export function CreatorParkColouring({ onFile }: { onFile: () => void }) {
   const [colour, setColour] = useState(palette[0].value);
   const [historyCount, setHistoryCount] = useState(0);
   const [ready, setReady] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const persistCanvas = (showMessage = false) => {
+    const canvas = canvasRef.current;
+    if (!canvas || !ready) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, canvas.toDataURL("image/png"));
+      if (showMessage) setMessage("🎨 Colouring saved! You can come back and finish it later.");
+    } catch {
+      if (showMessage) setMessage("We couldn't save this colouring on this device. You can still download your picture.");
+    }
+  };
 
   useEffect(() => {
     const image = new Image();
@@ -45,9 +54,18 @@ export function CreatorParkColouring({ onFile }: { onFile: () => void }) {
       if (!ctx) return;
       ctx.drawImage(image, 0, 0);
       originalRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const savedImage = new Image();
+        savedImage.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(savedImage, 0, 0, canvas.width, canvas.height); setReady(true); };
+        savedImage.onerror = () => setReady(true);
+        savedImage.src = saved;
+      } else {
+        setReady(true);
+      }
       historyRef.current = [];
       setHistoryCount(0);
-      setReady(true);
     };
   }, []);
 
@@ -56,7 +74,6 @@ export function CreatorParkColouring({ onFile }: { onFile: () => void }) {
     if (!canvas || !ready) return;
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
-
     const rect = canvas.getBoundingClientRect();
     const startX = Math.max(0, Math.min(canvas.width - 1, Math.floor((event.clientX - rect.left) * canvas.width / rect.width)));
     const startY = Math.max(0, Math.min(canvas.height - 1, Math.floor((event.clientY - rect.top) * canvas.height / rect.height)));
@@ -65,34 +82,24 @@ export function CreatorParkColouring({ onFile }: { onFile: () => void }) {
     const data = imageData.data;
     const start = (startY * canvas.width + startX) * 4;
     const sr = data[start], sg = data[start + 1], sb = data[start + 2];
-
     if ((sr + sg + sb) / 3 < 145) return;
-
     const fill = hexToRgb(colour);
     const tolerance = 34;
-    const matches = (index: number) =>
-      Math.abs(data[index] - sr) <= tolerance &&
-      Math.abs(data[index + 1] - sg) <= tolerance &&
-      Math.abs(data[index + 2] - sb) <= tolerance &&
-      (data[index] + data[index + 1] + data[index + 2]) / 3 >= 145;
-
+    const matches = (index: number) => Math.abs(data[index] - sr) <= tolerance && Math.abs(data[index + 1] - sg) <= tolerance && Math.abs(data[index + 2] - sb) <= tolerance && (data[index] + data[index + 1] + data[index + 2]) / 3 >= 145;
     const visited = new Uint8Array(canvas.width * canvas.height);
     const stack: number[] = [startY * canvas.width + startX];
     let changed = 0;
-
     while (stack.length) {
       const pixel = stack.pop()!;
       if (visited[pixel]) continue;
       visited[pixel] = 1;
       const index = pixel * 4;
       if (!matches(index)) continue;
-
       const luminance = (data[index] + data[index + 1] + data[index + 2]) / (3 * 255);
       data[index] = Math.round(fill.r * (0.72 + 0.28 * luminance));
       data[index + 1] = Math.round(fill.g * (0.72 + 0.28 * luminance));
       data[index + 2] = Math.round(fill.b * (0.72 + 0.28 * luminance));
       changed++;
-
       const x = pixel % canvas.width;
       const y = Math.floor(pixel / canvas.width);
       if (x > 0) stack.push(pixel - 1);
@@ -100,12 +107,13 @@ export function CreatorParkColouring({ onFile }: { onFile: () => void }) {
       if (y > 0) stack.push(pixel - canvas.width);
       if (y < canvas.height - 1) stack.push(pixel + canvas.width);
     }
-
     if (changed) {
       historyRef.current.push(before);
       if (historyRef.current.length > 20) historyRef.current.shift();
       ctx.putImageData(imageData, 0, 0);
       setHistoryCount(historyRef.current.length);
+      setMessage("");
+      try { localStorage.setItem(STORAGE_KEY, canvas.toDataURL("image/png")); } catch {}
     }
   };
 
@@ -115,68 +123,56 @@ export function CreatorParkColouring({ onFile }: { onFile: () => void }) {
     if (!canvas || !previous) return;
     canvas.getContext("2d")?.putImageData(previous, 0, 0);
     setHistoryCount(historyRef.current.length);
+    setMessage("");
+    try { localStorage.setItem(STORAGE_KEY, canvas.toDataURL("image/png")); } catch {}
   };
 
   const reset = () => {
+    if (!window.confirm("Start colouring again? This will erase your saved colouring.")) return;
     const canvas = canvasRef.current;
     const original = originalRef.current;
     if (!canvas || !original) return;
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
-    if (historyRef.current.length === 0) {
-      const current = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      historyRef.current.push(current);
-    }
     ctx.putImageData(original, 0, 0);
-    setHistoryCount(historyRef.current.length);
+    historyRef.current = [];
+    setHistoryCount(0);
+    localStorage.removeItem(STORAGE_KEY);
+    setMessage("Creator Park is ready for a fresh start!");
   };
 
   const download = () => {
     const canvas = canvasRef.current;
     if (!canvas || !ready) return;
     const link = document.createElement("a");
-    link.download = "IP2Kids-Creator-Park-Colouring.png";
+    link.download = "IP2Kids-Creator-Park.png";
     link.href = canvas.toDataURL("image/png");
+    document.body.appendChild(link);
     link.click();
+    link.remove();
+    setMessage("🎉 Your artwork is ready! Your coloured Creator Park picture has been downloaded.");
   };
 
   return <section className="rounded-3xl bg-white p-3 shadow-sm sm:p-5 md:p-7">
     <h2 className="font-display text-2xl font-bold text-detective-blue-900 sm:text-3xl">🎨 COLOUR CREATOR PARK!</h2>
     <p className="mt-2 text-base sm:text-lg">Questy: “Idea Day needs some colour!” Choose a colour, then tap an area to colour it. This activity is optional.</p>
-
-    <div className="mt-5 grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_190px] lg:gap-5">
+    <div className="mt-5 grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_210px] lg:gap-5">
       <div className="min-w-0 overflow-hidden rounded-2xl border-2 border-detective-blue-100 bg-white">
-        <canvas
-          ref={canvasRef}
-          onPointerDown={paintRegion}
-          aria-label="Creator Park colouring canvas. Select a colour and tap an enclosed area to colour it."
-          className="block h-auto w-full touch-manipulation cursor-crosshair select-none"
-        />
+        <canvas ref={canvasRef} onPointerDown={paintRegion} aria-label="Creator Park colouring canvas. Select a colour and tap an enclosed area to colour it." className="block h-auto w-full touch-manipulation cursor-crosshair select-none" />
       </div>
-
       <div className="flex min-w-0 flex-col gap-3">
         <div className="grid grid-cols-5 gap-2 sm:grid-cols-9 lg:grid-cols-3" aria-label="Colour palette">
-          {palette.map(item => <button
-            key={item.name}
-            type="button"
-            title={item.name}
-            aria-label={`Select ${item.name}`}
-            aria-pressed={colour === item.value}
-            onClick={() => setColour(item.value)}
-            style={{ backgroundColor: item.value }}
-            className={`aspect-square min-h-10 min-w-10 rounded-full border-4 border-white shadow focus-visible:outline focus-visible:outline-4 focus-visible:outline-detective-blue-700 ${colour === item.value ? "ring-4 ring-detective-blue-700" : "ring-2 ring-detective-blue-100"}`}
-          />)}
+          {palette.map(item => <button key={item.name} type="button" title={item.name} aria-label={`Select ${item.name}`} aria-pressed={colour === item.value} onClick={() => setColour(item.value)} style={{ backgroundColor: item.value }} className={`aspect-square min-h-10 min-w-10 rounded-full border-4 border-white shadow focus-visible:outline focus-visible:outline-4 focus-visible:outline-detective-blue-700 ${colour === item.value ? "ring-4 ring-detective-blue-700" : "ring-2 ring-detective-blue-100"}`} />)}
         </div>
         <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
           <button type="button" onClick={undo} disabled={!historyCount} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-detective-blue-200 px-3 font-display font-bold text-detective-blue-900 disabled:opacity-40"><Undo2 className="h-5 w-5" />UNDO</button>
-          <button type="button" onClick={reset} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-detective-blue-200 px-3 font-display font-bold text-detective-blue-900"><RotateCcw className="h-5 w-5" />Reset</button>
-          <button type="button" onClick={download} disabled={!ready} className="col-span-2 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-detective-blue-900 px-3 font-display font-bold text-white disabled:opacity-40 lg:col-span-1"><Download className="h-5 w-5" />DOWNLOAD</button>
+          <button type="button" onClick={reset} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-detective-blue-200 px-3 font-display font-bold text-detective-blue-900"><RotateCcw className="h-5 w-5" />RESET</button>
+          <button type="button" onClick={() => persistCanvas(true)} disabled={!ready} className="col-span-2 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-detective-orange-500 px-3 font-display font-bold text-white disabled:opacity-40 lg:col-span-1"><Save className="h-5 w-5" />SAVE MY COLOURING</button>
+          <button type="button" onClick={download} disabled={!ready} className="col-span-2 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-detective-blue-900 px-3 font-display font-bold text-white disabled:opacity-40 lg:col-span-1"><Download className="h-5 w-5" />DOWNLOAD MY PICTURE</button>
         </div>
+        {message && <p role="status" className="rounded-2xl bg-detective-yellow-50 p-3 text-sm font-semibold text-detective-blue-900">{message}</p>}
       </div>
     </div>
-
-    <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-      <button type="button" onClick={onFile} className="min-h-12 rounded-full border-2 border-detective-blue-200 px-5 font-display font-bold">VIEW CASE FILE</button>
-    </div>
+    <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap"><button type="button" onClick={onFile} className="min-h-12 rounded-full border-2 border-detective-blue-200 px-5 font-display font-bold">VIEW CASE FILE</button></div>
   </section>;
 }
