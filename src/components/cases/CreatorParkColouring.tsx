@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { RotateCcw, Undo2 } from "lucide-react";
+import { Download, RotateCcw, Undo2 } from "lucide-react";
 
 const palette = [
   { name: "Red", value: "#ef4444" },
@@ -25,7 +25,7 @@ function hexToRgb(hex: string) {
   };
 }
 
-export function CreatorParkColouring({ onReturn, onFile }: { onReturn: () => void; onFile: () => void }) {
+export function CreatorParkColouring({ onFile }: { onFile: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const originalRef = useRef<ImageData | null>(null);
   const historyRef = useRef<ImageData[]>([]);
@@ -66,7 +66,6 @@ export function CreatorParkColouring({ onReturn, onFile }: { onReturn: () => voi
     const start = (startY * canvas.width + startX) * 4;
     const sr = data[start], sg = data[start + 1], sb = data[start + 2];
 
-    // Protect dark line art and text. Only contiguous light paper areas are colourable.
     if ((sr + sg + sb) / 3 < 145) return;
 
     const fill = hexToRgb(colour);
@@ -88,7 +87,6 @@ export function CreatorParkColouring({ onReturn, onFile }: { onReturn: () => voi
       const index = pixel * 4;
       if (!matches(index)) continue;
 
-      // Preserve the printed shading while tinting the selected enclosed region.
       const luminance = (data[index] + data[index + 1] + data[index + 2]) / (3 * 255);
       data[index] = Math.round(fill.r * (0.72 + 0.28 * luminance));
       data[index + 1] = Math.round(fill.g * (0.72 + 0.28 * luminance));
@@ -133,6 +131,15 @@ export function CreatorParkColouring({ onReturn, onFile }: { onReturn: () => voi
     setHistoryCount(historyRef.current.length);
   };
 
+  const download = () => {
+    const canvas = canvasRef.current;
+    if (!canvas || !ready) return;
+    const link = document.createElement("a");
+    link.download = "IP2Kids-Creator-Park-Colouring.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
+
   return <section className="rounded-3xl bg-white p-3 shadow-sm sm:p-5 md:p-7">
     <h2 className="font-display text-2xl font-bold text-detective-blue-900 sm:text-3xl">🎨 COLOUR CREATOR PARK!</h2>
     <p className="mt-2 text-base sm:text-lg">Questy: “Idea Day needs some colour!” Choose a colour, then tap an area to colour it. This activity is optional.</p>
@@ -163,13 +170,13 @@ export function CreatorParkColouring({ onReturn, onFile }: { onReturn: () => voi
         <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
           <button type="button" onClick={undo} disabled={!historyCount} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-detective-blue-200 px-3 font-display font-bold text-detective-blue-900 disabled:opacity-40"><Undo2 className="h-5 w-5" />UNDO</button>
           <button type="button" onClick={reset} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-detective-blue-200 px-3 font-display font-bold text-detective-blue-900"><RotateCcw className="h-5 w-5" />Reset</button>
+          <button type="button" onClick={download} disabled={!ready} className="col-span-2 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-detective-blue-900 px-3 font-display font-bold text-white disabled:opacity-40 lg:col-span-1"><Download className="h-5 w-5" />DOWNLOAD</button>
         </div>
       </div>
     </div>
 
     <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
       <button type="button" onClick={onFile} className="min-h-12 rounded-full border-2 border-detective-blue-200 px-5 font-display font-bold">VIEW CASE FILE</button>
-      <button type="button" onClick={onReturn} className="min-h-12 rounded-full bg-detective-blue-600 px-5 font-display font-bold text-white">RETURN TO IDEA CITY →</button>
     </div>
   </section>;
 }
