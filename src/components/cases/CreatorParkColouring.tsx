@@ -15,8 +15,8 @@ const palette = [
   { name: "Orange", value: "#f97316" },
 ];
 
-const IMAGE_SRC = "/cases/world-1/creator-park-colouring.png";
-const STORAGE_KEY = "ip2kids:world-1:creator-park-colouring";
+const IMAGE_SRC = "/cases/world-1/creator-park-colouring new.png";
+const STORAGE_KEY = "ip2kids:world-1:creator-park-colouring-v2";
 
 function hexToRgb(hex: string) {
   return { r: parseInt(hex.slice(1, 3), 16), g: parseInt(hex.slice(3, 5), 16), b: parseInt(hex.slice(5, 7), 16) };
