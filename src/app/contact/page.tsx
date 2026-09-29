@@ -9,90 +9,15 @@ import { FaqAccordion } from "@/components/contact/FaqAccordion";
 import { CallToAction } from "@/components/sections/CallToAction";
 import { contactCard, faqItems } from "@/lib/contact-content";
 
-export const metadata: Metadata = {
-  title: "Contact Us | IP2Kids",
-  description:
-    "Get in touch with IP2Kids for general enquiries about lessons, memberships, schools and partnerships.",
-};
+export const metadata: Metadata = { title: "Contact Us | IP2Kids", description: "Get in touch with IP2Kids for general enquiries about learning, schools and partnerships." };
 
 export default function ContactPage() {
-  return (
-    <>
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-detective-blue-600 focus:px-5 focus:py-3 focus:font-display focus:text-white"
-      >
-        Skip to main content
-      </a>
-
-      <SiteHeader />
-
-      <main id="main">
-        {/* Hero */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-detective-blue-50 via-white to-white py-16 sm:py-24">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 overflow-hidden"
-          >
-            <div className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-detective-yellow-300/40 blur-3xl" />
-            <div className="absolute -right-20 top-40 h-80 w-80 rounded-full bg-detective-orange-400/30 blur-3xl" />
-          </div>
-
-          <Container className="relative text-center">
-            <h1 className="font-display text-4xl font-bold leading-tight text-detective-blue-900 sm:text-5xl lg:text-6xl">
-              Contact Us
-            </h1>
-            <p className="mx-auto mt-6 max-w-xl text-lg text-detective-blue-700/85 sm:text-xl">
-              We would love to hear from you.
-            </p>
-          </Container>
-        </section>
-
-        {/* Contact card */}
-        <section className="py-12 sm:py-16">
-          <Container>
-            <ContactCards card={contactCard} />
-          </Container>
-        </section>
-
-        {/* Contact form */}
-        <section className="bg-detective-blue-50/70 py-12 sm:py-16">
-          <Container>
-            <SectionHeading
-              eyebrow="Send a message"
-              title="Get in touch"
-              subtitle="Fill out the form and our team will write back soon."
-            />
-            <div className="mx-auto mt-10 max-w-2xl">
-              <ContactForm />
-            </div>
-          </Container>
-        </section>
-
-        {/* FAQ */}
-        <section className="py-12 sm:py-16">
-          <Container>
-            <SectionHeading
-              eyebrow="Frequently asked questions"
-              title="Got questions?"
-              subtitle="Here are answers to the questions we hear most often."
-            />
-            <div className="mt-10">
-              <FaqAccordion items={faqItems} />
-            </div>
-          </Container>
-        </section>
-
-        {/* Closing CTA */}
-        <CallToAction
-          title="Ready to start your IP adventure?"
-          subtitle="Join Questy and explore 15 exciting worlds of trademarks, inventions, creativity and designs."
-          buttonLabel="Start Adventure"
-          buttonHref="/#journey"
-        />
-      </main>
-
-      <SiteFooter />
-    </>
-  );
+  return <><a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-detective-blue-600 focus:px-5 focus:py-3 focus:font-display focus:text-white">Skip to main content</a><SiteHeader/><main id="main">
+    <section className="relative overflow-hidden bg-gradient-to-b from-detective-blue-50 via-white to-white py-16 sm:py-24"><div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden"><div className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-detective-yellow-300/40 blur-3xl"/><div className="absolute -right-20 top-40 h-80 w-80 rounded-full bg-detective-orange-400/30 blur-3xl"/></div><Container className="relative text-center"><h1 className="font-display text-4xl font-bold leading-tight text-detective-blue-900 sm:text-5xl lg:text-6xl">Contact Us</h1><p className="mx-auto mt-6 max-w-xl text-lg text-detective-blue-700/85 sm:text-xl">We would love to hear from you.</p></Container></section>
+    <section className="py-12 sm:py-16"><Container><ContactCards card={contactCard}/></Container></section>
+    <section className="bg-detective-blue-50/70 py-12 sm:py-16"><Container><SectionHeading eyebrow="Send a message" title="Get in touch" subtitle="Fill out the form and our team will write back soon."/><div className="mx-auto mt-10 max-w-2xl"><ContactForm/></div></Container></section>
+    <section className="py-12 sm:py-16"><Container><SectionHeading eyebrow="Frequently asked questions" title="Got questions?" subtitle="Here are answers to the questions we hear most often."/><div className="mt-10"><FaqAccordion items={faqItems}/></div></Container></section>
+    <section className="bg-white pb-12 sm:pb-16"><Container><div className="mx-auto max-w-3xl rounded-2xl border border-detective-blue-100 bg-detective-blue-50/60 p-4 text-center"><h2 className="font-display text-sm font-bold text-detective-blue-900">Disclaimer</h2><p className="mx-auto mt-1.5 max-w-2xl text-xs leading-5 text-detective-blue-600">IP2Kids is an independent educational initiative designed to introduce intellectual property concepts to young learners in a child-friendly and engaging way. The content is provided for educational purposes only and does not constitute legal advice or replace formal legal or classroom instruction.</p></div></Container></section>
+    <CallToAction title="Ready to start your IP adventure?" subtitle="Join Questy and explore 15 exciting worlds of trademarks, inventions, creativity and designs." buttonLabel="Start Adventure" buttonHref="/#journey"/>
+  </main><SiteFooter/></>;
 }
