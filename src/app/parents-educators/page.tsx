@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Award, BookOpen, Brain, CheckCircle2, School, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 
@@ -35,14 +34,6 @@ export default function ParentsEducatorsPage() {
         <h2 className="mt-2 font-display text-3xl font-bold text-detective-blue-900">The Little IP Detectives journey</h2>
         <div className="mt-7 grid gap-4">{path.map(([place,worlds,lesson],i)=><div key={place} className="flex gap-4 rounded-2xl bg-sky-50 p-5"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-detective-yellow-300 font-display font-bold text-detective-blue-900">{i+1}</span><div><div className="flex flex-wrap items-baseline gap-x-3"><h3 className="font-display text-lg font-bold text-detective-blue-900">{place}</h3><span className="font-display text-sm font-bold text-detective-orange-600">{worlds}</span></div><p className="mt-1 text-detective-blue-700">{lesson}</p></div></div>)}</div>
       </section>
-
-      <section className="mx-auto mt-12 max-w-4xl rounded-[2rem] bg-detective-blue-900 p-7 text-center text-white sm:p-10">
-        <h2 className="font-display text-3xl font-bold">Learning about ideas should be free.</h2>
-        <p className="mx-auto mt-4 max-w-2xl leading-7 text-white/85">IP2Kids is a personal educational initiative. Children can explore the complete learning journey without a subscription or paid learning level. A free account can be used to keep progress and achievements together.</p>
-        <div className="mt-7 flex flex-wrap justify-center gap-3"><Link href="/#journey" className="rounded-full bg-detective-yellow-300 px-6 py-3 font-display font-bold text-detective-blue-900">START THE JOURNEY</Link><Link href="/about" className="rounded-full border-2 border-white/40 px-6 py-3 font-display font-bold text-white">OUR MISSION</Link></div>
-      </section>
-
-      <p className="mx-auto mt-8 max-w-3xl text-center text-sm leading-6 text-detective-blue-600">IP2Kids is an independent educational initiative intended to introduce intellectual property concepts in a child-friendly way. It is not legal advice and is not a substitute for formal legal or classroom instruction.</p>
     </Container>
   </main>;
 }
