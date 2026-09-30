@@ -10,6 +10,7 @@ import { DetectiveActivity } from "@/components/sections/DetectiveActivity";
 import { CaseOneExperience } from "@/components/cases/CaseOneExperience";
 import { CaseTwoExperience } from "@/components/cases/CaseTwoExperience";
 import { CaseThreeExperience } from "@/components/cases/CaseThreeExperience";
+import { CaseFourExperience } from "@/components/cases/CaseFourExperience";
 
 function LessonHeading({ eyebrow, title }: { eyebrow: string; title: string }) { return <div className="text-center"><p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-detective-orange-500">{eyebrow}</p><h3 className="mt-2 font-display text-2xl font-bold text-detective-blue-900 sm:text-3xl">{title}</h3></div>; }
 export function WorldDetailPanel({ world, isCompleted, onComplete, onNextWorld }: { world: World; isCompleted: boolean; onComplete: (correct: number, total: number) => void; onNextWorld: (worldId: number) => void; }) {
@@ -17,6 +18,7 @@ export function WorldDetailPanel({ world, isCompleted, onComplete, onNextWorld }
   if(world.id===1)return <CaseOneExperience isCompleted={isCompleted} onComplete={onComplete}/>;
   if(world.id===2)return <CaseTwoExperience isCompleted={isCompleted} onComplete={onComplete}/>;
   if(world.id===3)return <CaseThreeExperience isCompleted={isCompleted} onComplete={onComplete}/>;
+  if(world.id===4)return <CaseFourExperience isCompleted={isCompleted} onComplete={onComplete}/>;
   const answeredCount=Object.keys(answers).length; const correctCount=Object.values(answers).filter(Boolean).length; const allAnswered=answeredCount===questions.length;
   return <motion.div initial={{opacity:0,height:0}} animate={{opacity:1,height:"auto"}} transition={{duration:.3}} className="overflow-hidden"><div className="mt-8 space-y-12 border-t-2 border-dashed border-detective-blue-200 pt-10">
     <section><LessonHeading eyebrow="The story" title={`Case ${world.id}: ${world.name}`}/><div className="mx-auto mt-8 max-w-3xl rounded-3xl border-2 border-detective-blue-100 bg-white p-6 shadow-lg sm:p-8"><p className="text-lg leading-relaxed text-detective-blue-900/85">{world.story}</p></div></section>
