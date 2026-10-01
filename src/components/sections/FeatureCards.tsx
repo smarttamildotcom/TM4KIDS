@@ -6,37 +6,16 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { fadeUp, inViewOnce, staggerContainer } from "@/lib/motion";
 import { whyKidsLoveFeatures } from "@/lib/home-content";
 
-/** Four colourful capability cards that lift and tilt on hover/focus. */
 export function FeatureCards() {
   return (
     <section id="features" className="py-16 sm:py-24">
       <Container>
-        <SectionHeading
-          eyebrow="Why kids love it"
-          title="Why Kids Love IP2Kids"
-          subtitle="Learning about ideas has never been this much fun! 15 Worlds. 4 Types of IP. One Big Adventure."
-        />
-
-        <motion.ul
-          variants={staggerContainer}
-          {...inViewOnce}
-          className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
-        >
+        <SectionHeading eyebrow="Why kids love it" title="Why Kids Love IP2Kids" subtitle="Meet Questy, follow 15 playful Idea Adventures and discover how creativity, brands, inventions, stories and designs connect to everyday life." />
+        <motion.ul variants={staggerContainer} {...inViewOnce} className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {whyKidsLoveFeatures.map((feature) => (
             <motion.li key={feature.title} variants={fadeUp}>
-              <motion.article
-                whileHover={{ y: -10, scale: 1.03 }}
-                whileFocus={{ y: -10, scale: 1.03 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                tabIndex={0}
-                className={`h-full rounded-3xl border-2 p-6 shadow-sm transition-shadow hover:shadow-xl ${feature.surface}`}
-              >
-                <h3 className="font-display text-xl font-bold text-detective-blue-900">
-                  <span aria-hidden="true" className="mr-2">
-                    {feature.emoji}
-                  </span>
-                  {feature.title}
-                </h3>
+              <motion.article whileHover={{y:-10,scale:1.03}} whileFocus={{y:-10,scale:1.03}} transition={{type:"spring",stiffness:300,damping:20}} tabIndex={0} className={`h-full rounded-3xl border-2 p-6 shadow-sm transition-shadow hover:shadow-xl ${feature.surface}`}>
+                <h3 className="font-display text-xl font-bold text-detective-blue-900"><span aria-hidden="true" className="mr-2">{feature.emoji}</span>{feature.title}</h3>
                 <p className="mt-2 text-detective-blue-700/85">{feature.description}</p>
               </motion.article>
             </motion.li>
