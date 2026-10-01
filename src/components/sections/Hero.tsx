@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
-import { AdventureButton } from "@/components/auth/AdventureButton";
 import { QuestyHeroIllustration } from "@/components/illustrations/QuestyHeroIllustration";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
@@ -18,20 +17,22 @@ export function Hero() {
       <Container className="relative grid items-center gap-8 pb-14 pt-8 sm:pt-10 lg:grid-cols-[55%_45%] lg:gap-10 lg:pb-20 lg:pt-12">
         <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="text-center lg:text-left">
           <motion.p variants={fadeUp} className="inline-flex items-center gap-2 rounded-full bg-detective-yellow-100 px-4 py-2 font-display text-sm font-semibold text-detective-orange-600">
-            <Sparkles className="h-4 w-4" aria-hidden="true" />
-            Ideas Have Superpowers!
+            <Sparkles className="h-4 w-4" aria-hidden="true" /> Ideas Have Superpowers!
           </motion.p>
           <motion.h1 variants={fadeUp} className="mt-6 font-display text-4xl font-bold leading-tight text-detective-blue-900 sm:text-5xl lg:text-6xl">
-            Welcome to <span className="text-detective-orange-500">Questy&apos;s Idea Adventures!</span>
+            Discover the amazing <span className="text-detective-orange-500">ideas hiding all around you.</span>
           </motion.h1>
           <motion.p variants={fadeUp} className="mx-auto mt-6 max-w-xl text-lg text-detective-blue-700/85 sm:text-xl lg:mx-0">
-            <span className="block">Explore brands, inventions, stories and designs with Questy through playful mysteries, challenges and creative activities.</span>
-            <span className="mt-2 block font-display font-semibold text-detective-blue-900">15 Adventures. Big Ideas. Lots to Discover.</span>
+            Join Questy to explore how people create, invent, design and build brands through short stories, playful questions and creative rewards.
           </motion.p>
-          <motion.div variants={fadeUp} className="mt-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
-            <AdventureButton size="lg">Start Your Adventure<ArrowRight className="h-5 w-5" aria-hidden="true" /></AdventureButton>
-            <Button href="#features" size="lg" variant="outline">See how it works</Button>
+          <motion.div variants={fadeUp} className="mt-6 flex flex-wrap justify-center gap-2 font-display text-sm font-bold text-detective-blue-800 lg:justify-start">
+            <span className="rounded-full bg-white px-4 py-2 shadow-sm">🎨 Create</span><span className="rounded-full bg-white px-4 py-2 shadow-sm">💡 Invent</span><span className="rounded-full bg-white px-4 py-2 shadow-sm">⭐ Brand</span><span className="rounded-full bg-white px-4 py-2 shadow-sm">🚀 Imagine</span>
           </motion.div>
+          <motion.div variants={fadeUp} className="mt-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
+            <Button href="#journey" size="lg">Play Your First Adventure<ArrowRight className="h-5 w-5" aria-hidden="true" /></Button>
+            <Button href="/books" size="lg" variant="outline">Visit Book Corner 📚</Button>
+          </motion.div>
+          <motion.p variants={fadeUp} className="mt-4 text-sm font-semibold text-green-700">✨ All 15 adventures are free to explore.</motion.p>
         </motion.div>
         <QuestyHeroIllustration />
       </Container>
