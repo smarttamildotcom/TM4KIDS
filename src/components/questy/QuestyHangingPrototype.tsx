@@ -12,7 +12,7 @@ export function QuestyHangingPrototype() {
 
   return (
     <div
-      className="pointer-events-none fixed left-1/2 top-0 z-[90] -translate-x-1/2"
+      className="pointer-events-none fixed right-3 top-0 z-[90] sm:right-6 lg:right-10"
       aria-label="Questy hanging mascot"
     >
       <motion.div
@@ -28,7 +28,7 @@ export function QuestyHangingPrototype() {
         <motion.button
           type="button"
           drag="x"
-          dragConstraints={{ left: -180, right: 180 }}
+          dragConstraints={{ left: -180, right: 40 }}
           dragElastic={0.18}
           dragMomentum
           onDrag={(_, info) => x.set(info.offset.x)}
@@ -49,7 +49,7 @@ export function QuestyHangingPrototype() {
         >
           <Image
             src={questyImage}
-            alt="Questy, the IP2Kids detective cat, hanging from the top of the screen"
+            alt="Questy, the IP2Kids detective cat, hanging from the top-right of the screen"
             fill
             sizes="(max-width: 640px) 128px, 160px"
             className="pointer-events-none object-contain"
@@ -57,7 +57,7 @@ export function QuestyHangingPrototype() {
         </motion.button>
       </motion.div>
 
-      <div className="pointer-events-none absolute left-1/2 top-[13.5rem] hidden -translate-x-1/2 whitespace-nowrap rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-slate-700 shadow-lg ring-1 ring-slate-200 sm:block">
+      <div className="pointer-events-none absolute right-0 top-[13.5rem] hidden whitespace-nowrap rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-slate-700 shadow-lg ring-1 ring-slate-200 sm:block">
         Drag Questy ✨
       </div>
     </div>
