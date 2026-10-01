@@ -1,10 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { QuestyHeroIllustration } from "@/components/illustrations/QuestyHeroIllustration";
 import { Container } from "@/components/ui/Container";
-import { Button } from "@/components/ui/Button";
 import { fadeUp, staggerContainer } from "@/lib/motion";
 
 export function Hero() {
@@ -27,10 +26,6 @@ export function Hero() {
           </motion.p>
           <motion.div variants={fadeUp} className="mt-6 flex flex-wrap justify-center gap-2 font-display text-sm font-bold text-detective-blue-800 lg:justify-start">
             <span className="rounded-full bg-white px-4 py-2 shadow-sm">🎨 Create</span><span className="rounded-full bg-white px-4 py-2 shadow-sm">💡 Invent</span><span className="rounded-full bg-white px-4 py-2 shadow-sm">⭐ Brand</span><span className="rounded-full bg-white px-4 py-2 shadow-sm">🚀 Imagine</span>
-          </motion.div>
-          <motion.div variants={fadeUp} className="mt-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
-            <Button href="#journey" size="lg">Play Your First Adventure<ArrowRight className="h-5 w-5" aria-hidden="true" /></Button>
-            <Button href="/books" size="lg" variant="outline">Visit Book Corner 📚</Button>
           </motion.div>
           <motion.p variants={fadeUp} className="mt-4 text-sm font-semibold text-green-700">✨ All 15 adventures are free to explore.</motion.p>
         </motion.div>
