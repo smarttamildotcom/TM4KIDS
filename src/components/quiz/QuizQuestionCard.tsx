@@ -8,7 +8,6 @@ import { MultipleChoiceView } from "@/components/quiz/views/MultipleChoiceView";
 import { TrueFalseView } from "@/components/quiz/views/TrueFalseView";
 import { ImageView } from "@/components/quiz/views/ImageView";
 import { DragAndDropView } from "@/components/quiz/views/DragAndDropView";
-import { ReadToMeButton } from "@/components/audio/ReadToMeButton";
 import type { AnswerResult, QuizQuestion } from "@/lib/quiz/types";
 
 type QuizQuestionCardProps = {
@@ -17,14 +16,6 @@ type QuizQuestionCardProps = {
   allowRetry?: boolean;
   counter?: string;
 };
-
-function questionSpeech(question: QuizQuestion) {
-  if (question.type === "multiple-choice" || question.type === "image") {
-    return `${question.prompt}. ${question.choices.map((choice, index) => `Option ${String.fromCharCode(65 + index)}: ${choice.label}`).join(". ")}`;
-  }
-  if (question.type === "true-false") return `${question.prompt}. ${question.statement}. True or false?`;
-  return `${question.prompt}. ${question.instructions}`;
-}
 
 export function QuizQuestionCard({ question, onAnswer, allowRetry = false, counter }: QuizQuestionCardProps) {
   const [result, setResult] = useState<AnswerResult | null>(null);
@@ -41,8 +32,7 @@ export function QuizQuestionCard({ question, onAnswer, allowRetry = false, count
   return (
     <motion.div animate={result && !result.isCorrect ? { x: [0, -8, 8, -5, 5, 0] } : { x: 0 }} transition={{ duration: 0.4 }} className="rounded-3xl border-2 border-detective-blue-100 bg-white p-6 shadow-lg sm:p-8">
       {counter && <p className="font-display text-sm font-semibold uppercase tracking-widest text-detective-orange-500">{counter}</p>}
-      <h3 className="mb-3 mt-2 flex items-start gap-3 font-display text-xl font-bold text-detective-blue-900 sm:text-2xl"><HelpCircle aria-hidden="true" className="mt-1 h-6 w-6 shrink-0 text-detective-blue-500" />{question.prompt}</h3>
-      <ReadToMeButton text={questionSpeech(question)} label="Listen" className="mb-6" />
+      <h3 className="mb-6 mt-2 flex items-start gap-3 font-display text-xl font-bold text-detective-blue-900 sm:text-2xl"><HelpCircle aria-hidden="true" className="mt-1 h-6 w-6 shrink-0 text-detective-blue-500" />{question.prompt}</h3>
       <div key={attempt}>
         {question.type === "multiple-choice" && <MultipleChoiceView question={question} {...viewProps} />}
         {question.type === "true-false" && <TrueFalseView question={question} {...viewProps} />}
