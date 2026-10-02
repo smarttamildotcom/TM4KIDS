@@ -1,1 +1,12 @@
-import type {MetadataRoute} from "next";export default function sitemap():MetadataRoute.Sitemap{const base="https://ip2kids.com";const staticRoutes=["","/about","/parents-educators","/books","/contact","/privacy-policy"];const adventures=Array.from({length:15},(_,i)=>`/worlds/${i+1}`);return [...staticRoutes,...adventures].map(route=>({url:`${base}${route}`,lastModified:new Date(),changeFrequency:route.startsWith("/worlds/")?"monthly":"weekly",priority:route===""?1:route.startsWith("/worlds/")?.8:.7}))}
+import type { MetadataRoute } from "next";
+export default function sitemap(): MetadataRoute.Sitemap {
+  const base = "https://ip2kids.com";
+  const staticRoutes = ["", "/about", "/parents-educators", "/books", "/contact", "/privacy-policy"];
+  const adventures = Array.from({ length: 15 }, (_, i) => `/worlds/${i + 1}`);
+  return [...staticRoutes, ...adventures].map((route) => ({
+    url: `${base}${route}`,
+    lastModified: new Date(),
+    changeFrequency: (route.startsWith("/worlds/") ? "monthly" : "weekly") as "monthly" | "weekly",
+    priority: route === "" ? 1 : route.startsWith("/worlds/") ? 0.8 : 0.7,
+  }));
+}
