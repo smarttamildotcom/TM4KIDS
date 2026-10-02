@@ -1,16 +1,46 @@
-export type ContactCard = { id: string; title: string; description: string; email: string; surface: string; badge: string; };
-export const contactCard: ContactCard = {
-  id: "general", title: "General Enquiries",
-  description: "Have a question about IP2Kids, schools, books, partnerships or anything else? We'd love to hear from you.",
-  email: "advocatebala.2010@gmail.com", surface: "bg-detective-blue-50 border-detective-blue-200", badge: "bg-detective-blue-500 text-white",
-};
+export type ContactCard = { id: string; title: string; description: string; email: string; kind: "general" | "school"; surface: string; badge: string; };
+
+export const contactCards: ContactCard[] = [
+  {
+    id: "general",
+    title: "General Enquiries",
+    description: "Questions about IP2Kids, the Adventures or Book Corner? We'd love to hear from you.",
+    email: "advocatebala.2010@gmail.com",
+    kind: "general",
+    surface: "bg-detective-blue-50 border-detective-blue-200",
+    badge: "bg-detective-blue-500 text-white",
+  },
+  {
+    id: "schools",
+    title: "Schools & Educators",
+    description: "For educational use, school programmes, collaborations and partnership enquiries.",
+    email: "advocatebala.2010@gmail.com",
+    kind: "school",
+    surface: "bg-detective-yellow-50 border-detective-yellow-200",
+    badge: "bg-detective-orange-500 text-white",
+  },
+];
+
 export type FaqItem = { id: string; question: string; answer: string };
 export const faqItems: FaqItem[] = [
-  { id: "ip2kids", question: "What is IP2Kids?", answer: "IP2Kids is a free educational initiative that gives children a playful introduction to intellectual property through short stories, questions, activities and Questy's Idea Adventures." },
-  { id: "learn", question: "What will my child discover?", answer: "Children are introduced to ideas behind trademarks, patents, copyright and designs using simple, age-appropriate examples. The aim is curiosity, not legal or classroom instruction." },
-  { id: "free", question: "Are the adventures free?", answer: "Yes. All 15 IP2Kids adventures are free to explore. An account is useful for saving progress, XP, badges and certificates." },
-  { id: "age", question: "Who is IP2Kids for?", answer: "IP2Kids is designed for young minds. Children can read independently or use the Read to Me feature where available." },
-  { id: "books", question: "Are there IP2Kids books?", answer: "The IP2Kids Book Corner is being developed to help children continue their adventure through reading. New book information will be added there as titles become available." },
-  { id: "certificate", question: "Does my child receive a certificate?", answer: "Children who complete the learning journey can unlock an IP2Kids Idea Adventurer Certificate of Completion." },
-  { id: "legal", question: "Is IP2Kids legal advice?", answer: "No. IP2Kids provides general educational information and is not legal advice or a substitute for formal legal or classroom instruction." },
+  {
+    id: "ip2kids",
+    question: "What is IP2Kids?",
+    answer: "IP2Kids is a free educational initiative that gives primary-school children a friendly first introduction to intellectual property through short adventure passages, simple clue questions and Questy's discoveries.",
+  },
+  {
+    id: "schools",
+    question: "Is IP2Kids suitable for schools?",
+    answer: "Yes. IP2Kids is designed as an introductory educational resource that can support conversations about creativity, ideas, brands, inventions and designs. It is not a substitute for formal classroom or legal instruction.",
+  },
+  {
+    id: "age",
+    question: "What age group is IP2Kids designed for?",
+    answer: "IP2Kids is designed primarily for primary-school children. The language is intentionally simple, and children can read independently or use the Read to Me option in the Adventures.",
+  },
+  {
+    id: "educators",
+    question: "How can educators use IP2Kids?",
+    answer: "Educators can use the Adventures as a simple starting point for discussions about creativity and intellectual property, then extend the learning with books, classroom activities or their own teaching materials.",
+  },
 ];
