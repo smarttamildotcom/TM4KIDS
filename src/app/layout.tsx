@@ -1,4 +1,14 @@
-import type {Metadata} from "next";import {Nunito,Fredoka} from "next/font/google";import "./globals.css";import {GameProvider} from "@/lib/gamification/GameProvider";import {NotificationProvider} from "@/lib/gamification/NotificationProvider";import {AuthProvider} from "@/lib/auth/AuthProvider";import {MasterCertificateDelivery} from "@/components/gamification/MasterCertificateDelivery";import {RewardToaster} from "@/components/gamification/RewardToaster";import {AppToaster} from "@/components/ui/AppToaster";
-const nunito=Nunito({subsets:["latin"],variable:"--font-nunito",display:"swap"});const fredoka=Fredoka({subsets:["latin"],variable:"--font-fredoka",display:"swap"});
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
+import { Nunito, Fredoka } from "next/font/google";
+import "./globals.css";
+import { GameProvider } from "@/lib/gamification/GameProvider";
+import { NotificationProvider } from "@/lib/gamification/NotificationProvider";
+import { AuthProvider } from "@/lib/auth/AuthProvider";
+import { MasterCertificateDelivery } from "@/components/gamification/MasterCertificateDelivery";
+import { RewardToaster } from "@/components/gamification/RewardToaster";
+import { AppToaster } from "@/components/ui/AppToaster";
+const nunito=Nunito({subsets:["latin"],variable:"--font-nunito",display:"swap"});
+const fredoka=Fredoka({subsets:["latin"],variable:"--font-fredoka",display:"swap"});
 export const metadata:Metadata={metadataBase:new URL("https://ip2kids.com"),title:{default:"IP2Kids – Questy's Idea Adventures",template:"%s | IP2Kids"},description:"A gentle, playful first introduction to intellectual property for young learners through Questy's 15 Idea Adventures.",applicationName:"IP2Kids",openGraph:{type:"website",siteName:"IP2Kids",title:"IP2Kids – Questy's Idea Adventures",description:"Explore creators, brands, inventions and designs with Questy through 15 free Idea Adventures.",url:"https://ip2kids.com",images:[{url:"/ip2kids-logo.png",width:1200,height:1200,alt:"IP2Kids"}]},twitter:{card:"summary_large_image",title:"IP2Kids – Questy's Idea Adventures",description:"Explore 15 free Idea Adventures with Questy.",images:["/ip2kids-logo.png"]},icons:{icon:"/ip2kids-logo.png",apple:"/ip2kids-logo.png"}};
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en" className={`${nunito.variable} ${fredoka.variable}`}><body className="font-sans"><GameProvider><NotificationProvider><AuthProvider>{children}<MasterCertificateDelivery/><RewardToaster/><AppToaster/></AuthProvider></NotificationProvider></GameProvider></body></html>}
+export default function RootLayout({children}:{children:ReactNode}){return <html lang="en" className={`${nunito.variable} ${fredoka.variable}`}><body className="font-sans"><GameProvider><NotificationProvider><AuthProvider>{children}<MasterCertificateDelivery/><RewardToaster/><AppToaster/></AuthProvider></NotificationProvider></GameProvider></body></html>}
