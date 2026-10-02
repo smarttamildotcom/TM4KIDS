@@ -1,13 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import detectiveQuesty from "@/6. Detective Questy.png";
-import { DetectiveAvatar } from "@/components/detective/DetectiveAvatar";
-import { readDetectiveProfile, type DetectiveProfile } from "@/lib/detective-profile";
-import { cityCase, detectiveRank } from "@/lib/idea-city";
+import { cityCase } from "@/lib/idea-city";
 import { Container } from "@/components/ui/Container";
 import { WorldCard, type WorldStatus } from "@/components/sections/WorldCard";
 import { CelebrationModal } from "@/components/auth/CelebrationModal";
@@ -22,7 +18,7 @@ import {
   readPendingWorld,
   rememberPendingWorld,
 } from "@/lib/access";
-import { journeyChapters, totalJourneyXp, worlds } from "@/lib/worlds";
+import { journeyChapters, worlds } from "@/lib/worlds";
 
 /** Treasure-map scenery floating behind the path. Decorative only. */
 const scenery: { emoji: string; className: string; duration: number }[] = [
@@ -44,7 +40,7 @@ function zigzagClass(index: number) {
   return "";
 }
 
-/** The 15-world detective journey — the centrepiece of the homepage. */
+/** The 15-world journey — the centrepiece of the Adventures page. */
 export function AdventureMap() {
   const { player, isLoaded, completeWorld } = useGame();
   const { user, isLoaded: isAuthLoaded } = useAuth();
@@ -52,23 +48,16 @@ export function AdventureMap() {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showGate, setShowGate] = useState(false);
-  const [detective, setDetective] = useState<DetectiveProfile | null>(null);
   const hasResumed = useRef(false);
 
-  // Until auth is resolved, render the same neutral state as a guest. This
-  // prevents a stale browser profile from flashing during account changes.
   const hasActiveSession = isAuthLoaded && Boolean(user);
   const isSignedIn = hasActiveSession;
   const membershipStatus = user?.membershipStatus ?? "FREE";
   const completedWorldIds = hasActiveSession ? player.completedWorldIds : [];
-  const visibleStars = hasActiveSession ? player.stats.starsEarned : 0;
 
   const openWorld = useCallback((worldId: number) => {
     setExpandedId(worldId);
 
-    // The Journey scrolls in the document, not inside a panel. Reset it as
-    // soon as React has rendered the new open World, then once after the
-    // expand/collapse layout settles. Both resets are immediate on purpose.
     const scrollToWorldStart = () => {
       const target = document.getElementById(`world-${worldId}`);
       if (!target) return;
@@ -83,10 +72,6 @@ export function AdventureMap() {
     });
   }, []);
 
-  /**
-   * Same gate everywhere: guests are nudged to sign up, while signed-in
-   * detectives without an active membership are sent to contribute.
-   */
   const gateWorld = useCallback(
     (worldId: number) => {
       if (!isSignedIn) {
@@ -99,12 +84,6 @@ export function AdventureMap() {
     [isSignedIn, router],
   );
 
-  useEffect(() => {
-    if (!hasActiveSession || !user) { setDetective(null); return; }
-    setDetective(readDetectiveProfile(user.id, user.studentName));
-  }, [hasActiveSession, user?.id, user?.studentName]);
-
-  // A blocked route redirects here; pick the gate or the remembered world back up.
   useEffect(() => {
     if (!isAuthLoaded || hasResumed.current) return;
     hasResumed.current = true;
@@ -123,15 +102,12 @@ export function AdventureMap() {
 
   const statuses: WorldStatus[] = worlds.map((world) => {
     if (completedWorldIds.includes(world.id)) return "completed";
-    // Before hydration everything reads as unlocked so the markup matches the server.
     if (isLoaded && isAuthLoaded && !canAccessWorld(world.id, isSignedIn, membershipStatus))
       return "locked";
     return "unlocked";
   });
 
-  const completedCount = completedWorldIds.length;
   const activeIndex = statuses.indexOf("unlocked");
-  const percentComplete = Math.round((completedCount / worlds.length) * 100);
 
   function handleToggle(worldId: number) {
     if (!canAccessWorld(worldId, isSignedIn, membershipStatus)) {
@@ -147,7 +123,6 @@ export function AdventureMap() {
     openWorld(worldId);
   }
 
-  /** Same gate as every other entry point, then scroll the next world into view. */
   function handleNextWorld(worldId: number) {
     if (!canAccessWorld(worldId, isSignedIn, membershipStatus)) {
       gateWorld(worldId);
@@ -172,7 +147,6 @@ export function AdventureMap() {
       badgeLabel: `${world.reward.badge} ${world.reward.label}`,
     });
 
-
     if (worldId === LAST_FREE_WORLD_ID && !isSignedIn) {
       setExpandedId(null);
       setShowCelebration(true);
@@ -182,7 +156,7 @@ export function AdventureMap() {
   return (
     <section
       id="journey"
-      className="relative scroll-mt-24 overflow-hidden bg-gradient-to-b from-detective-blue-50 via-white to-detective-blue-50/60 py-16 sm:py-24"
+      className="relative scroll-mt-24 overflow-hidden bg-gradient-to-b from-detective-blue-50 via-white to-detective-blue-50/60 py-8 sm:py-12"
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden sm:block">
         {scenery.map((item, index) => (
@@ -214,57 +188,7 @@ export function AdventureMap() {
       </svg>
 
       <Container className="relative">
-        <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center sm:justify-center sm:gap-10">
-          <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="flex shrink-0 items-center justify-center"
-          >
-            <Image
-              src={detectiveQuesty}
-              alt="Questy the detective mascot introducing the adventure"
-              sizes="(min-width: 640px) 220px, 160px"
-              className="h-[160px] w-auto object-contain drop-shadow-xl sm:h-[220px]"
-            />
-          </motion.div>
-
-          <div className="max-w-xl text-center sm:text-left">
-            <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-detective-orange-500">
-              The 15-World Journey
-            </p>
-            <h2 className="mt-2 font-display text-3xl font-bold text-detective-blue-900 sm:text-4xl lg:text-5xl">
-              Become a Little IP Detective!
-            </h2>
-            <p className="mt-4 text-base text-detective-blue-700/80 sm:text-lg">
-              Explore trademarks, patents, copyright and designs with Questy. Every world has a story, a mini lesson and a hands-on detective mission.
-            </p>
-          </div>
-        </div>
-
-        <div className="mx-auto mt-8 flex max-w-3xl flex-col items-center gap-4 rounded-3xl border-2 border-detective-blue-100 bg-white/90 p-4 shadow-md sm:flex-row sm:text-left">          {hasActiveSession && detective ? <DetectiveAvatar avatar={detective.avatar} pose="investigate" /> : <div className="grid h-24 w-24 place-items-center rounded-full bg-detective-yellow-100 text-4xl" aria-label="Create your detective">🕵️</div>}          <div><p className="font-display text-lg font-bold text-detective-blue-900">{hasActiveSession && detective ? `DETECTIVE ${detective.nickname.toUpperCase()}` : "YOUR DETECTIVE AWAITS"}</p><p className="text-detective-blue-700">{hasActiveSession && detective ? detectiveRank(completedCount) : "Create a detective partner to join Questy."}</p><p className="mt-1 text-sm font-semibold text-detective-orange-600">{hasActiveSession && detective ? <>CASES SOLVED {completedCount} / 15 · ⭐ {visibleStars}</> : "Start your detective adventure."}</p>{(!hasActiveSession || !detective)&&<a href="/detective" className="mt-2 inline-block font-display font-bold text-detective-blue-700 underline">CREATE MY DETECTIVE</a>}</div>        </div>        {completedCount > 0 && (
-          <p className="mx-auto mt-8 max-w-xl rounded-2xl bg-detective-yellow-100 px-5 py-3 text-center font-display font-semibold text-detective-blue-900">
-            ✨ New IP missions are here! Tap any completed world to replay it.
-          </p>
-        )}
-
-        <div className="mx-auto mt-10 max-w-xl rounded-3xl border-2 border-detective-blue-100 bg-white/90 p-5 shadow-md">
-          <div className="flex items-center justify-between font-display text-sm font-bold text-detective-blue-900">
-            <span>
-              🕵️ {completedCount} of {worlds.length} worlds solved
-            </span>
-            <span className="text-detective-orange-500">{totalJourneyXp.toLocaleString()} XP total</span>
-          </div>
-          <div className="mt-3 h-4 overflow-hidden rounded-full bg-detective-blue-100">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${percentComplete}%` }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="h-full rounded-full bg-gradient-to-r from-detective-yellow-400 to-detective-orange-500"
-            />
-          </div>
-        </div>
-
-        <div className="mt-14 space-y-14">
+        <div className="space-y-14">
           {journeyChapters.map((chapter) => {
             const chapterWorlds = worlds.filter((world) => chapter.worldIds.includes(world.id));
             const chapterComplete = chapterWorlds.filter((world) => player.completedWorldIds.includes(world.id)).length;
