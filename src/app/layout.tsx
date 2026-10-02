@@ -21,9 +21,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: { type: "website", url: "/", siteName: "IP2Kids", title: "IP2Kids – Questy's Idea Adventures", description: BRAND.description, images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "IP2Kids – Ideas Have Superpowers!" }] },
   twitter: { card: "summary_large_image", title: "IP2Kids – Questy's Idea Adventures", description: BRAND.description, images: ["/opengraph-image"] },
-  icons: { icon: [{ url: "/favicon.ico" }], apple: [{ url: "/apple-icon" }] },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" className={`${fredoka.variable} ${nunito.variable}`}><body className="font-sans"><GameProvider><NotificationProvider><AuthProvider>{children}<MasterCertificateDelivery/><RewardToaster/><AppToaster/></AuthProvider></NotificationProvider></GameProvider></body></html>;
-}
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="en" className={`${fredoka.variable} ${nunito.variable}`}><body className="font-sans"><GameProvider><NotificationProvider><AuthProvider>{children}<MasterCertificateDelivery/><RewardToaster/><AppToaster/></AuthProvider></NotificationProvider></GameProvider></body></html>; }
