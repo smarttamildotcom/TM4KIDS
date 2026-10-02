@@ -13,10 +13,10 @@ import { BRAND } from "@/lib/brand";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Adventures", href: "/#journey" },
-  { label: "Book Corner", href: "/books" },
-  { label: "Parents & Educators", href: "/parents-educators" },
   { label: "About", href: "/about" },
+  { label: "Adventures", href: "/#journey" },
+  { label: "Parents & Educators", href: "/parents-educators" },
+  { label: "Book Corner", href: "/books" },
   { label: "Contact", href: "/contact" },
 ];
 

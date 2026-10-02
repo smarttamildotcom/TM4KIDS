@@ -3,7 +3,6 @@ import { Fredoka, Nunito } from "next/font/google";
 import { GameProvider, RewardToaster } from "@/components/gamification";
 import { MasterCertificateDelivery } from "@/components/gamification/MasterCertificateDelivery";
 import { AppToaster } from "@/components/notifications/AppToaster";
-import { QuestyHangingPrototype } from "@/components/questy/QuestyHangingPrototype";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
 import { NotificationProvider } from "@/lib/notifications/NotificationProvider";
 import { BRAND } from "@/lib/brand";
@@ -35,7 +34,6 @@ export default function RootLayout({
           <NotificationProvider>
             <AuthProvider>
               {children}
-              <QuestyHangingPrototype />
               <MasterCertificateDelivery />
               <RewardToaster />
               <AppToaster />
