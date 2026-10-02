@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Mail, School } from "lucide-react";
+import Image from "next/image";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Container } from "@/components/ui/Container";
@@ -15,15 +15,17 @@ export default function ContactPage() {
     <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-detective-blue-600 focus:px-5 focus:py-3 focus:font-display focus:text-white">Skip to main content</a>
     <SiteHeader/>
     <main id="main">
-      <section className="relative overflow-hidden bg-gradient-to-b from-detective-blue-50 via-white to-white py-10 sm:py-14">
+      <section className="relative overflow-hidden bg-gradient-to-b from-detective-blue-50 via-white to-white py-8 sm:py-10">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden"><div className="absolute -left-24 top-0 h-64 w-64 rounded-full bg-detective-yellow-300/35 blur-3xl"/><div className="absolute -right-24 top-10 h-72 w-72 rounded-full bg-detective-orange-400/25 blur-3xl"/></div>
-        <Container className="relative grid items-center gap-6 md:grid-cols-[1fr_auto]">
+        <Container className="relative grid items-center gap-4 md:grid-cols-[1fr_170px] lg:grid-cols-[1fr_200px]">
           <div className="text-center md:text-left">
             <p className="font-display text-xs font-bold uppercase tracking-[.18em] text-detective-orange-600">👋 Say Hello!</p>
             <h1 className="mt-2 font-display text-3xl font-bold leading-tight text-detective-blue-900 sm:text-4xl lg:text-5xl">We&apos;d love to hear from you.</h1>
             <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-detective-blue-700/85 md:mx-0 sm:text-lg">Have a question about IP2Kids, our books, schools or educational collaborations? Send us a message.</p>
           </div>
-          <div aria-hidden="true" className="mx-auto hidden h-28 w-28 place-items-center rounded-full bg-white shadow-md md:grid"><div className="text-center"><div className="text-4xl">🐱</div><div className="mt-1 font-display text-xs font-bold text-detective-blue-800">Questy says hi!</div></div></div>
+          <div aria-hidden="true" className="mx-auto hidden h-44 w-36 items-end justify-center md:flex lg:h-48 lg:w-40">
+            <Image src="/questy-contact-wave.webp" alt="" width={200} height={300} priority className="h-full w-auto object-contain object-bottom"/>
+          </div>
         </Container>
       </section>
 
