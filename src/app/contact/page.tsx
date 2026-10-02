@@ -1,23 +1,50 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Container } from "@/components/ui/Container";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ContactCards } from "@/components/contact/ContactCards";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { FaqAccordion } from "@/components/contact/FaqAccordion";
-import { CallToAction } from "@/components/sections/CallToAction";
-import { contactCard, faqItems } from "@/lib/contact-content";
+import { contactCards, faqItems } from "@/lib/contact-content";
 
-export const metadata: Metadata = { title: "Contact Us | IP2Kids", description: "Get in touch with IP2Kids for general enquiries about learning, schools and partnerships." };
+export const metadata: Metadata = { title: "Contact Us | IP2Kids", description: "Contact IP2Kids about the Adventures, books, schools, educational use and collaborations." };
 
 export default function ContactPage() {
-  return <><a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-detective-blue-600 focus:px-5 focus:py-3 focus:font-display focus:text-white">Skip to main content</a><SiteHeader/><main id="main">
-    <section className="relative overflow-hidden bg-gradient-to-b from-detective-blue-50 via-white to-white py-16 sm:py-24"><div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden"><div className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-detective-yellow-300/40 blur-3xl"/><div className="absolute -right-20 top-40 h-80 w-80 rounded-full bg-detective-orange-400/30 blur-3xl"/></div><Container className="relative text-center"><h1 className="font-display text-4xl font-bold leading-tight text-detective-blue-900 sm:text-5xl lg:text-6xl">Contact Us</h1><p className="mx-auto mt-6 max-w-xl text-lg text-detective-blue-700/85 sm:text-xl">We would love to hear from you.</p></Container></section>
-    <section className="py-12 sm:py-16"><Container><ContactCards card={contactCard}/></Container></section>
-    <section className="bg-detective-blue-50/70 py-12 sm:py-16"><Container><SectionHeading eyebrow="Send a message" title="Get in touch" subtitle="Fill out the form and our team will write back soon."/><div className="mx-auto mt-10 max-w-2xl"><ContactForm/></div></Container></section>
-    <section className="py-12 sm:py-16"><Container><SectionHeading eyebrow="Frequently asked questions" title="Got questions?" subtitle="Here are answers to the questions we hear most often."/><div className="mt-10"><FaqAccordion items={faqItems}/></div></Container></section>
-    <CallToAction title="Ready to start your IP adventure?" subtitle="Join Questy and explore 15 exciting worlds of trademarks, inventions, creativity and designs." buttonLabel="Start Adventure" buttonHref="/#journey"/>
-    <section className="bg-white py-5 sm:py-6"><Container><div className="mx-auto max-w-3xl rounded-2xl border border-detective-blue-100 bg-detective-blue-50/60 p-4 text-center"><h2 className="font-display text-sm font-bold text-detective-blue-900">Disclaimer</h2><p className="mx-auto mt-1.5 max-w-2xl text-xs leading-5 text-detective-blue-600">IP2Kids is an independent educational initiative designed to introduce intellectual property concepts to young learners in a child-friendly and engaging way. The content is provided for educational purposes only and does not constitute legal advice or replace formal legal or classroom instruction.</p></div></Container></section>
-  </main><SiteFooter/></>;
+  return <>
+    <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-detective-blue-600 focus:px-5 focus:py-3 focus:font-display focus:text-white">Skip to main content</a>
+    <SiteHeader/>
+    <main id="main">
+      <section className="relative overflow-hidden bg-gradient-to-b from-detective-blue-50 via-white to-white py-8 sm:py-10">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden"><div className="absolute -left-24 top-0 h-64 w-64 rounded-full bg-detective-yellow-300/35 blur-3xl"/><div className="absolute -right-24 top-10 h-72 w-72 rounded-full bg-detective-orange-400/25 blur-3xl"/></div>
+        <Container className="relative grid items-center gap-4 md:grid-cols-[1fr_170px] lg:grid-cols-[1fr_200px]">
+          <div className="text-center md:text-left">
+            <p className="font-display text-xs font-bold uppercase tracking-[.18em] text-detective-orange-600">👋 Say Hello!</p>
+            <h1 className="mt-2 font-display text-3xl font-bold leading-tight text-detective-blue-900 sm:text-4xl lg:text-5xl">We&apos;d love to hear from you.</h1>
+            <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-detective-blue-700/85 md:mx-0 sm:text-lg">Have a question about IP2Kids, our books, schools or educational collaborations? Send us a message.</p>
+          </div>
+          <div aria-hidden="true" className="mx-auto hidden h-44 w-36 items-end justify-center md:flex lg:h-48 lg:w-40">
+            <Image src="/questy-contact-wave.webp" alt="" width={200} height={300} priority className="h-full w-auto object-contain object-bottom"/>
+          </div>
+        </Container>
+      </section>
+
+      <section className="py-8 sm:py-10"><Container><ContactCards cards={contactCards}/></Container></section>
+
+      <section id="contact-form" className="scroll-mt-24 bg-detective-blue-50/70 py-10 sm:py-14">
+        <Container>
+          <div className="mx-auto max-w-2xl text-center"><p className="font-display text-xs font-bold uppercase tracking-[.16em] text-detective-orange-600">Send us a message</p><h2 className="mt-2 font-display text-2xl font-bold text-detective-blue-900 sm:text-3xl">How can we help?</h2><p className="mt-2 text-sm leading-6 text-detective-blue-700/85 sm:text-base">This form is intended for parents, educators, schools and other adult enquiries.</p></div>
+          <div className="mx-auto mt-6 max-w-2xl"><ContactForm/></div>
+        </Container>
+      </section>
+
+      <section className="py-10 sm:py-14">
+        <Container>
+          <div className="mx-auto max-w-3xl text-center"><p className="font-display text-xs font-bold uppercase tracking-[.16em] text-detective-orange-600">Frequently asked questions</p><h2 className="mt-2 font-display text-2xl font-bold text-detective-blue-900 sm:text-3xl">A few quick answers</h2><p className="mt-2 text-sm text-detective-blue-700/85 sm:text-base">Useful information for parents, schools and educators.</p></div>
+          <div className="mx-auto mt-6 max-w-3xl"><FaqAccordion items={faqItems}/></div>
+        </Container>
+      </section>
+    </main>
+    <SiteFooter/>
+  </>;
 }
