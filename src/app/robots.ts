@@ -1,0 +1,1 @@
+import type {MetadataRoute} from "next";export default function robots():MetadataRoute.Robots{return{rules:{userAgent:"*",allow:"/",disallow:["/admin/","/api/","/dashboard/","/login","/register","/forgot-password","/reset-password"]},sitemap:"https://ip2kids.com/sitemap.xml"}}

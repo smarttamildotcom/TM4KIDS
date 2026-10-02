@@ -1,1 +1,2 @@
-import { DetectiveOnboarding } from "@/components/detective/DetectiveOnboarding";export default function DetectivePage(){return <DetectiveOnboarding/>}
+import { redirect } from "next/navigation";
+export default function DetectivePage(){redirect("/#journey");}
