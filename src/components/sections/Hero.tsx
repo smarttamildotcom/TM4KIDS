@@ -18,10 +18,10 @@ export function Hero() {
           <motion.p variants={fadeUp} className="inline-flex items-center gap-2 rounded-full bg-detective-yellow-100 px-4 py-2 font-display text-sm font-semibold text-detective-orange-600">
             <Sparkles className="h-4 w-4" aria-hidden="true" /> Ideas Have Superpowers!
           </motion.p>
-          <motion.h1 variants={fadeUp} className="mt-6 font-display text-4xl font-bold leading-tight text-detective-blue-900 sm:text-5xl lg:text-6xl">
+          <motion.h1 variants={fadeUp} className="mt-5 font-display text-3xl font-bold leading-tight text-detective-blue-900 sm:text-4xl lg:text-5xl">
             Discover the amazing <span className="text-detective-orange-500">ideas hiding all around you.</span>
           </motion.h1>
-          <motion.p variants={fadeUp} className="mx-auto mt-6 max-w-xl text-lg text-detective-blue-700/85 sm:text-xl lg:mx-0">
+          <motion.p variants={fadeUp} className="mx-auto mt-5 max-w-xl text-lg text-detective-blue-700/85 sm:text-xl lg:mx-0">
             Join Questy to explore how people create, invent, design and build brands through short stories, playful questions and creative rewards.
           </motion.p>
           <motion.div variants={fadeUp} className="mt-6 flex flex-wrap justify-center gap-2 font-display text-sm font-bold text-detective-blue-800 lg:justify-start">
