@@ -10,15 +10,15 @@ type AdventureButtonProps = {
   className?: string;
 };
 
-/** Sends every detective straight to the detective creator. */
+/** Sends visitors directly to Questy's Idea Adventures. */
 export function AdventureButton({
-  children = "Start Adventure",
+  children = "Explore Adventures",
   size = "md",
   variant = "primary",
   className,
 }: AdventureButtonProps) {
   return (
-    <Button href="/detective" size={size} variant={variant} className={className}>
+    <Button href="/#journey" size={size} variant={variant} className={className}>
       {children}
     </Button>
   );
