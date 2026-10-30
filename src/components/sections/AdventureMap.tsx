@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { useExperience } from "@/lib/experience/ExperienceProvider";
 import { cityCase } from "@/lib/idea-city";
 import { Container } from "@/components/ui/Container";
 import { WorldCard, type WorldStatus } from "@/components/sections/WorldCard";
@@ -14,6 +15,9 @@ const scenery = [
 function zigzagClass(index: number) { const column = index % 3; if (column === 1) return "lg:translate-y-12"; if (column === 2) return "lg:translate-y-4"; return ""; }
 
 export function AdventureMap() {
+  const { motionEnabled } = useExperience();
+  const reduce = useReducedMotion();
+  const animate = motionEnabled && !reduce;
   const { player } = useGame();
   const { user } = useAuth();
   const completedWorldIds = user ? player.completedWorldIds : [];
@@ -21,10 +25,10 @@ export function AdventureMap() {
   const activeIndex = statuses.indexOf("unlocked");
   const districtNames = ["Creator Park", "Brand Street", "Inventor Lab", "Creator Studio + Design District", "Idea City"];
   return <section id="journey" className="relative scroll-mt-24 overflow-hidden bg-gradient-to-b from-detective-blue-50 via-white to-detective-blue-50/60 py-8 sm:py-12">
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden sm:block">{scenery.map((item, index) => <motion.span key={`${item.emoji}-${index}`} animate={{ y: [0,-10,0] }} transition={{ duration:item.duration, repeat:Infinity, ease:"easeInOut" }} className={`absolute text-3xl opacity-50 ${item.className}`}>{item.emoji}</motion.span>)}</div>
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden sm:block">{scenery.map((item, index) => <motion.span key={`${item.emoji}-${index}`} animate={animate ? { y: [0,-10,0] } : undefined} transition={{ duration:item.duration, repeat:Infinity, ease:"easeInOut" }} className={`absolute text-3xl opacity-50 ${item.className}`}>{item.emoji}</motion.span>)}</div>
     <Container className="relative"><div className="space-y-14">{journeyChapters.map((chapter) => { const chapterWorlds = worlds.filter((world) => chapter.worldIds.includes(world.id)); return <section key={chapter.id} aria-labelledby={`chapter-${chapter.id}`} className="rounded-[2rem] border-2 border-detective-blue-100 bg-white/60 p-4 shadow-sm sm:p-6">
       <div className="mb-7 rounded-3xl bg-detective-blue-900 px-5 py-4 text-white"><p className="font-display text-xs font-semibold uppercase tracking-[.2em] text-detective-yellow-300">Idea City · {chapter.focus}</p><h2 id={`chapter-${chapter.id}`} className="mt-1 font-display text-xl font-bold sm:text-2xl">{districtNames[chapter.id-1]}</h2><p className="mt-1 text-sm text-white/80">{chapter.setting}</p></div>
-      <ol className="grid list-none grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">{chapterWorlds.map((world) => { const index = world.id - 1; const adventure = cityCase(world.id); return <motion.li key={world.id} initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.15}} transition={{duration:.45,ease:[.22,1,.36,1]}} className={zigzagClass(index)}><WorldCard world={world} status={statuses[index]} isActive={index===activeIndex} isExpanded={false} onToggle={()=>{}} onRequestUnlock={()=>{}} onComplete={()=>{}} onNextWorld={()=>{}} caseTitle={adventure.title} caseScene={adventure.scene}/></motion.li>; })}</ol>
+      <ol className="grid list-none grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">{chapterWorlds.map((world) => { const index = world.id - 1; const adventure = cityCase(world.id); return <motion.li key={world.id} initial={animate ? {opacity:0,y:24} : false} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.15}} transition={{duration:.45,ease:[.22,1,.36,1]}} className={zigzagClass(index)}><WorldCard world={world} status={statuses[index]} isActive={index===activeIndex} isExpanded={false} onToggle={()=>{}} onRequestUnlock={()=>{}} onComplete={()=>{}} onNextWorld={()=>{}} caseTitle={adventure.title} caseScene={adventure.scene}/></motion.li>; })}</ol>
     </section>; })}</div></Container>
   </section>;
 }
