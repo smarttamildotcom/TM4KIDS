@@ -1,3 +1,4 @@
+import { ExperienceProvider } from "@/lib/experience/ExperienceProvider";
 import type { Metadata } from "next";
 import { Fredoka, Nunito } from "next/font/google";
 import { GameProvider, RewardToaster } from "@/components/gamification";
@@ -23,4 +24,4 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "IP2Kids – Questy's Idea Adventures", description: BRAND.description, images: ["/opengraph-image"] },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="en" className={`${fredoka.variable} ${nunito.variable}`}><body className="font-sans"><GameProvider><NotificationProvider><AuthProvider>{children}<MasterCertificateDelivery/><RewardToaster/><AppToaster/></AuthProvider></NotificationProvider></GameProvider></body></html>; }
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="en" className={`${fredoka.variable} ${nunito.variable}`}><body className="font-sans"><ExperienceProvider><GameProvider><NotificationProvider><AuthProvider>{children}<MasterCertificateDelivery/><RewardToaster/><AppToaster/></AuthProvider></NotificationProvider></GameProvider></ExperienceProvider></body></html>; }
