@@ -1,5 +1,6 @@
 "use client";
 
+import { adventureTotal } from "@/lib/learning-worlds";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { QuestyHeroIllustration } from "@/components/illustrations/QuestyHeroIllustration";
@@ -22,12 +23,12 @@ export function Hero() {
             Discover the amazing <span className="text-detective-orange-500">ideas hiding all around you.</span>
           </motion.h1>
           <motion.p variants={fadeUp} className="mx-auto mt-5 max-w-xl text-lg text-detective-blue-700/85 sm:text-xl lg:mx-0">
-            Join Questy to explore how people create, invent, design and build brands. Choose your learning world and discover through stories, questions and creative activities.
+            Join Questy to explore how people create, invent, design and build brands. Start with creative activities, discover intellectual property through stories, and grow into a young innovator.
           </motion.p>
           <motion.div variants={fadeUp} className="mt-6 flex flex-wrap justify-center gap-2 font-display text-sm font-bold text-detective-blue-800 lg:justify-start">
             <span className="rounded-full bg-white px-4 py-2 shadow-sm">🎨 Create</span><span className="rounded-full bg-white px-4 py-2 shadow-sm">💡 Invent</span><span className="rounded-full bg-white px-4 py-2 shadow-sm">⭐ Brand</span><span className="rounded-full bg-white px-4 py-2 shadow-sm">🚀 Imagine</span>
           </motion.div>
-          <motion.p variants={fadeUp} className="mt-4 text-sm font-semibold text-green-700">✨ Three age-based worlds with 45 planned adventures.</motion.p>
+          <motion.p variants={fadeUp} className="mt-4 text-sm font-semibold text-green-700">✨ Three age-based worlds with {adventureTotal} planned adventures.</motion.p>
         </motion.div>
         <QuestyHeroIllustration />
       </Container>
