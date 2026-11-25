@@ -4,12 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import questyImage from "@/Questy Image.png";
 
-const float = (distance: number, duration: number, delay = 0) => ({
-  animate: { y: [0, -distance, 0], rotate: [-1, 2, -1] },
-  transition: { duration, delay, repeat: Infinity, ease: "easeInOut" as const },
-});
-
-/** Hero illustration: Questy the detective cat mascot with floating decorative clues. */
+/** Hero illustration: Questy the detective cat mascot. */
 export function QuestyHeroIllustration() {
   return (
     <motion.div
@@ -35,13 +30,6 @@ export function QuestyHeroIllustration() {
           className="mx-auto block h-full w-auto max-w-full object-contain object-center drop-shadow-2xl"
         />
       </motion.div>
-
-      <motion.span aria-hidden="true" {...float(12, 4.2)} className="absolute left-[2%] top-[6%] grid h-12 w-12 place-items-center rounded-full bg-detective-yellow-400 text-xl shadow-lg">⭐</motion.span>
-      <motion.span aria-hidden="true" {...float(15, 5, 0.4)} className="absolute right-[0%] top-[2%] grid h-14 w-14 place-items-center rounded-2xl bg-white text-2xl shadow-xl">🏅</motion.span>
-      <motion.span aria-hidden="true" {...float(10, 3.8, 0.8)} className="absolute right-[-2%] top-[45%] grid h-12 w-12 place-items-center rounded-full bg-detective-blue-600 text-xl shadow-lg">🔍</motion.span>
-      <motion.span aria-hidden="true" {...float(11, 4.6, 0.2)} className="absolute left-[-2%] top-[38%] grid h-12 w-12 place-items-center rounded-full bg-detective-orange-400 text-xl shadow-lg">🐾</motion.span>
-      <motion.span aria-hidden="true" {...float(9, 4, 1.1)} className="absolute bottom-[6%] left-[6%] grid h-12 w-12 place-items-center rounded-2xl bg-white text-xl shadow-lg">📓</motion.span>
-      <motion.span aria-hidden="true" {...float(13, 4.4, 0.6)} className="absolute bottom-[2%] right-[8%] grid h-12 w-12 place-items-center rounded-2xl bg-detective-yellow-100 text-xl shadow-lg">🗺️</motion.span>
     </motion.div>
   );
 }
