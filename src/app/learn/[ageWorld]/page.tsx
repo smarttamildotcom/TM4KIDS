@@ -24,11 +24,12 @@ export default async function LearningWorldPage({params}: {params: Promise<{ageW
       </header>
       <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {world.titles.map((title,index) => {
-          const ready = world.slug === "junior-detectives" && index < 2;
+          const little = world.slug === "little-explorers";
+          const ready = little || (world.slug === "junior-detectives" && index < 2);
           return <li key={title} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-sm font-semibold text-slate-600">Adventure {index+1}</p>
             <h2 className="my-3 flex-1 text-xl font-bold text-slate-900">{title}</h2>
-            {ready ? <Link href={"/worlds/"+(index+1)} className="rounded-xl bg-blue-700 px-4 py-3 text-center font-bold text-white">Start adventure</Link> : <p className="rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-700">Coming soon</p>}
+            {ready ? <Link href={little ? "/learn/little-explorers/"+(index+1) : "/worlds/"+(index+1)} className="rounded-xl bg-blue-700 px-4 py-3 text-center font-bold text-white">Start adventure</Link> : <p className="rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-700">Coming soon</p>}
           </li>;
         })}
       </ol>
