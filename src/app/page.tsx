@@ -22,7 +22,7 @@ export default function HomePage() {
 
       <main id="main">
         <Hero />
-        <section className="mx-auto max-w-6xl scroll-mt-24 px-5 py-12" aria-labelledby="learning-worlds">
+        <section id="journey" className="mx-auto max-w-6xl scroll-mt-24 px-5 py-12" aria-labelledby="learning-worlds">
           <h2 id="learning-worlds" className="text-center text-3xl font-bold text-slate-900">Choose your learning world</h2>
           <p className="mt-3 text-center text-slate-600">Three worlds. 45 adventures. Discover at your own pace.</p>
           <div className="mt-8 grid gap-5 md:grid-cols-3">
