@@ -16,18 +16,15 @@ export const copy = {
 
 export function ExperienceProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("en");
-  const [motionEnabled, setMotionState] = useState(true);
+  const motionEnabled = false;
   useEffect(() => {
     try {
       const saved = localStorage.getItem("ip2kids-locale");
       if (valid.includes(saved as Locale)) setLocaleState(saved as Locale);
-      const motion = localStorage.getItem("ip2kids-motion");
-      if (motion !== null) setMotionState(motion === "true");
-      else if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) setMotionState(false);
     } catch { /* Storage may be disabled. */ }
   }, []);
   const setLocale = (value: Locale) => { setLocaleState(value); try { localStorage.setItem("ip2kids-locale", value); } catch {} };
-  const setMotionEnabled = (value: boolean) => { setMotionState(value); try { localStorage.setItem("ip2kids-motion", String(value)); } catch {} };
+  const setMotionEnabled = (_value: boolean) => {};
   useEffect(() => { document.documentElement.lang = locale; }, [locale]);
   return <Context.Provider value={{ locale, setLocale, motionEnabled, setMotionEnabled }}>{children}</Context.Provider>;
 }
