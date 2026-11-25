@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Map } from "lucide-react";
 import { WorldRouteGuard } from "@/components/auth/WorldRouteGuard";
-import { ActivityZone } from "@/components/sections/ActivityZone";
 import { WorldDetailPanel } from "@/components/sections/WorldDetailPanel";
 import { useGame } from "@/lib/gamification/GameProvider";
 import { worlds } from "@/lib/worlds";
@@ -19,7 +18,6 @@ export function WorldPageExperience({ worldId }: { worldId: number }) {
     <nav aria-label="Adventure navigation" className="mb-6 flex flex-wrap items-center justify-between gap-3"><Link href="/#journey" className="inline-flex items-center gap-2 rounded-full border-2 border-detective-blue-200 bg-white px-4 py-2 font-display text-sm font-bold text-detective-blue-800 hover:bg-detective-blue-50"><Map className="h-4 w-4"/>Adventure Map</Link><span className="rounded-full bg-detective-blue-900 px-4 py-2 font-display text-sm font-bold text-white">Adventure {currentWorld.id} of {worlds.length}</span></nav>
     <header className="mb-7 rounded-[2rem] border-2 border-detective-blue-100 bg-white p-5 shadow-md sm:p-7"><p className="font-display text-sm font-bold uppercase tracking-[.18em] text-detective-orange-500">Questy&apos;s Idea Adventures · Adventure {currentWorld.id}</p><h1 className="mt-2 font-display text-3xl font-bold text-detective-blue-900 sm:text-4xl">{currentWorld.name}</h1><p className="mt-3 max-w-3xl text-detective-blue-700/85">{currentWorld.description}</p></header>
     <section className="rounded-[2rem] border-2 border-detective-blue-100 bg-white p-4 shadow-lg sm:p-6 lg:p-8"><WorldDetailPanel world={currentWorld} isCompleted={isCompleted} onComplete={handleComplete} onNextWorld={handleNextWorld}/></section>
-    <ActivityZone key={worldId} world={currentWorld}/>
     <nav aria-label="Move between adventures" className="mt-8 grid gap-3 sm:grid-cols-3">{worldId>1?<Link href={`/worlds/${worldId-1}`} className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-detective-blue-200 bg-white px-5 py-3 font-display font-bold text-detective-blue-800 hover:bg-detective-blue-50"><ArrowLeft className="h-4 w-4"/>Previous Adventure</Link>:<span/>}<Link href="/#journey" className="inline-flex items-center justify-center gap-2 rounded-full bg-detective-blue-900 px-5 py-3 font-display font-bold text-white hover:bg-detective-blue-800"><Map className="h-4 w-4"/>Adventure Map</Link>{worldId<worlds.length?<Link href={`/worlds/${worldId+1}`} className="inline-flex items-center justify-center gap-2 rounded-full bg-detective-orange-500 px-5 py-3 font-display font-bold text-white hover:bg-detective-orange-600">Next Adventure<ArrowRight className="h-4 w-4"/></Link>:<span/>}</nav>
   </div></main></WorldRouteGuard>;
 }
