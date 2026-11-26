@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { ArtworkGame } from "./ArtworkGame";
 import type { World } from "@/lib/worlds";
 
 const btn="min-h-12 rounded-xl border-2 border-sky-200 bg-white p-3 font-bold text-sky-900 hover:bg-sky-50 focus-visible:ring-2 focus-visible:ring-sky-600 disabled:opacity-60";
@@ -12,7 +13,7 @@ export function ActivityZone({world}:{world:World}){
  return <section className="mt-8 rounded-[2rem] border-2 border-sky-200 bg-sky-50 p-4 sm:p-7" aria-label="Activity Zone">
  <h2 className="text-2xl font-bold text-sky-900">Free Activities</h2><p className="my-2 text-sky-900">Play, practise and create! Replay any game without changing your Adventure score.</p>
  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{modes.map(m=><button key={m} className={btn+(mode===m?" ring-2 ring-orange-500":"")} aria-pressed={mode===m} onClick={()=>{setMode(m);setRound(r=>r+1);}}>{m}</button>)}</div>
- {mode&&<div className="mt-4 rounded-2xl bg-white p-3 sm:p-5"><button className={btn} onClick={()=>setRound(r=>r+1)}>Restart {mode}</button><div key={world.id+":"+mode+":"+round} className="mt-4">{mode==="Matching"?<Matching world={world}/>:mode==="Memory"?<Memory world={world}/>:<p role="status">Coming soon — Adventure artwork is being prepared.</p>}</div></div>}
+ {mode&&<div className="mt-4 rounded-2xl bg-white p-3 sm:p-5"><button className={btn} onClick={()=>setRound(r=>r+1)}>Restart {mode}</button><div key={world.id+":"+mode+":"+round} className="mt-4">{mode==="Matching"?<Matching world={world}/>:mode==="Memory"?<Memory world={world}/>:<ArtworkGame id={world.id} mode={mode}/>}</div></div>}
  </section>;
 }
 function Matching({world}:{world:World}){
