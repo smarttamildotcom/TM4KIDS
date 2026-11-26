@@ -1,25 +1,27 @@
 "use client";
 
 import Link from "next/link";
+import { ActivityZone } from "@/components/sections/ActivityZone";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Check, ChevronRight, RotateCcw, Sparkles, Star, Volume2, VolumeX } from "lucide-react";
 import { adventureContent, ultimateIpChallenge, type AdventureQuestion } from "@/lib/adventures/adventure-content";
 import { playCelebrationSound } from "@/lib/audio";
 import type { World } from "@/lib/worlds";
 
-type Step = "passage" | "clues" | "discovery" | "file" | "ultimate";
+type Step = "passage" | "clues" | "discovery" | "file" | "activities" | "ultimate";
 const steps = [
   { id: "passage", label: "Passage", emoji: "📖" },
   { id: "clues", label: "Find Clues", emoji: "🔎" },
   { id: "discovery", label: "Discovery", emoji: "💡" },
   { id: "file", label: "Case File", emoji: "📋" },
+  { id: "activities", label: "Free Activities", emoji: "🎮" },
 ] as const;
 
 const primary = "inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-2 text-xs font-display font-bold text-white shadow-sm sm:text-sm";
 const secondary = "inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full border-2 border-blue-200 bg-white px-4 py-2 text-xs font-display font-bold text-blue-900 sm:text-sm";
 
 function Rail({ step }: { step: Step }) {
-  const active = step === "ultimate" ? 3 : Math.max(0, steps.findIndex((x) => x.id === step));
+  const active = step === "ultimate" ? 4 : Math.max(0, steps.findIndex((x) => x.id === step));
   return <div className="rounded-2xl bg-white/95 px-2 py-2 shadow-lg sm:px-4 sm:py-3"><div className="flex items-start justify-between">{steps.map((x, i) => <div key={x.id} className="flex min-w-0 flex-1 items-start"><div className="flex min-w-0 flex-1 flex-col items-center text-center"><div className={`grid h-7 w-7 place-items-center rounded-full text-[10px] font-black sm:h-8 sm:w-8 sm:text-xs ${i === active ? "bg-orange-500 text-white" : i < active ? "bg-green-500 text-white" : "bg-sky-100 text-blue-700"}`}>{i < active ? <Check className="h-3.5 w-3.5" /> : i + 1}</div><div className="text-sm sm:text-base">{x.emoji}</div><p className="text-[8px] font-extrabold leading-none text-blue-800 sm:text-[10px]">{x.label}</p></div>{i < steps.length - 1 && <ChevronRight className="mt-3 hidden h-4 w-4 text-sky-400 sm:block" />}</div>)}</div></div>;
 }
 
@@ -136,7 +138,8 @@ export function AdventureExperience({ world, isCompleted, onComplete, onNextWorl
     {step === "passage" && <Passage key={`passage-${world.id}`} title={content.title} paragraphs={passage} onNext={() => setStep("clues")} />}
     {step === "clues" && <Question key={`${world.id}-${q}`} q={content.questions[q]} n={q + 1} onNext={() => q === 4 ? setStep("discovery") : setQ((v) => v + 1)} />}
     {step === "discovery" && <section className="mx-auto max-w-4xl rounded-2xl border-2 border-yellow-200 bg-white p-4 shadow-lg sm:p-7"><div className="text-center"><div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-yellow-100 text-2xl">💡</div><p className="mt-2 text-xs font-black uppercase text-orange-600">Questy&apos;s Discovery</p><h3 className="font-display text-xl font-black text-blue-950 sm:text-3xl">You found the idea!</h3></div><div className="mt-4 grid gap-2 sm:grid-cols-3">{content.discovery.map((x) => <article key={x.title} className="rounded-xl border-2 border-sky-100 bg-sky-50 p-3.5 sm:p-5"><Sparkles className="h-5 w-5 text-orange-500" /><h4 className="mt-2 font-display font-black text-blue-950">{x.title}</h4><p className="mt-1 text-sm text-blue-900 sm:text-base">{x.body}</p></article>)}</div><div className="mt-5 text-center"><button onClick={openCaseFile} className={primary}>Open My Case File <ArrowRight className="h-3.5 w-3.5" /></button></div></section>}
-    {step === "file" && <section className="mx-auto max-w-4xl rounded-2xl border-2 border-sky-100 bg-white p-4 shadow-lg sm:p-7"><div className="flex justify-between gap-2"><div><p className="text-xs font-black uppercase text-orange-600">📋 Case File #{world.id}</p><h3 className="font-display text-xl font-black text-blue-950 sm:text-3xl">What I Discovered</h3></div><span className="h-fit rounded-full bg-green-100 px-3 py-1.5 text-xs font-black text-green-800">✓ CASE SOLVED</span></div><div className="mt-4 grid gap-2 sm:grid-cols-2">{content.caseFile.map((x) => <div key={x} className="flex gap-2 rounded-xl bg-sky-50 p-3 text-sm text-blue-950 sm:text-base"><span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-green-500 text-white"><Check className="h-3.5 w-3.5" /></span>{x}</div>)}</div><div className="mt-5 flex flex-wrap gap-2">{world.id === 15 ? <button onClick={() => setStep("ultimate")} className={primary}>Start Final Quest 🏆</button> : <button onClick={() => onNextWorld(world.id + 1)} className={primary}>Next Adventure {world.id + 1}<ArrowRight className="h-3.5 w-3.5" /></button>}<button onClick={() => { setQ(0); setStep("passage"); }} className={secondary}><RotateCcw className="h-3.5 w-3.5" />Replay</button></div></section>}
+    {step === "file" && <section className="mx-auto max-w-4xl rounded-2xl border-2 border-sky-100 bg-white p-4 shadow-lg sm:p-7"><div className="flex justify-between gap-2"><div><p className="text-xs font-black uppercase text-orange-600">📋 Case File #{world.id}</p><h3 className="font-display text-xl font-black text-blue-950 sm:text-3xl">What I Discovered</h3></div><span className="h-fit rounded-full bg-green-100 px-3 py-1.5 text-xs font-black text-green-800">✓ CASE SOLVED</span></div><div className="mt-4 grid gap-2 sm:grid-cols-2">{content.caseFile.map((x) => <div key={x} className="flex gap-2 rounded-xl bg-sky-50 p-3 text-sm text-blue-950 sm:text-base"><span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-green-500 text-white"><Check className="h-3.5 w-3.5" /></span>{x}</div>)}</div><div className="mt-5 flex flex-wrap gap-2"><button onClick={() => setStep("activities")} className={primary}>Free Activities <ArrowRight className="h-3.5 w-3.5" /></button><button onClick={() => { setQ(0); setStep("passage"); }} className={secondary}><RotateCcw className="h-3.5 w-3.5" />Replay</button></div></section>}
+    {step === "activities" && <><ActivityZone key={world.id} world={world}/><div className="mt-4 flex flex-wrap gap-2"><button className={secondary} onClick={() => setStep("file")}>Back to Case File</button>{world.id === 15 ? <button className={primary} onClick={() => setStep("ultimate")}>Start Final Quest</button> : <button className={primary} onClick={() => onNextWorld(world.id + 1)}>Next Adventure {world.id + 1}</button>}</div></>}
     {step === "ultimate" && finalScore === null && <Ultimate onFinish={(score) => { setFinalScore(score); playCelebrationSound(); }} />}
     {step === "ultimate" && finalScore !== null && <section className="mx-auto max-w-4xl rounded-2xl border-2 border-yellow-300 bg-white p-5 text-center shadow-lg sm:p-9"><div className="text-5xl">🏆</div><p className="mt-3 text-xs font-black uppercase tracking-wider text-orange-600">15 Adventures Complete</p><h3 className="mt-2 font-display text-3xl font-black text-blue-950">{finalMessage}</h3><p className="mt-3 text-blue-800">You scored {finalScore}/10. This final challenge is for practice and celebration, not pass or fail.</p><div className="mx-auto mt-5 max-w-2xl rounded-2xl bg-sky-50 p-4"><Star className="mx-auto h-6 w-6 text-yellow-500" /><h4 className="mt-2 font-display text-xl font-black text-blue-950">Ready for a bigger idea adventure?</h4><p className="mt-2 text-sm text-blue-800">Keep exploring longer stories, puzzles, drawing activities and new mysteries in Book Corner.</p><Link href="/books" className={`${primary} mt-4`}>Visit Book Corner <ArrowRight className="h-3.5 w-3.5" /></Link></div></section>}
   </div></div>;
