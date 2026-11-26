@@ -1,6 +1,6 @@
 import { ExperienceProvider } from "@/lib/experience/ExperienceProvider";
 import type { Metadata } from "next";
-import { Fredoka, Nunito } from "next/font/google";
+import type { CSSProperties } from "react";
 import { GameProvider, RewardToaster } from "@/components/gamification";
 import { MasterCertificateDelivery } from "@/components/gamification/MasterCertificateDelivery";
 import { AppToaster } from "@/components/notifications/AppToaster";
@@ -9,8 +9,7 @@ import { NotificationProvider } from "@/lib/notifications/NotificationProvider";
 import { BRAND } from "@/lib/brand";
 import "./globals.css";
 
-const fredoka = Fredoka({ subsets: ["latin"], variable: "--font-fredoka", weight: ["500", "600", "700"] });
-const nunito = Nunito({ subsets: ["latin"], variable: "--font-nunito" });
+const fontFallbacks = { "--font-fredoka": '"Trebuchet MS", "Arial Rounded MT Bold", system-ui', "--font-nunito": 'system-ui, Arial, sans-serif' } as CSSProperties;
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://ip2kids.com";
 
 export const metadata: Metadata = {
@@ -24,4 +23,4 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "IP2Kids – Questy's Idea Adventures", description: BRAND.description, images: ["/opengraph-image"] },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="en" className={`${fredoka.variable} ${nunito.variable}`}><body className="font-sans"><ExperienceProvider><GameProvider><NotificationProvider><AuthProvider>{children}<MasterCertificateDelivery/><RewardToaster/><AppToaster/></AuthProvider></NotificationProvider></GameProvider></ExperienceProvider></body></html>; }
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="en" style={fontFallbacks}><body className="font-sans"><ExperienceProvider><GameProvider><NotificationProvider><AuthProvider>{children}<MasterCertificateDelivery/><RewardToaster/><AppToaster/></AuthProvider></NotificationProvider></GameProvider></ExperienceProvider></body></html>; }
